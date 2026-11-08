@@ -1,0 +1,268 @@
+diff --git a/tools/ljd/ljd/ast/builder.py b/tools/ljd/ljd/ast/builder.py
+index 8bdaedc..2cf9002 100644
+--- a/tools/ljd/ljd/ast/builder.py
++++ b/tools/ljd/ljd/ast/builder.py
+@@ -10,6 +10,171 @@ from ljd.bytecode.helpers import get_jump_destination
+ 
+ handle_invalid_functions = False
+ 
++# ---- upvalue provenance 具名化（本项目补丁，见 工作指南 A1/B1）----------------
++# 背景：字节码被 strip（实测 3491/3491 文件 is_stripped），upvalue 真名永久不可恢复；
++# ljd 只能输出 per-proto 编号 uv0/uv1/uv2，跨闭包不可比，照抄必崩（149/174/180 三踩）。
++# 解法：不猜名字，改输出**唯一来源符号**。每个 upvalue 的引用链可精确解析到
++#       「父 proto 的栈槽」(instack=1) 或继续上溯到 chunk 层，得到键 slot:<path>:<idx>。
++#       同键 ⇒ 必然同一变量；异键 ⇒ 必然不同变量。
++SYMBOLIZE_UPVALUES = False
++_PROTO_PATH = {}     # id(proto)  -> path（'0_4_2' 形式）
++_UV_KEYS = {}        # (path, uv) -> 'slot:<owner_path>:<slot>'（仅调试/兼容用）
++
++_UV_INSTACK = 0x8000
++_UV_IDXMASK = 0x3FFF
++
++
++def _child_protos(proto):
++    return [c for c in (proto.constants.complex_constants or [])
++            if hasattr(c, 'instructions')]
++
++
++def _walk_protos(root, path='0'):
++    yield root, path
++    for i, c in enumerate(_child_protos(root)):
++        for item in _walk_protos(c, '%s_%d' % (path, i)):
++            yield item
++
++
++def _index_provenance(root):
++    """返回 {(path, uv): 'slot:<owner>:<slot>'}。逐文件独立，避免多线程批处理串味。"""
++    _PROTO_PATH.clear()
++    _UV_KEYS.clear()
++    pm = {}
++    for proto, path in _walk_protos(root):
++        _PROTO_PATH[id(proto)] = path
++        pm[path] = proto
++
++    def resolve(path, idx, depth=0):
++        if depth > 64:
++            return 'cycle'
++        refs = pm[path].constants.upvalue_references
++        if idx >= len(refs):
++            return 'oob'
++        ref = refs[idx]
++        si = ref & _UV_IDXMASK
++        parent = path.rsplit('_', 1)[0] if '_' in path else None
++        if parent is None:
++            return 'chunk:%d' % si           # 顶层 chunk 的 upvalue（_ENV 等）
++        if ref & _UV_INSTACK:
++            return 'slot:%s:%d' % (parent, si)
++        return resolve(parent, si, depth + 1)
++
++    keys = {}
++    for path, proto in pm.items():
++        for i in range(len(proto.constants.upvalue_references)):
++            keys[(path, i)] = resolve(path, i)
++    _UV_KEYS.update(keys)
++    return keys
++
++
++def _symbol_for(keys, path, idx):
++    key = keys.get((path, idx)) if keys else None
++    if not key or not key.startswith('slot:'):
++        return None
++    _, owner, slot = key.split(':')
++    return 'u%s_%s' % (owner, slot)
++
++
++def _insn_name(ins):
++    return getattr(ins, 'name', '?')
++
++
++def _children_of(proto):
++    return [c for c in (proto.constants.complex_constants or []) if hasattr(c, 'instructions')]
++
++
++def _owner_funcs(proto):
++    """父 proto 中 FNEW 某 child 后紧跟的 GSET/TSETS 常量名 = 该闭包被赋给的字段名。"""
++    kids = {id(k): i for i, k in enumerate(_children_of(proto))}
++    cc = proto.constants.complex_constants or []
++    names = {}
++    ins = proto.instructions
++    for i, it in enumerate(ins):
++        if _insn_name(it) != 'FNEW':
++            continue
++        cidx, a = getattr(it, 'CD', None), getattr(it, 'A', None)
++        if cidx is None or cidx >= len(cc) or id(cc[cidx]) not in kids:
++            continue
++        for j in range(i + 1, min(i + 4, len(ins))):
++            nxt = ins[j]
++            if getattr(nxt, 'A', None) != a:
++                break
++            if _insn_name(nxt) in ('GSET', 'GSETV', 'TSETS', 'TSETV'):
++                ck = getattr(nxt, 'CD', -1)
++                if ck < len(cc) and isinstance(cc[ck], str):
++                    names[kids[id(cc[cidx])]] = cc[ck]
++                break
++    return names
++
++
++def _func_chain(pm, path):
++    names, cur = [], '0'
++    for seg in path.split('_')[1:]:
++        nm = _owner_funcs(pm[cur]).get(int(seg))
++        names.append(nm or '匿名闭包#%s' % seg)
++        cur += '_' + seg
++    return '.'.join(names) if names else '<chunk>'
++
++
++def _slot_role(owner, slot):
++    """给来源槽位一个可读角色 + 最强初始化证据（表构造优先，其次数/标志，最后取全局）。"""
++    if slot < owner.arguments_count:
++        return ('参数%d' % slot) + ('(self)' if slot == 0 else ''), 'ARG'
++    best = None
++    rank = {'TNEW': 4, 'TDUP': 4, 'KSHORT': 3, 'KPRI': 3, 'KNUM': 3, 'GGET': 2}
++    for i, it in enumerate(owner.instructions):
++        if getattr(it, 'A', None) != slot:
++            continue
++        nm = _insn_name(it)
++        r = rank.get(nm, 0)
++        if r and (best is None or r > best[0]):
++            best = (r, nm, i)
++    if best is None:
++        return '局部', ''
++    r, nm, i = best
++    label = {'TNEW': '局部表', 'TDUP': '局部表', 'KSHORT': '局部数/标志',
++             'KPRI': '局部数/标志', 'KNUM': '局部数/标志', 'GGET': '局部(取全局)'}[nm]
++    return label, '@%d %s' % (i, nm)
++
++
++def render_uv_map(root, keys, limit=60):
++    """生成头部注释：符号 → 来源函数 + 角色 + 证据。"""
++    pm = {path: proto for proto, path in _walk_protos(root)}
++    groups = {}
++    for (path, uv), key in keys.items():
++        if not key.startswith('slot:'):
++            continue
++        _, owner, slot = key.split(':')
++        sym = 'u%s_%s' % (owner, slot)
++        groups.setdefault(sym, {'owner': owner, 'slot': int(slot), 'refs': set()})
++        groups[sym]['refs'].add(path)
++
++    if not groups:
++        return ''
++
++    out = ['-- ==== LJD UV SYMBOLS（provenance 唯一化，本项目补丁）====',
++           '-- 本文件不含 uv0/uv1/uv2 伪名。每个符号 = 一个确定的捕获变量：',
++           '--   u<父proto路径>_<栈槽>  ⇒  同符号必然同源，异符号必然异源。',
++           '-- 改写本文件时请保留符号作绑定，例如： local self = u0_4_0',
++           '-- ' + '-' * 64]
++    for sym in sorted(groups, key=lambda s: (len(s), s)):
++        g = groups[sym]
++        owner = pm.get(g['owner'])
++        if owner is None:
++            continue
++        role, ev = _slot_role(owner, g['slot'])
++        chain = _func_chain(pm, g['owner'])
++        refs = len(g['refs'])
++        out.append('--   %-14s %s 的 %s%s   [引用 %d 处]' % (
++            sym, chain, role, (' ' + ev) if ev else '', refs))
++        if len(out) > limit:
++            out.append('--   ...（更多符号见文件内引用）')
++            break
++    out.append('-- ' + '=' * 64)
++    return '\n'.join(out) + '\n'
++
++
+ 
+ class _State:
+     def __init__(self):
+@@ -19,6 +184,7 @@ class _State:
+         self.blocks = []
+         self.block_starts = {}
+         self.header = None
++        self.proto_path = '0'
+ 
+     def _warp_in_block(self, addr):
+         block = self.block_starts[addr]
+@@ -27,10 +193,15 @@ class _State:
+ 
+ 
+ def build(header, prototype):
+-    return _build_function_definition(prototype, header)
++    keys = _index_provenance(prototype) if SYMBOLIZE_UPVALUES else None
++    node = _build_function_definition(prototype, header, keys)
++    if keys is not None:
++        node._uv_keys = keys          # 供 writer/main 生成 UV-MAP 头部注释
++        node._uv_map_text = render_uv_map(prototype, keys)
++    return node
+ 
+ 
+-def _build_function_definition(prototype, header):
++def _build_function_definition(prototype, header, uv_keys=None):
+     node = nodes.FunctionDefinition()
+ 
+     state = _State()
+@@ -38,6 +209,8 @@ def _build_function_definition(prototype, header):
+     state.constants = prototype.constants
+     state.debuginfo = prototype.debuginfo
+     state.header = header
++    state.proto_path = _PROTO_PATH.get(id(prototype), '0')
++    state.uv_keys = uv_keys
+ 
+     node._upvalues = prototype.constants.upvalue_references
+     node._debuginfo = prototype.debuginfo
+@@ -870,7 +1043,7 @@ def _build_function(state, slot):
+     prototype = state.constants.complex_constants[slot]
+ 
+     try:
+-        return _build_function_definition(prototype, state.header)
++        return _build_function_definition(prototype, state.header, getattr(state, 'uv_keys', None))
+     except Exception as err:
+         if not handle_invalid_functions:
+             raise err
+@@ -1006,6 +1179,11 @@ def _build_identifier(state, addr, slot, want_type):
+     if want_type == nodes.Identifier.T_UPVALUE:
+         name = state.debuginfo.lookup_upvalue_name(slot)
+ 
++        # 无 debug 名时（本项目全部文件都 stripped）改用具名化符号，
++        # 保证「同源同名、异源异名」；否则 writer 会输出 uv0/uv1/uv2 伪名。
++        if not name and SYMBOLIZE_UPVALUES:
++            name = _symbol_for(getattr(state, 'uv_keys', None), getattr(state, 'proto_path', '0'), slot)
++
+         # No problem if name is None, that'll be fixed in writer.Visitor.visit_identifier
+         node.name = name
+         node.type = want_type
+diff --git a/tools/ljd/main.py b/tools/ljd/main.py
+index f8286d7..978b672 100644
+--- a/tools/ljd/main.py
++++ b/tools/ljd/main.py
+@@ -155,6 +155,11 @@ class Main:
+ 
+         group.add_option("--dump", action="store_true", dest="dump_ast", default=False, help="Dump AST")
+ 
++        # 本项目补丁：把 upvalue 伪名 uv0/uv1/uv2 换成**唯一来源符号** u<父路径>_<槽位>。
++        # 字节码被 strip（无 debug 名），ljd 只能给 per-proto 编号；照抄必崩（工作指南 A1）。
++        group.add_option("--symbolize", action="store_true", dest="symbolize_upvalues", default=False,
++                         help="Replace uvN placeholders with provenance-unique symbols (u<path>_<slot>)")
++
+         (self.options, args) = parser.parse_args()
+ 
+         # Allow the input argument to be either a folder or a file.
+@@ -211,6 +216,9 @@ class Main:
+         if self.options.function_def_self_arg.lower() in ['true', '1', 't', 'y', 'yes']:
+             ljd.lua.writer.write_function_definition_self_arg = True
+ 
++        if getattr(self.options, 'symbolize_upvalues', False):
++            ljd.ast.builder.SYMBOLIZE_UPVALUES = True
++
+         self.options.unsafe_extra_pass = self.options.unsafe_extra_pass.lower() in ['true', '1', 't', 'y', 'yes']
+ 
+         # Start logging if required
+@@ -352,6 +360,9 @@ class Main:
+         if self.options.enable_logging:
+             self.logger.debug("Writing file {0}...".format(file_name))
+         with open(file_name, "w", encoding="utf8") as out_file:
++            uvmap = getattr(ast, '_uv_map_text', '')
++            if uvmap:
++                out_file.write(uvmap)
+             return ljd.lua.writer.write(out_file, ast, **kwargs)
+ 
+     def decompile(self, file_in):

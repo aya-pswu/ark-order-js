@@ -1,0 +1,23826 @@
+module("Net", package.seeall)
+
+m_system_hb_tos = {}
+m_system_hb_toc = {}
+m_system_time_toc = {
+	{
+		"server_time",
+		"int",
+		"null"
+	}
+}
+m_system_error_toc = {
+	{
+		"code",
+		"int",
+		"null"
+	},
+	{
+		"error_info",
+		"String",
+		"null"
+	}
+}
+m_common_error_toc = {
+	{
+		"code",
+		"int",
+		"null"
+	}
+}
+m_common_error2_toc = {
+	{
+		"code",
+		"int",
+		"null"
+	},
+	{
+		"args",
+		"array",
+		"string"
+	}
+}
+m_common_tips_toc = {
+	{
+		"code",
+		"int",
+		"null"
+	}
+}
+m_common_tips2_toc = {
+	{
+		"code",
+		"int",
+		"null"
+	},
+	{
+		"args",
+		"array",
+		"string"
+	}
+}
+m_bgp_login_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"host",
+		"String",
+		"null"
+	},
+	{
+		"port",
+		"int",
+		"null"
+	}
+}
+m_bgp_login_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"reason",
+		"String",
+		"null"
+	}
+}
+m_bgp_client_ip_tos = {
+	{
+		"ip",
+		"String",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"key",
+		"String",
+		"null"
+	}
+}
+m_auth_key_tos = {
+	{
+		"uid",
+		"String",
+		"null"
+	},
+	{
+		"key",
+		"String",
+		"null"
+	},
+	{
+		"session_id",
+		"String",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"agent_id",
+		"int",
+		"null"
+	},
+	{
+		"server_id",
+		"int",
+		"null"
+	},
+	{
+		"platform",
+		"int",
+		"null"
+	},
+	{
+		"imei",
+		"String",
+		"null"
+	},
+	{
+		"device",
+		"String",
+		"null"
+	},
+	{
+		"phone_os",
+		"String",
+		"null"
+	},
+	{
+		"is_reconnect",
+		"int",
+		"null"
+	},
+	{
+		"client_version",
+		"String",
+		"null"
+	},
+	{
+		"extra_params",
+		"String",
+		"null"
+	},
+	{
+		"client_oid",
+		"String",
+		"null"
+	},
+	{
+		"network_type",
+		"String",
+		"null"
+	},
+	{
+		"operator",
+		"String",
+		"null"
+	},
+	{
+		"client_cid",
+		"String",
+		"null"
+	},
+	{
+		"idfa",
+		"String",
+		"null"
+	},
+	{
+		"login_type",
+		"int",
+		"null"
+	}
+}
+m_auth_key_toc = {
+	{
+		"succ",
+		"int",
+		"null"
+	},
+	{
+		"reason",
+		"String",
+		"null"
+	},
+	{
+		"is_new_role",
+		"int",
+		"null"
+	},
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"default_faction",
+		"int",
+		"null"
+	},
+	{
+		"zone_id",
+		"int",
+		"null"
+	},
+	{
+		"pf",
+		"int",
+		"null"
+	},
+	{
+		"server_online_time",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"token",
+		"String",
+		"null"
+	},
+	{
+		"is_reconnect",
+		"int",
+		"null"
+	},
+	{
+		"time_offset",
+		"int",
+		"null"
+	}
+}
+m_ack_list_tos = {
+	{
+		"operation",
+		"int",
+		"null"
+	}
+}
+m_ack_list_toc = {}
+m_common_reply_toc = {
+	{
+		"proto_id",
+		"int",
+		"null"
+	}
+}
+m_role_create_tos = {
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"hair_type",
+		"int",
+		"null"
+	},
+	{
+		"faction_id",
+		"int",
+		"null"
+	},
+	{
+		"hair_color",
+		"int",
+		"null"
+	},
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"create_param",
+		"int",
+		"null"
+	},
+	{
+		"auto",
+		"int",
+		"null"
+	}
+}
+m_role_create_toc = {
+	{
+		"reason",
+		"String",
+		"null"
+	}
+}
+m_role_detail_tos = {}
+m_role_detail_toc = {
+	{
+		"role_details",
+		"array",
+		"p_role_data"
+	},
+	{
+		"vip_level",
+		"int",
+		"null"
+	},
+	{
+		"server_time",
+		"int",
+		"null"
+	},
+	{
+		"queue_num",
+		"int",
+		"null"
+	},
+	{
+		"wait_sec",
+		"int",
+		"null"
+	},
+	{
+		"full_version",
+		"String",
+		"null"
+	}
+}
+m_role_guide_do_tos = {
+	{
+		"guide_id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_role_guide_info_toc = {
+	{
+		"guide",
+		"array",
+		"p_role_guide"
+	}
+}
+m_role_rating_guide_tos = {}
+m_role_rating_guide_toc = {}
+m_role_attr_change_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"changes",
+		"array",
+		"p_role_change"
+	}
+}
+m_role_score_change_toc = {
+	{
+		"role_scores",
+		"array",
+		"p_score"
+	}
+}
+m_role_power_update_toc = {
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"max_power",
+		"int",
+		"null"
+	},
+	{
+		"power_src_type",
+		"int",
+		"null"
+	},
+	{
+		"power_infos",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_hmp_change_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"new_hp",
+		"int",
+		"null"
+	}
+}
+m_role_money_change_toc = {
+	{
+		"new_gold",
+		"int",
+		"null"
+	},
+	{
+		"new_bgold",
+		"int",
+		"null"
+	},
+	{
+		"new_ngold",
+		"int",
+		"null"
+	},
+	{
+		"new_silver",
+		"int",
+		"null"
+	},
+	{
+		"new_bsilver",
+		"int",
+		"null"
+	}
+}
+m_role_gold_change_toc = {
+	{
+		"new_gold",
+		"int",
+		"null"
+	},
+	{
+		"new_bgold",
+		"int",
+		"null"
+	}
+}
+m_role_silver_change_toc = {
+	{
+		"new_silver",
+		"int",
+		"null"
+	},
+	{
+		"new_bsilver",
+		"int",
+		"null"
+	}
+}
+m_role_goldnote_change_toc = {
+	{
+		"new_ngold",
+		"int",
+		"null"
+	}
+}
+m_role_exp_change_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"new_exp",
+		"int",
+		"null"
+	},
+	{
+		"exp_type",
+		"int",
+		"null"
+	}
+}
+m_role_subscribe_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"subject_id",
+		"long",
+		"null"
+	}
+}
+m_role_subscribe_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_item_use_tos = {
+	{
+		"gid",
+		"int",
+		"null"
+	},
+	{
+		"usenum",
+		"int",
+		"null"
+	},
+	{
+		"effect_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_item_use_toc = {
+	{
+		"gid",
+		"int",
+		"null"
+	},
+	{
+		"rest",
+		"int",
+		"null"
+	},
+	{
+		"usenum",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_item_exchange_goods_tos = {
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"array",
+		"p_kvi"
+	}
+}
+m_item_exchange_goods_toc = {
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"rest",
+		"int",
+		"null"
+	}
+}
+m_item_decompose_tos = {
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"option",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_item_decompose_toc = {
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"rest",
+		"int",
+		"null"
+	}
+}
+m_item_cd_time_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_extend_bag_tos = {
+	{
+		"bag_type",
+		"int",
+		"null"
+	}
+}
+m_extend_bag_toc = {
+	{
+		"bag_type",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"int",
+		"null"
+	}
+}
+m_gift_open_toc = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_gift_rate_tos = {
+	{
+		"gift_id",
+		"int",
+		"null"
+	}
+}
+m_gift_rate_toc = {
+	{
+		"gift_id",
+		"int",
+		"null"
+	},
+	{
+		"rate",
+		"array",
+		"p_kvi"
+	}
+}
+m_goods_destroy_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_goods_destroy_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_goods_update_toc = {
+	{
+		"goods",
+		"array",
+		"p_goods"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"reward_type",
+		"int",
+		"null"
+	},
+	{
+		"replace_list",
+		"array",
+		"p_reward_replace"
+	}
+}
+m_goods_equip_toc = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"equip_servants",
+		"array",
+		"long"
+	}
+}
+m_goods_bag_info_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_goods_bag_info_toc = {
+	{
+		"bag",
+		"array",
+		"p_bag_content"
+	}
+}
+m_goods_set_status_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"op",
+		"int",
+		"null"
+	}
+}
+m_goods_set_status_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"long",
+		"null"
+	}
+}
+m_goods_lock_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"lock",
+		"int",
+		"null"
+	}
+}
+m_goods_lock_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"lock",
+		"int",
+		"null"
+	}
+}
+m_goods_sell_tos = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_goods_sell_toc = {
+	{
+		"add_silver",
+		"int",
+		"null"
+	}
+}
+m_item_compound_tos = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_item_compound_toc = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"material",
+		"int",
+		"null"
+	}
+}
+m_finite_item_info_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_finite_item_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvi"
+	}
+}
+m_shop_shops_tos = {}
+m_shop_shops_toc = {
+	{
+		"shops",
+		"array",
+		"int"
+	}
+}
+m_shop_detail_tos = {
+	{
+		"shop_ids",
+		"array",
+		"int"
+	}
+}
+m_shop_detail_toc = {
+	{
+		"details",
+		"array",
+		"p_shop_detail"
+	}
+}
+m_shop_buy_tos = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_shop_buy_toc = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_multi_shop_buy_tos = {
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_multi_shop_buy_toc = {
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_shop_refresh_tos = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	}
+}
+m_score_shop_detail_tos = {
+	{
+		"shop_ids",
+		"array",
+		"int"
+	}
+}
+m_score_shop_detail_toc = {
+	{
+		"details",
+		"array",
+		"p_shop_detail"
+	},
+	{
+		"shop_version",
+		"int",
+		"null"
+	}
+}
+m_score_shop_buy_tos = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"shop_version",
+		"int",
+		"null"
+	}
+}
+m_act_score_shop_close_toc = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	}
+}
+m_act_score_shops_close_toc = {
+	{
+		"shop_id",
+		"array",
+		"int"
+	}
+}
+m_score_shop_buy_toc = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"shop_version",
+		"int",
+		"null"
+	}
+}
+m_red_point_toc = {
+	{
+		"red_points",
+		"array",
+		"p_kvi"
+	}
+}
+m_red_point_hide_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_shop_red_point_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_report_birthday_tos = {
+	{
+		"ts",
+		"int",
+		"null"
+	}
+}
+m_report_birthday_toc = {
+	{
+		"ts",
+		"int",
+		"null"
+	}
+}
+m_pay_info_tos = {
+	{
+		"pf",
+		"int",
+		"null"
+	},
+	{
+		"param",
+		"String",
+		"null"
+	},
+	{
+		"seq",
+		"int",
+		"null"
+	},
+	{
+		"ware_id",
+		"int",
+		"null"
+	}
+}
+m_pay_info_toc = {
+	{
+		"err_code",
+		"int",
+		"null"
+	},
+	{
+		"seq",
+		"int",
+		"null"
+	},
+	{
+		"token",
+		"String",
+		"null"
+	},
+	{
+		"cp_orderid",
+		"String",
+		"null"
+	},
+	{
+		"url",
+		"String",
+		"null"
+	},
+	{
+		"gold",
+		"int",
+		"null"
+	},
+	{
+		"money",
+		"int",
+		"null"
+	},
+	{
+		"extension",
+		"String",
+		"null"
+	}
+}
+m_pay_select_currency_tos = {
+	{
+		"currency",
+		"int",
+		"null"
+	}
+}
+m_pay_select_currency_toc = {
+	{
+		"currency",
+		"int",
+		"null"
+	}
+}
+m_create_pay_order_tos = {
+	{
+		"pf",
+		"int",
+		"null"
+	},
+	{
+		"param",
+		"String",
+		"null"
+	},
+	{
+		"product_id",
+		"String",
+		"null"
+	},
+	{
+		"order_type",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"token",
+		"String",
+		"null"
+	},
+	{
+		"expand",
+		"String",
+		"null"
+	}
+}
+m_create_pay_order_toc = {
+	{
+		"product_id",
+		"String",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	},
+	{
+		"expand",
+		"String",
+		"null"
+	}
+}
+m_pay_shop_info_tos = {}
+m_pay_shop_info_toc = {
+	{
+		"month_card_times",
+		"int",
+		"null"
+	},
+	{
+		"week_card_times",
+		"array",
+		"p_kvi"
+	},
+	{
+		"buy_times_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"pay_shop_list",
+		"array",
+		"p_shop_detail"
+	}
+}
+m_pay_push_detail_tos = {}
+m_pay_push_detail_toc = {
+	{
+		"detail",
+		"array",
+		"int"
+	}
+}
+m_pay_need_pay_toc = {
+	{
+		"ware_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_role_levelup_toc = {
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"maxhp",
+		"int",
+		"null"
+	},
+	{
+		"msg",
+		"String",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"next_level_exp",
+		"int",
+		"null"
+	},
+	{
+		"total_add_exp",
+		"int",
+		"null"
+	},
+	{
+		"exp_type",
+		"int",
+		"null"
+	}
+}
+m_role_levelup_other_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_role_base_reload_toc = {
+	{
+		"role_base",
+		"array",
+		"p_role_base"
+	},
+	{
+		"is_show_num",
+		"int",
+		"null"
+	}
+}
+m_role_rename_time_toc = {
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+m_role_rename_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"new_name",
+		"String",
+		"null"
+	}
+}
+m_role_rename_toc = {
+	{
+		"err_code",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"need_gold",
+		"int",
+		"null"
+	},
+	{
+		"new_name",
+		"String",
+		"null"
+	}
+}
+m_role_changing_map_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"pet_id",
+		"long",
+		"null"
+	}
+}
+m_rank_get_info_tos = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	}
+}
+m_rank_get_info_toc = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	},
+	{
+		"row_num",
+		"int",
+		"null"
+	},
+	{
+		"self_row",
+		"array",
+		"p_rank_row"
+	},
+	{
+		"threshold",
+		"array",
+		"int"
+	}
+}
+m_rank_get_rank_tos = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_rank_get_rank_toc = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_rank_row"
+	}
+}
+p_rank_row = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"key",
+		"long",
+		"null"
+	},
+	{
+		"elements",
+		"array",
+		"string"
+	},
+	{
+		"int_list",
+		"array",
+		"int"
+	},
+	{
+		"titles",
+		"array",
+		"int"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"scores",
+		"array",
+		"int"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_planetarian_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_planetarian_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"stars",
+		"array",
+		"p_kvi"
+	},
+	{
+		"chapter_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_planetarian_light_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_planetarian_light_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"array",
+		"p_kvi"
+	},
+	{
+		"chapter",
+		"array",
+		"p_kvi"
+	}
+}
+m_planetarian_chapter_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"chapter_id",
+		"int",
+		"null"
+	}
+}
+m_planetarian_chapter_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"chapter",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_squad_info_tos = {}
+m_role_squad_info_toc = {
+	{
+		"publish_list",
+		"array",
+		"p_self_squad"
+	},
+	{
+		"like_list",
+		"array",
+		"p_kv"
+	},
+	{
+		"collect_list",
+		"array",
+		"p_kv"
+	}
+}
+m_role_squad_list_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"kind",
+		"int",
+		"null"
+	},
+	{
+		"kind_key",
+		"long",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_role_squad_list_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"kind",
+		"int",
+		"null"
+	},
+	{
+		"kind_key",
+		"long",
+		"null"
+	},
+	{
+		"publish_num",
+		"int",
+		"null"
+	},
+	{
+		"publish_list",
+		"array",
+		"p_brief_squad"
+	}
+}
+p_brief_squad = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_titles",
+		"array",
+		"int"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"field_num",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kvt"
+	},
+	{
+		"like",
+		"int",
+		"null"
+	},
+	{
+		"round",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+p_self_squad = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_titles",
+		"array",
+		"int"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"field_num",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kvt"
+	},
+	{
+		"like",
+		"int",
+		"null"
+	},
+	{
+		"round",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+m_role_squad_detail_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_detail_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_titles",
+		"array",
+		"int"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"introduce",
+		"String",
+		"null"
+	},
+	{
+		"field_num",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_squad_servant"
+	},
+	{
+		"like",
+		"int",
+		"null"
+	},
+	{
+		"round",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+p_squad_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"relic",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"using_skill",
+		"array",
+		"int"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_role_squad_publish_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"introduce",
+		"String",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_publish_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"publish",
+		"array",
+		"p_brief_squad"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_operate_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"operate",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_operate_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"operate",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_delete_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_use_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_squad_use_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_function_info_toc = {
+	{
+		"functions",
+		"array",
+		"int"
+	}
+}
+m_function_update_toc = {
+	{
+		"functions",
+		"array",
+		"int"
+	}
+}
+m_system_tourl_toc = {
+	{
+		"url",
+		"String",
+		"null"
+	}
+}
+m_level_reward_info_tos = {}
+m_level_reward_info_toc = {
+	{
+		"has_get",
+		"array",
+		"int"
+	}
+}
+m_level_reward_get_tos = {
+	{
+		"lv",
+		"int",
+		"null"
+	}
+}
+m_level_reward_get_toc = {
+	{
+		"lv",
+		"int",
+		"null"
+	}
+}
+m_repeater_draw_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_repeater_draw_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_repeater_lucky_roles"
+	}
+}
+m_repeater_anniversary_remind_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"boolint",
+		"int",
+		"null"
+	}
+}
+m_repeater_anniversary_remind_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"boolint",
+		"int",
+		"null"
+	}
+}
+m_repeater_anniversary_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_repeater_anniversary_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"date_nth",
+		"int",
+		"null"
+	},
+	{
+		"next_time",
+		"int",
+		"null"
+	},
+	{
+		"is_notify",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_repeater_anniversary_roles"
+	}
+}
+p_repeater_anniversary_roles = {
+	{
+		"timestamp",
+		"int",
+		"null"
+	},
+	{
+		"role_names",
+		"array",
+		"string"
+	}
+}
+p_repeater_lucky_roles = {
+	{
+		"reward_id",
+		"int",
+		"null"
+	},
+	{
+		"role_names",
+		"array",
+		"string"
+	}
+}
+m_act_repeater_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"msg_id",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_act_red_bag_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_red_bag_get_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_red_bag_update_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+m_act_prize_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_prize_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"got_list",
+		"array",
+		"int"
+	},
+	{
+		"activity_flag",
+		"int",
+		"null"
+	},
+	{
+		"days",
+		"int",
+		"null"
+	},
+	{
+		"pending_rewards",
+		"array",
+		"int"
+	}
+}
+m_act_prize_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"prize_id",
+		"int",
+		"null"
+	}
+}
+m_act_prize_get_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"prize_id",
+		"int",
+		"null"
+	}
+}
+m_act_prize_sign_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_prize_sign_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_days",
+		"array",
+		"int"
+	}
+}
+m_first_pay_info_tos = {}
+m_first_pay_info_toc = {
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_first_pay_get_tos = {}
+m_first_pay_get_toc = {}
+m_role_progress_info_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_role_progress_info_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"progress",
+		"array",
+		"p_kvt"
+	}
+}
+m_chat_in_channel_tos = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"msg",
+		"String",
+		"null"
+	},
+	{
+		"msg_type",
+		"int",
+		"null"
+	}
+}
+m_chat_in_channel_toc = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"msg",
+		"String",
+		"null"
+	},
+	{
+		"msg_type",
+		"int",
+		"null"
+	},
+	{
+		"role_info",
+		"array",
+		"p_chat_role"
+	},
+	{
+		"tstamp",
+		"int",
+		"null"
+	}
+}
+m_chat_in_pairs_tos = {
+	{
+		"to_role_id",
+		"long",
+		"null"
+	},
+	{
+		"msg",
+		"String",
+		"null"
+	},
+	{
+		"msg_type",
+		"int",
+		"null"
+	}
+}
+m_chat_in_pairs_toc = {
+	{
+		"to_role_id",
+		"long",
+		"null"
+	},
+	{
+		"msg",
+		"String",
+		"null"
+	},
+	{
+		"msg_type",
+		"int",
+		"null"
+	},
+	{
+		"from_role_id",
+		"long",
+		"null"
+	},
+	{
+		"tstamp",
+		"int",
+		"null"
+	}
+}
+m_chat_change_room_tos = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_chat_change_room_toc = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_chat_room_update_toc = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_chat_role_info_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_chat_role_info_toc = {
+	{
+		"role_info",
+		"array",
+		"p_chat_role"
+	}
+}
+m_chat_role_delete_toc = {
+	{
+		"roles",
+		"array",
+		"long"
+	}
+}
+m_chat_emoji_tos = {}
+m_chat_emoji_toc = {
+	{
+		"emoji",
+		"array",
+		"int"
+	}
+}
+m_chat_room_full_toc = {
+	{
+		"channel",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"full_room",
+		"int",
+		"null"
+	}
+}
+m_black_list_tos = {}
+m_black_list_toc = {
+	{
+		"list",
+		"array",
+		"p_black_role"
+	}
+}
+m_black_add_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_black_add_toc = {
+	{
+		"add",
+		"array",
+		"p_black_role"
+	}
+}
+m_black_del_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_black_del_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_map_actor_attr_toc = {
+	{
+		"actor_id",
+		"long",
+		"null"
+	},
+	{
+		"actor_type",
+		"int",
+		"null"
+	},
+	{
+		"key_vals",
+		"array",
+		"p_kv"
+	},
+	{
+		"key_strs",
+		"array",
+		"p_ks"
+	},
+	{
+		"key_bools",
+		"array",
+		"p_kb"
+	}
+}
+m_map_actor_path_toc = {
+	{
+		"actor_id",
+		"long",
+		"null"
+	},
+	{
+		"actor_type",
+		"int",
+		"null"
+	},
+	{
+		"last_walk_path",
+		"array",
+		"long"
+	}
+}
+m_common_notice_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"begin_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"emphasis",
+		"int",
+		"null"
+	},
+	{
+		"fold",
+		"int",
+		"null"
+	}
+}
+m_friend_operate_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_friend_operate_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	}
+}
+m_friend_list_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_friend_list_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"friend_list",
+		"array",
+		"p_brief_friend_info"
+	},
+	{
+		"request_list",
+		"array",
+		"p_request"
+	},
+	{
+		"delete_list",
+		"array",
+		"long"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_friend_info_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_friend_info_toc = {
+	{
+		"info",
+		"array",
+		"p_friend_info"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+p_black_role = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"black_time",
+		"int",
+		"null"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	}
+}
+p_request = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"login_time",
+		"int",
+		"null"
+	},
+	{
+		"offline_time",
+		"int",
+		"null"
+	},
+	{
+		"titles",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+p_brief_friend_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"login_time",
+		"int",
+		"null"
+	},
+	{
+		"offline_time",
+		"int",
+		"null"
+	},
+	{
+		"is_online",
+		"int",
+		"null"
+	},
+	{
+		"titles",
+		"array",
+		"int"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"relic_level",
+		"int",
+		"null"
+	},
+	{
+		"energy_point",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"prosperity",
+		"int",
+		"null"
+	},
+	{
+		"dorm_lv",
+		"int",
+		"null"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"tower_helper_id",
+		"int",
+		"null"
+	},
+	{
+		"tower_helper_skin_id",
+		"int",
+		"null"
+	},
+	{
+		"tower_helper_lv",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	},
+	{
+		"extra",
+		"array",
+		"int"
+	}
+}
+p_friend_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"login_time",
+		"int",
+		"null"
+	},
+	{
+		"offline_time",
+		"int",
+		"null"
+	},
+	{
+		"is_online",
+		"int",
+		"null"
+	},
+	{
+		"titles",
+		"array",
+		"int"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"prosperity",
+		"int",
+		"null"
+	},
+	{
+		"dorm_lv",
+		"int",
+		"null"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	},
+	{
+		"extra",
+		"array",
+		"int"
+	}
+}
+m_letter_page_tos = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_letter_page_toc = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	},
+	{
+		"letters",
+		"array",
+		"p_letter_brief"
+	}
+}
+m_letter_read_tos = {
+	{
+		"letter_id",
+		"int",
+		"null"
+	}
+}
+m_letter_read_toc = {
+	{
+		"letter",
+		"array",
+		"p_letter_info"
+	}
+}
+m_letter_get_receive_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_letter_get_receive_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"letters",
+		"array",
+		"p_letter_info"
+	}
+}
+m_letter_open_tos = {
+	{
+		"letter_id",
+		"int",
+		"null"
+	}
+}
+m_letter_open_toc = {
+	{
+		"letter_id",
+		"int",
+		"null"
+	}
+}
+m_letter_delete_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_letter_delete_toc = {
+	{
+		"del_ids",
+		"array",
+		"int"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_letter_accept_goods_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_letter_accept_goods_toc = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_letter_light_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"letter_num",
+		"int",
+		"null"
+	}
+}
+m_letter_lock_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_letter_lock_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_broadcast_toc = {
+	{
+		"bc_id",
+		"int",
+		"null"
+	},
+	{
+		"strings",
+		"array",
+		"string"
+	},
+	{
+		"nums",
+		"array",
+		"long"
+	},
+	{
+		"channel",
+		"long",
+		"null"
+	}
+}
+m_broadcast_common_toc = {
+	{
+		"bc_id",
+		"int",
+		"null"
+	},
+	{
+		"bc_type",
+		"int",
+		"null"
+	},
+	{
+		"ban_level",
+		"int",
+		"null"
+	},
+	{
+		"strings",
+		"array",
+		"string"
+	},
+	{
+		"nums",
+		"array",
+		"long"
+	},
+	{
+		"priority",
+		"int",
+		"null"
+	}
+}
+m_broadcast_general_toc = {
+	{
+		"type",
+		"array",
+		"int"
+	},
+	{
+		"sub_type",
+		"int",
+		"null"
+	},
+	{
+		"ban_level",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	}
+}
+m_broadcast_countdown_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"sub_type",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	},
+	{
+		"countdown_time",
+		"int",
+		"null"
+	},
+	{
+		"current_countdown_time",
+		"int",
+		"null"
+	}
+}
+m_role_gm_command_tos = {
+	{
+		"cmd",
+		"String",
+		"null"
+	}
+}
+m_role_gm_command_toc = {
+	{
+		"msg",
+		"String",
+		"null"
+	}
+}
+m_window_pop_up_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_map_actor_effect_toc = {
+	{
+		"actor_id",
+		"long",
+		"null"
+	},
+	{
+		"effect_id",
+		"int",
+		"null"
+	}
+}
+m_team_template_copy_team_tos = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_team_template_copy_team_toc = {
+	{
+		"update",
+		"array",
+		"p_formation"
+	}
+}
+m_team_template_init_barrier_tos = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"use_team_ids",
+		"array",
+		"int"
+	},
+	{
+		"extra",
+		"int",
+		"null"
+	}
+}
+m_team_template_init_barrier_toc = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"use_team_ids",
+		"array",
+		"int"
+	},
+	{
+		"last_id",
+		"int",
+		"null"
+	}
+}
+m_team_template_reset_barrier_toc = {
+	{
+		"teams",
+		"array",
+		"p_formation"
+	}
+}
+m_team_template_info_tos = {}
+m_team_template_info_toc = {
+	{
+		"groups",
+		"array",
+		"p_team_group"
+	},
+	{
+		"mapping",
+		"array",
+		"p_team_mapping"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"use_team_ids",
+		"array",
+		"int"
+	},
+	{
+		"last_id",
+		"int",
+		"null"
+	}
+}
+m_team_template_group_info_toc = {
+	{
+		"group",
+		"array",
+		"p_team_group"
+	}
+}
+p_team_mapping = {
+	{
+		"copy_type",
+		"int",
+		"null"
+	},
+	{
+		"copy_key",
+		"int",
+		"null"
+	},
+	{
+		"last_id",
+		"int",
+		"null"
+	}
+}
+p_team_group = {
+	{
+		"team_group_id",
+		"int",
+		"null"
+	},
+	{
+		"teams",
+		"array",
+		"p_formation"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_team_template_select_tos = {
+	{
+		"copy_type",
+		"int",
+		"null"
+	},
+	{
+		"copy_key",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_team_template_select_toc = {
+	{
+		"copy_type",
+		"int",
+		"null"
+	},
+	{
+		"copy_key",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_team_template_group_name_tos = {
+	{
+		"team_group_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_team_template_group_name_toc = {
+	{
+		"team_group_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_role_servant_position_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos_list",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+m_role_servant_position_toc = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos_list",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_briefs_tos = {}
+m_servant_formation_briefs_toc = {
+	{
+		"last_indexs",
+		"array",
+		"p_kvi"
+	},
+	{
+		"briefs",
+		"array",
+		"p_formation"
+	}
+}
+m_servant_lineup_info_tos = {}
+m_servant_lineup_info_toc = {
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_servant_lineup_touch_tos = {
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+m_fight_servant_info_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_servant_info_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"fight_type",
+		"int",
+		"null"
+	},
+	{
+		"fight_round",
+		"int",
+		"null"
+	},
+	{
+		"fight_servants",
+		"array",
+		"p_servant"
+	},
+	{
+		"fall_servants",
+		"array",
+		"p_fall_servant"
+	},
+	{
+		"fight_stands",
+		"array",
+		"p_stand_servant"
+	},
+	{
+		"weather",
+		"array",
+		"p_weather"
+	},
+	{
+		"other_buffs",
+		"array",
+		"p_kvt"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"batch",
+		"int",
+		"null"
+	},
+	{
+		"batch_num",
+		"int",
+		"null"
+	},
+	{
+		"opp_servant_num",
+		"int",
+		"null"
+	},
+	{
+		"helper",
+		"array",
+		"p_fight_helper"
+	},
+	{
+		"side",
+		"int",
+		"null"
+	},
+	{
+		"spec_skill_times",
+		"int",
+		"null"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_value",
+		"array",
+		"bytes"
+	},
+	{
+		"element_wake_times",
+		"int",
+		"null"
+	},
+	{
+		"select_time",
+		"int",
+		"null"
+	}
+}
+p_fall_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	},
+	{
+		"revive_round",
+		"int",
+		"null"
+	}
+}
+p_stand_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	}
+}
+m_fight_servant_continue_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_servant_fight_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"fight_type",
+		"int",
+		"null"
+	},
+	{
+		"fight_round",
+		"int",
+		"null"
+	},
+	{
+		"fight_list",
+		"array",
+		"p_servant_fight"
+	},
+	{
+		"enter_list",
+		"array",
+		"p_servant"
+	},
+	{
+		"summon_List",
+		"array",
+		"p_servant"
+	},
+	{
+		"stand_list",
+		"array",
+		"p_stand_servant"
+	},
+	{
+		"remove_stand_list",
+		"array",
+		"int"
+	},
+	{
+		"effect_list",
+		"array",
+		"p_fight_effect"
+	},
+	{
+		"opp_servant_num",
+		"int",
+		"null"
+	},
+	{
+		"round_start",
+		"int",
+		"null"
+	},
+	{
+		"update",
+		"array",
+		"p_update"
+	},
+	{
+		"weather",
+		"array",
+		"p_weather"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_value",
+		"array",
+		"bytes"
+	},
+	{
+		"update_attr_list",
+		"array",
+		"p_update_fight_attr"
+	},
+	{
+		"element_wake_times",
+		"int",
+		"null"
+	},
+	{
+		"select_time",
+		"int",
+		"null"
+	}
+}
+p_triple = {
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_update"
+	}
+}
+p_weather = {
+	{
+		"start_weather",
+		"int",
+		"null"
+	},
+	{
+		"weather_end_round",
+		"int",
+		"null"
+	}
+}
+p_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"int",
+		"null"
+	},
+	{
+		"feature",
+		"array",
+		"int"
+	},
+	{
+		"item",
+		"array",
+		"int"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"skill",
+		"array",
+		"p_servant_skill"
+	},
+	{
+		"using_skill",
+		"array",
+		"int"
+	},
+	{
+		"attr",
+		"array",
+		"p_fight_attr"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	},
+	{
+		"buffs",
+		"array",
+		"p_kvi"
+	},
+	{
+		"morph_id",
+		"int",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"element",
+		"array",
+		"p_fight_element"
+	},
+	{
+		"role_id",
+		"int",
+		"null"
+	}
+}
+p_fight_element = {
+	{
+		"element_lv",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"servant_effect_id",
+		"array",
+		"int"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"face",
+		"array",
+		"p_kvi"
+	}
+}
+p_fight_attr = {
+	{
+		"hp",
+		"int",
+		"null"
+	},
+	{
+		"rage",
+		"int",
+		"null"
+	},
+	{
+		"shield",
+		"int",
+		"null"
+	},
+	{
+		"element_shield",
+		"array",
+		"p_fight_element_shield"
+	},
+	{
+		"hp_list",
+		"array",
+		"int"
+	},
+	{
+		"max_hp_num",
+		"int",
+		"null"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"phy_atk",
+		"int",
+		"null"
+	},
+	{
+		"mag_atk",
+		"int",
+		"null"
+	},
+	{
+		"phy_def",
+		"int",
+		"null"
+	},
+	{
+		"mag_def",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	},
+	{
+		"phy_atk_lv",
+		"int",
+		"null"
+	},
+	{
+		"mag_atk_lv",
+		"int",
+		"null"
+	},
+	{
+		"phy_def_lv",
+		"int",
+		"null"
+	},
+	{
+		"mag_def_lv",
+		"int",
+		"null"
+	},
+	{
+		"speed_lv",
+		"int",
+		"null"
+	},
+	{
+		"crit_hit_lv",
+		"int",
+		"null"
+	},
+	{
+		"hit_rate_lv",
+		"int",
+		"null"
+	},
+	{
+		"dodge_rate_lv",
+		"int",
+		"null"
+	},
+	{
+		"speed_rate",
+		"int",
+		"null"
+	}
+}
+p_fight_element_shield = {
+	{
+		"phase_id",
+		"int",
+		"null"
+	},
+	{
+		"ehp",
+		"int",
+		"null"
+	},
+	{
+		"max_ehp",
+		"int",
+		"null"
+	},
+	{
+		"ehp_num",
+		"int",
+		"null"
+	},
+	{
+		"ehp_max_num",
+		"int",
+		"null"
+	},
+	{
+		"weak",
+		"int",
+		"null"
+	}
+}
+p_update_fight_attr = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	},
+	{
+		"speed_rate",
+		"int",
+		"null"
+	}
+}
+p_servant_fight = {
+	{
+		"atk_id",
+		"int",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	},
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"power_point",
+		"int",
+		"null"
+	},
+	{
+		"effect_list",
+		"array",
+		"p_fight"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	}
+}
+p_fight = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"target",
+		"int",
+		"null"
+	},
+	{
+		"hurt",
+		"long",
+		"null"
+	},
+	{
+		"final_hp",
+		"int",
+		"null"
+	},
+	{
+		"shield_hurt",
+		"int",
+		"null"
+	},
+	{
+		"final_shield",
+		"int",
+		"null"
+	},
+	{
+		"element_shield_hurt",
+		"int",
+		"null"
+	},
+	{
+		"final_element_shield",
+		"int",
+		"null"
+	},
+	{
+		"extra",
+		"int",
+		"null"
+	}
+}
+p_fight_effect = {
+	{
+		"trigger_count",
+		"int",
+		"null"
+	},
+	{
+		"atk_servant_id",
+		"int",
+		"null"
+	},
+	{
+		"src_servant_id",
+		"int",
+		"null"
+	},
+	{
+		"tar_servant_ids",
+		"array",
+		"int"
+	},
+	{
+		"src_type",
+		"int",
+		"null"
+	},
+	{
+		"src_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"effect_phase",
+		"int",
+		"null"
+	},
+	{
+		"change_type",
+		"int",
+		"null"
+	},
+	{
+		"change_value",
+		"array",
+		"long"
+	},
+	{
+		"remove_round",
+		"int",
+		"null"
+	}
+}
+p_fight_helper = {
+	{
+		"has_helper",
+		"int",
+		"null"
+	},
+	{
+		"helper_servant_self",
+		"int",
+		"null"
+	},
+	{
+		"helper_servant_target",
+		"int",
+		"null"
+	},
+	{
+		"costume",
+		"array",
+		"p_costume"
+	}
+}
+m_fight_servant_start_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_servant_start_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"side",
+		"int",
+		"null"
+	},
+	{
+		"batch",
+		"int",
+		"null"
+	},
+	{
+		"batch_num",
+		"int",
+		"null"
+	}
+}
+m_fight_skill_select_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"select_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"element_id",
+		"int",
+		"null"
+	},
+	{
+		"auto",
+		"int",
+		"null"
+	}
+}
+m_fight_skill_select_toc = {
+	{
+		"err_code",
+		"int",
+		"null"
+	}
+}
+m_fight_skill_cancel_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_skill_cancel_toc = {
+	{
+		"err_code",
+		"int",
+		"null"
+	}
+}
+m_role_servant_formation_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"int"
+	},
+	{
+		"bench",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	}
+}
+m_team_formation_change_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_role_servant_formation_toc = {
+	{
+		"detail",
+		"array",
+		"p_formation"
+	}
+}
+m_login_active_info_toc = {
+	{
+		"is_active",
+		"int",
+		"null"
+	}
+}
+m_servant_skill_learn_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	}
+}
+m_servant_skill_learn_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skill",
+		"int",
+		"null"
+	}
+}
+m_servant_evolution_upgrade_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_evolution_upgrade_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_energy_alloc_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"prop_code",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_energy_alloc_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"prop_code",
+		"int",
+		"null"
+	},
+	{
+		"point",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_energy_reset_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_energy_reset_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_energy_ceil_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	}
+}
+m_servant_energy_ceil_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"energys",
+		"array",
+		"p_energy"
+	},
+	{
+		"points",
+		"array",
+		"p_kvi"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	}
+}
+m_servant_skill_op_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_skill_op_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"using_ids",
+		"array",
+		"int"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_list_extend_tos = {}
+m_servant_list_extend_toc = {
+	{
+		"size",
+		"int",
+		"null"
+	}
+}
+m_servant_lock_tos = {
+	{
+		"servant_ids",
+		"array",
+		"int"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_servant_lock_toc = {
+	{
+		"servant_ids",
+		"array",
+		"int"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_servant_update_toc = {
+	{
+		"new",
+		"array",
+		"p_servant_add"
+	},
+	{
+		"update",
+		"array",
+		"p_servant_brief"
+	},
+	{
+		"del",
+		"array",
+		"int"
+	},
+	{
+		"reward_type",
+		"int",
+		"null"
+	}
+}
+m_servant_select_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_servant_select_toc = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_servant_pledge_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_pledge_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_edit_message_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"message",
+		"String",
+		"null"
+	}
+}
+m_servant_edit_message_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"message",
+		"String",
+		"null"
+	}
+}
+m_servant_wish_info_tos = {}
+m_servant_wish_info_toc = {
+	{
+		"wish",
+		"array",
+		"p_kvt"
+	}
+}
+m_servant_send_gift_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"gift_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_servant_send_gift_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"gift_time",
+		"int",
+		"null"
+	},
+	{
+		"is_wish",
+		"int",
+		"null"
+	}
+}
+m_servant_feeling_record_update_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"record",
+		"array",
+		"p_kvi"
+	}
+}
+m_servant_train_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_servant_train_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"old_level",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"get_exp",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_servant_ai_type_tos = {
+	{
+		"ai_id",
+		"int",
+		"null"
+	},
+	{
+		"ai_value",
+		"int",
+		"null"
+	}
+}
+m_servant_ai_type_toc = {
+	{
+		"ai_id",
+		"int",
+		"null"
+	},
+	{
+		"ai_value",
+		"int",
+		"null"
+	}
+}
+m_servant_ai_change_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_servant_ai_change_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_servant_ai_set_tos = {
+	{
+		"delete",
+		"array",
+		"int"
+	},
+	{
+		"tactics",
+		"array",
+		"p_fight_tactics"
+	},
+	{
+		"sort",
+		"array",
+		"int"
+	}
+}
+m_servant_ai_set_toc = {
+	{
+		"delete",
+		"array",
+		"int"
+	},
+	{
+		"tactics",
+		"array",
+		"p_fight_tactics"
+	},
+	{
+		"sort",
+		"array",
+		"int"
+	}
+}
+m_servant_ai_use_tos = {
+	{
+		"tactic_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_ai_use_toc = {}
+m_servant_ai_info_tos = {}
+m_servant_ai_info_toc = {
+	{
+		"ai_id",
+		"int",
+		"null"
+	},
+	{
+		"ai_value",
+		"int",
+		"null"
+	},
+	{
+		"tactics",
+		"array",
+		"p_fight_tactics"
+	},
+	{
+		"sort",
+		"array",
+		"int"
+	}
+}
+p_fight_tactics = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_dkl"
+	}
+}
+p_goods_element = {
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"translate_type",
+		"int",
+		"null"
+	},
+	{
+		"translate_times",
+		"int",
+		"null"
+	},
+	{
+		"face",
+		"array",
+		"p_kvi"
+	}
+}
+m_element_merge_tos = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	}
+}
+m_element_merge_toc = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	}
+}
+m_element_translate_tos = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_type",
+		"int",
+		"null"
+	}
+}
+m_element_translate_toc = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_type",
+		"int",
+		"null"
+	}
+}
+m_element_restore_tos = {
+	{
+		"goods_ids",
+		"array",
+		"int"
+	}
+}
+m_element_restore_toc = {}
+m_element_equip_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_element_equip_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_element_unload_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_element_unload_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_element_change_tos = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_id",
+		"int",
+		"null"
+	}
+}
+m_element_change_toc = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_id",
+		"int",
+		"null"
+	}
+}
+m_moments_num_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"unread_num",
+		"int",
+		"null"
+	}
+}
+m_moments_page_tos = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_moments_page_toc = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_moment"
+	}
+}
+m_moments_servants_tos = {}
+m_moments_servants_toc = {
+	{
+		"servants",
+		"array",
+		"p_kvi"
+	}
+}
+m_moments_query_servant_tos = {
+	{
+		"servant",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_moments_query_servant_toc = {
+	{
+		"list",
+		"array",
+		"p_moment"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_moments_detail_tos = {
+	{
+		"m_id",
+		"int",
+		"null"
+	}
+}
+m_moments_detail_toc = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"like_roles",
+		"array",
+		"long"
+	},
+	{
+		"comments",
+		"array",
+		"p_moment_comment"
+	}
+}
+m_moments_like_tos = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"author",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_moments_like_toc = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"author",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_moments_comment_tos = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	}
+}
+m_moments_comment_toc = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"int",
+		"null"
+	}
+}
+m_moments_del_comment_tos = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	}
+}
+m_moments_del_comment_toc = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	}
+}
+p_moment_comment = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	},
+	{
+		"like_roles",
+		"array",
+		"long"
+	}
+}
+p_moment = {
+	{
+		"m_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"read",
+		"int",
+		"null"
+	},
+	{
+		"close_condition",
+		"array",
+		"int"
+	}
+}
+m_ark_fuel_detail_toc = {
+	{
+		"ceil",
+		"int",
+		"null"
+	},
+	{
+		"velocity",
+		"int",
+		"null"
+	}
+}
+m_ark_card_list_tos = {}
+m_ark_card_list_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_ark_card_click_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_ark_card_click_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_ark_team_info_toc = {
+	{
+		"teams",
+		"array",
+		"p_kvl"
+	},
+	{
+		"vol",
+		"int",
+		"null"
+	}
+}
+m_ark_team_vol_update_toc = {
+	{
+		"vol",
+		"int",
+		"null"
+	}
+}
+m_ark_team_select_tos = {
+	{
+		"teams",
+		"array",
+		"p_kvl"
+	}
+}
+m_ark_team_select_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"teams",
+		"array",
+		"p_kvl"
+	}
+}
+m_ark_team_auto_option_tos = {
+	{
+		"power_first",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"array",
+		"p_kvi"
+	},
+	{
+		"is_auto",
+		"int",
+		"null"
+	}
+}
+m_ark_team_auto_option_toc = {
+	{
+		"power_first",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"array",
+		"p_kvi"
+	},
+	{
+		"is_auto",
+		"int",
+		"null"
+	}
+}
+p_tech_tree_doing = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_unlock_queue_tos = {}
+m_tech_tree_unlock_queue_toc = {
+	{
+		"queue_num",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_info_tos = {}
+m_tech_tree_info_toc = {
+	{
+		"id",
+		"array",
+		"int"
+	},
+	{
+		"queue",
+		"array",
+		"p_tech_tree_doing"
+	},
+	{
+		"queue_num",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_add_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_add_toc = {
+	{
+		"add",
+		"array",
+		"p_tech_tree_doing"
+	}
+}
+m_tech_tree_cancel_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_cancel_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_finish_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_finish_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_reward"
+	},
+	{
+		"replace_list",
+		"array",
+		"p_reward_replace"
+	}
+}
+m_tech_tree_speed_up_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tech_tree_speed_up_toc = {
+	{
+		"update",
+		"array",
+		"p_tech_tree_doing"
+	}
+}
+m_servant_chaos_upgrade_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	}
+}
+m_servant_chaos_upgrade_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_talent_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_talent_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_racial_plan_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_racial_plan_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"chaos_id",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_rage_skill_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	}
+}
+m_chaos_select_rage_skill_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	}
+}
+p_embattle_servant = {
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_embattle_detail_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_embattle_detail_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"detail",
+		"array",
+		"p_embattle_servant"
+	}
+}
+m_embattle_update_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"update",
+		"array",
+		"p_kvi"
+	}
+}
+m_embattle_update_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"update",
+		"array",
+		"p_embattle_servant"
+	}
+}
+m_servant_break_item_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_break_item_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"pkvi"
+	}
+}
+m_servant_break_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	}
+}
+m_servant_break_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"cost_ids",
+		"array",
+		"int"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	}
+}
+m_servant_break_select_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_break_select_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_info_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_info_toc = {
+	{
+		"detail",
+		"array",
+		"p_formation"
+	}
+}
+m_servants_brief_tos = {}
+m_servants_brief_toc = {
+	{
+		"size",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_servant_brief"
+	}
+}
+m_lobby_servants_toc = {
+	{
+		"servants",
+		"array",
+		"p_lobby_servant"
+	}
+}
+m_servant_list_detail_tos = {
+	{
+		"servant_id_list",
+		"array",
+		"int"
+	}
+}
+m_servant_list_detail_toc = {
+	{
+		"servant_list",
+		"array",
+		"p_servant_detail"
+	}
+}
+m_servant_detail_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_detail_toc = {
+	{
+		"servant",
+		"array",
+		"p_servant_detail"
+	}
+}
+m_servant_relic_equip_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_relic_equip_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_relic_unload_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_relic_unload_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_power_relic_equip_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_power_relic_equip_toc = {
+	{
+		"power_relic",
+		"array",
+		"p_power_relic"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_power_relic_unload_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_servant_power_relic_unload_toc = {
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"power_relic",
+		"array",
+		"p_power_relic"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+p_power_relic = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_id",
+		"array",
+		"int"
+	}
+}
+m_relic_upgrade_info_tos = {}
+m_relic_upgrade_info_toc = {
+	{
+		"power_relic_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_relic_upgrade_tos = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	}
+}
+m_relic_upgrade_toc = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	}
+}
+m_relic_decompose_tos = {
+	{
+		"relics",
+		"array",
+		"int"
+	}
+}
+m_relic_decompose_toc = {
+	{
+		"relics",
+		"array",
+		"int"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_servant_name_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_servant_name_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_servant_decompose_tos = {
+	{
+		"servant_ids",
+		"array",
+		"int"
+	}
+}
+m_servant_decompose_toc = {
+	{
+		"servant_ids",
+		"array",
+		"int"
+	}
+}
+m_building_info_tos = {}
+m_building_info_toc = {
+	{
+		"buildings",
+		"array",
+		"p_building"
+	}
+}
+m_building_upgrade_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	}
+}
+m_building_upgrade_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+m_building_reward_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_building_reward_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_reward"
+	}
+}
+m_building_crusade_detail_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	}
+}
+m_building_crusade_detail_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"troops",
+		"array",
+		"p_crusade_troop"
+	},
+	{
+		"crusade_list",
+		"array",
+		"int"
+	},
+	{
+		"extra_reward",
+		"array",
+		"p_kvt"
+	}
+}
+m_building_crusade_dispatch_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_ids",
+		"array",
+		"int"
+	}
+}
+m_building_crusade_dispatch_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"troop",
+		"array",
+		"p_crusade_troop"
+	}
+}
+m_building_crusade_cancel_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_building_crusade_cancel_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_building_crusade_reward_tos = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_building_crusade_reward_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_exps",
+		"array",
+		"p_kvi"
+	},
+	{
+		"rewards",
+		"array",
+		"p_reward"
+	}
+}
+m_building_crusade_history_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_building_crusade_history_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_building_time_bank_detail_tos = {}
+m_building_time_bank_detail_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"lock",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	}
+}
+m_add_servant_exp_in_time_bank_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_add_servant_exp_in_time_bank_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"add_exp",
+		"int",
+		"null"
+	},
+	{
+		"left_exp",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_depot_info_tos = {}
+m_depot_info_toc = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"shelf",
+		"array",
+		"p_shelf"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+p_shelf = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"int",
+		"null"
+	},
+	{
+		"sup_goods",
+		"int",
+		"null"
+	},
+	{
+		"free",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	},
+	{
+		"sup_speed",
+		"int",
+		"null"
+	}
+}
+m_depot_unlock_shelf_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_depot_unlock_shelf_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_depot_put_servant_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_depot_put_servant_toc = {
+	{
+		"ids",
+		"int",
+		"null"
+	}
+}
+m_depot_supply_tos = {
+	{
+		"shelf_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"currency",
+		"int",
+		"null"
+	}
+}
+m_depot_supply_toc = {
+	{
+		"shelf_id",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"int",
+		"null"
+	},
+	{
+		"sup_goods",
+		"int",
+		"null"
+	},
+	{
+		"free",
+		"int",
+		"null"
+	}
+}
+m_lobby_info_tos = {}
+m_lobby_info_toc = {
+	{
+		"sweep_list",
+		"array",
+		"p_lobby_sweep"
+	},
+	{
+		"collect_list",
+		"array",
+		"p_lobby_collect"
+	}
+}
+m_lobby_sweep_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_lobby_sweep_toc = {
+	{
+		"data",
+		"array",
+		"p_lobby_sweep"
+	}
+}
+m_building_score_update_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"add",
+		"int",
+		"null"
+	}
+}
+m_lobby_collect_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"hours",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_lobby_collect_toc = {
+	{
+		"data",
+		"array",
+		"p_lobby_collect"
+	}
+}
+m_lobby_furniture_info_tos = {}
+m_lobby_furniture_info_toc = {
+	{
+		"furniture_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"stock_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_lobby_furniture_buy_tos = {
+	{
+		"furniture_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_lobby_furniture_buy_toc = {
+	{
+		"furniture_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"stock_update",
+		"array",
+		"p_kvi"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_furniture_gain_toc = {}
+m_lobby_collect_reward_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_lobby_collect_reward_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"add_sp_exp",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_lobby_unlock_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_lobby_unlock_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+p_lobby_sweep = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"last_time",
+		"int",
+		"null"
+	}
+}
+p_lobby_collect = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"hour",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_vit_buy_tos = {}
+m_vit_buy_toc = {
+	{
+		"vit",
+		"int",
+		"null"
+	},
+	{
+		"buy_time",
+		"int",
+		"null"
+	}
+}
+m_silver_buy_tos = {}
+m_silver_buy_toc = {
+	{
+		"add_silver",
+		"int",
+		"null"
+	},
+	{
+		"reduce_gold",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_quit_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_quit_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_vit_update_toc = {
+	{
+		"vit",
+		"int",
+		"null"
+	},
+	{
+		"buy_time",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_name_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_servant_formation_name_toc = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_servant_formation_select_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_servant_formation_select_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_team_update_status_toc = {
+	{
+		"updates",
+		"array",
+		"p_kvi"
+	}
+}
+m_team_update_toc = {
+	{
+		"updates",
+		"array",
+		"p_team_change"
+	}
+}
+m_role_profile_info_tos = {}
+m_role_profile_info_toc = {
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"helper",
+		"int",
+		"null"
+	}
+}
+m_role_profile_intro_tos = {
+	{
+		"intro",
+		"String",
+		"null"
+	}
+}
+m_role_profile_intro_toc = {
+	{
+		"intro",
+		"String",
+		"null"
+	}
+}
+m_role_profile_helper_tos = {
+	{
+		"help_id_list",
+		"array",
+		"int"
+	}
+}
+m_role_profile_helper_toc = {
+	{
+		"help_list",
+		"array",
+		"p_helper_brief"
+	}
+}
+p_helper_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"gain_time",
+		"int",
+		"null"
+	},
+	{
+		"feeling",
+		"int",
+		"null"
+	}
+}
+m_servants_change_toc = {
+	{
+		"changes",
+		"array",
+		"p_servant_brief_change"
+	}
+}
+m_servants_change_teams_toc = {
+	{
+		"change_list",
+		"array",
+		"p_kvl"
+	}
+}
+m_role_title_list_tos = {}
+m_role_title_list_toc = {
+	{
+		"title_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_title_active_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_title_active_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_title_select_tos = {
+	{
+		"title_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_role_title_select_toc = {
+	{
+		"title_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"use_titles",
+		"array",
+		"int"
+	}
+}
+m_role_title_info_toc = {
+	{
+		"use_titles",
+		"array",
+		"int"
+	}
+}
+m_role_title_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvi"
+	}
+}
+m_activity_daily_tos = {}
+m_activity_daily_toc = {
+	{
+		"actives",
+		"array",
+		"p_daily_entry"
+	}
+}
+m_role_daily_update_toc = {
+	{
+		"updates",
+		"array",
+		"p_daily_entry"
+	}
+}
+m_vivian_info_tos = {}
+m_vivian_info_toc = {
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"days",
+		"int",
+		"null"
+	},
+	{
+		"mission_num",
+		"int",
+		"null"
+	},
+	{
+		"mission_id",
+		"int",
+		"null"
+	},
+	{
+		"counter",
+		"int",
+		"null"
+	},
+	{
+		"mission_status",
+		"int",
+		"null"
+	}
+}
+m_vivian_unlock_tos = {}
+m_copy_boss_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_boss_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	},
+	{
+		"ticket_charge",
+		"int",
+		"null"
+	},
+	{
+		"daily_times",
+		"int",
+		"null"
+	},
+	{
+		"barriers",
+		"array",
+		"p_copy_barrier"
+	},
+	{
+		"reward",
+		"int",
+		"null"
+	}
+}
+m_copy_boss_select_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_id",
+		"int",
+		"null"
+	}
+}
+m_copy_boss_select_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_id",
+		"int",
+		"null"
+	}
+}
+m_copy_ultima_test_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_ultima_test_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"today_fight",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	},
+	{
+		"servant_types",
+		"array",
+		"int"
+	},
+	{
+		"last_kill",
+		"int",
+		"null"
+	}
+}
+m_dare_info_tos = {}
+m_dare_info_toc = {
+	{
+		"chapter_list",
+		"array",
+		"p_dare_chapter"
+	},
+	{
+		"store_rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"got_rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_dare_pass_reward_tos = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"boss_id",
+		"int",
+		"null"
+	}
+}
+m_dare_pass_reward_toc = {}
+m_dare_store_reward_tos = {}
+m_dare_store_reward_toc = {
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_dare_read_new_tos = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"boss_id",
+		"int",
+		"null"
+	}
+}
+p_dare_chapter = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"boss_list",
+		"array",
+		"p_dare_boss"
+	}
+}
+p_dare_boss = {
+	{
+		"boss_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"is_new",
+		"int",
+		"null"
+	}
+}
+m_servant_pl_info_tos = {}
+m_servant_pl_info_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+p_phantom_filter = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"filter",
+		"array",
+		"p_kvl"
+	}
+}
+m_phantom_info_tos = {
+	{
+		"copy_type",
+		"int",
+		"null"
+	}
+}
+m_phantom_info_toc = {
+	{
+		"copy_type",
+		"int",
+		"null"
+	},
+	{
+		"cur_chapter",
+		"int",
+		"null"
+	},
+	{
+		"cur_barrier",
+		"int",
+		"null"
+	},
+	{
+		"max_chapter",
+		"int",
+		"null"
+	},
+	{
+		"chapter_filters",
+		"array",
+		"p_phantom_filter"
+	}
+}
+m_phantom_detail_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	}
+}
+m_phantom_detail_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	},
+	{
+		"formation",
+		"array",
+		"p_kvi"
+	},
+	{
+		"monster_list",
+		"array",
+		"p_phantom_monster"
+	},
+	{
+		"barrier_filter",
+		"array",
+		"p_phantom_filter"
+	}
+}
+p_phantom_monster = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"position",
+		"int",
+		"null"
+	},
+	{
+		"feature",
+		"array",
+		"int"
+	},
+	{
+		"skills",
+		"array",
+		"int"
+	},
+	{
+		"attr",
+		"array",
+		"p_phantom_attr"
+	}
+}
+p_phantom_attr = {
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"phy_atk",
+		"int",
+		"null"
+	},
+	{
+		"mag_atk",
+		"int",
+		"null"
+	},
+	{
+		"phy_def",
+		"int",
+		"null"
+	},
+	{
+		"mag_def",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	}
+}
+m_phantom_formation_change_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_phantom_formation_change_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"formation",
+		"array",
+		"p_kvi"
+	}
+}
+m_phantom_lineup_change_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+m_phantom_lineup_change_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+p_scratch_ticket_item = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_scratch_ticket_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_scratch_ticket_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score_id",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_scratch_ticket_item"
+	},
+	{
+		"seed",
+		"int",
+		"null"
+	},
+	{
+		"open",
+		"array",
+		"p_kvi"
+	}
+}
+m_scratch_ticket_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"salt",
+		"int",
+		"null"
+	}
+}
+m_scratch_ticket_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"salt",
+		"int",
+		"null"
+	}
+}
+m_scratch_ticket_next_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_scratch_ticket_next_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_infinite_pool_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_infinite_pool_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"pool_id",
+		"int",
+		"null"
+	},
+	{
+		"score_id",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"int",
+		"null"
+	},
+	{
+		"next_open",
+		"int",
+		"null"
+	},
+	{
+		"sp_detail",
+		"array",
+		"p_infinite_pool_sp"
+	},
+	{
+		"list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"sp_items",
+		"array",
+		"int"
+	},
+	{
+		"can_pass_after_sp",
+		"int",
+		"null"
+	}
+}
+m_infinite_pool_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_infinite_pool_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"int"
+	}
+}
+m_infinite_pool_next_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_infinite_pool_next_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+p_infinite_pool_sp = {
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"total",
+		"int",
+		"null"
+	},
+	{
+		"pool",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_info_tos = {}
+m_copy_auto_info_toc = {
+	{
+		"fighting",
+		"array",
+		"p_copy_auto_troop"
+	}
+}
+m_copy_auto_update_remain_times_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_begin_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"team_ids",
+		"array",
+		"int"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	},
+	{
+		"is_fail_stop",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_begin_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"team_ids",
+		"array",
+		"int"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	},
+	{
+		"is_fail_stop",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_cancel_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_cancel_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_reward_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_reward_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"max_times",
+		"int",
+		"null"
+	},
+	{
+		"finish_times",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_reward"
+	},
+	{
+		"use_vit",
+		"int",
+		"null"
+	},
+	{
+		"return_vit",
+		"int",
+		"null"
+	},
+	{
+		"replace_list",
+		"array",
+		"p_reward_replace"
+	},
+	{
+		"record_nth",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_result_page_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_result_page_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	},
+	{
+		"copy_result",
+		"array",
+		"p_copy_auto_result"
+	}
+}
+p_copy_auto_troop = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"is_end",
+		"int",
+		"null"
+	},
+	{
+		"remain_times",
+		"int",
+		"null"
+	}
+}
+p_copy_auto_result = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"use_vit",
+		"int",
+		"null"
+	},
+	{
+		"return_vit",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_reward"
+	},
+	{
+		"servants_exp",
+		"array",
+		"p_fight_result_servant_exp"
+	},
+	{
+		"is_win",
+		"int",
+		"null"
+	}
+}
+p_fight_result_servant_exp = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"is_alive",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"exp_type",
+		"int",
+		"null"
+	}
+}
+p_copy_auto_servant_change = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"hp_change",
+		"array",
+		"p_kvt"
+	},
+	{
+		"skill_change",
+		"array",
+		"p_kvt"
+	}
+}
+p_copy_auto_record = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"use_vit",
+		"int",
+		"null"
+	},
+	{
+		"is_win",
+		"int",
+		"null"
+	},
+	{
+		"monster",
+		"array",
+		"p_kvt"
+	},
+	{
+		"servant_change",
+		"array",
+		"p_copy_auto_servant_change"
+	},
+	{
+		"record_key",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_record_tos = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	}
+}
+m_copy_auto_record_toc = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_copy_auto_record"
+	}
+}
+m_copy_dream_info_tos = {}
+m_copy_dream_info_toc = {
+	{
+		"now",
+		"int",
+		"null"
+	},
+	{
+		"max",
+		"int",
+		"null"
+	},
+	{
+		"is_fight",
+		"int",
+		"null"
+	},
+	{
+		"fail_times",
+		"int",
+		"null"
+	},
+	{
+		"daily_times",
+		"int",
+		"null"
+	},
+	{
+		"add_times",
+		"int",
+		"null"
+	}
+}
+m_copy_dream_begin_tos = {}
+m_copy_dream_begin_toc = {}
+m_copy_dream_jump_tos = {}
+m_copy_dream_jump_toc = {}
+m_copy_dream_buy_times_tos = {}
+m_copy_dream_buy_times_toc = {}
+m_copy_dream_quit_tos = {}
+m_copy_dream_quit_toc = {}
+m_tower_begin_auto_tos = {
+	{
+		"recover",
+		"int",
+		"null"
+	}
+}
+m_tower_begin_auto_toc = {
+	{
+		"recover",
+		"int",
+		"null"
+	}
+}
+m_tower_cancel_auto_tos = {}
+m_tower_cancel_auto_toc = {}
+m_tower_auto_status_toc = {
+	{
+		"barrier",
+		"int",
+		"null"
+	},
+	{
+		"fight_time",
+		"int",
+		"null"
+	},
+	{
+		"is_auto",
+		"int",
+		"null"
+	},
+	{
+		"has_fail_log",
+		"int",
+		"null"
+	}
+}
+m_tower_get_store_items_tos = {}
+m_tower_get_store_items_toc = {
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_tower_lock_helper_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_tower_lock_helper_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_tower_barrier_page_tos = {}
+m_tower_barrier_page_toc = {
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	},
+	{
+		"now",
+		"int",
+		"null"
+	},
+	{
+		"fail_times",
+		"int",
+		"null"
+	},
+	{
+		"fight_time",
+		"int",
+		"null"
+	},
+	{
+		"week_max",
+		"int",
+		"null"
+	},
+	{
+		"talent",
+		"array",
+		"int"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_tower_barrier_detail_tos = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	}
+}
+m_tower_barrier_detail_toc = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"monster",
+		"array",
+		"p_kvi"
+	},
+	{
+		"result",
+		"array",
+		"p_tower_servant_change"
+	},
+	{
+		"record_key",
+		"int",
+		"null"
+	},
+	{
+		"item",
+		"array",
+		"p_kvi"
+	}
+}
+p_tower_buff = {
+	{
+		"condition_id",
+		"int",
+		"null"
+	},
+	{
+		"effect_id",
+		"int",
+		"null"
+	},
+	{
+		"is_active",
+		"int",
+		"null"
+	},
+	{
+		"servant_ids",
+		"array",
+		"int"
+	}
+}
+p_tower_servant_change = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"hp_change",
+		"array",
+		"p_kvt"
+	},
+	{
+		"skill_change",
+		"array",
+		"p_kvt"
+	}
+}
+m_tower_info_tos = {}
+m_tower_info_toc = {
+	{
+		"servants",
+		"array",
+		"p_tower_servant"
+	},
+	{
+		"barrier",
+		"int",
+		"null"
+	},
+	{
+		"history_max",
+		"int",
+		"null"
+	},
+	{
+		"week_max",
+		"int",
+		"null"
+	},
+	{
+		"buff",
+		"array",
+		"p_tower_buff"
+	},
+	{
+		"recover_used",
+		"int",
+		"null"
+	},
+	{
+		"recover_max",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"monster",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"rank_type",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	},
+	{
+		"helper_id",
+		"int",
+		"null"
+	},
+	{
+		"item",
+		"array",
+		"p_kvi"
+	},
+	{
+		"is_ready",
+		"int",
+		"null"
+	}
+}
+m_tower_rank_info_tos = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	}
+}
+m_tower_rank_info_toc = {
+	{
+		"rank_id",
+		"int",
+		"null"
+	},
+	{
+		"all_rows",
+		"array",
+		"p_tower_rank_row"
+	},
+	{
+		"my_rows",
+		"array",
+		"p_tower_rank_row"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+p_tower_rank_row = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"barrier",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_tower_prepare_tos = {}
+m_tower_prepare_toc = {
+	{
+		"field",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"bench",
+		"array",
+		"p_servant_battle_brief"
+	}
+}
+m_tower_fight_tos = {}
+m_tower_fight_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_tower_reset_tos = {}
+m_tower_reset_toc = {}
+m_tower_recover_tos = {}
+m_tower_recover_toc = {}
+m_tower_box_reward_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tower_box_reward_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_tower_select_tos = {
+	{
+		"servants",
+		"array",
+		"p_kvlt"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_tower_select_toc = {
+	{
+		"servants",
+		"array",
+		"p_kvlt"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_tower_servant_detail_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kv"
+	}
+}
+m_tower_servant_detail_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_tower_servant_detail"
+	}
+}
+p_tower_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"owner_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"hp",
+		"int",
+		"null"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+p_tower_servant_limit = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"limit",
+		"array",
+		"p_kvi"
+	}
+}
+m_copy_new_year_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_new_year_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barriers",
+		"array",
+		"p_copy_barrier"
+	}
+}
+m_greek_jjc_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_greek_jjc_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_adjust_log_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_adjust_log_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_copy_story_double_switch_tos = {
+	{
+		"switch",
+		"int",
+		"null"
+	}
+}
+m_copy_story_double_buy_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_copy_story_double_info_tos = {}
+m_copy_story_double_info_toc = {
+	{
+		"times",
+		"int",
+		"null"
+	},
+	{
+		"has_buy_times",
+		"int",
+		"null"
+	},
+	{
+		"switch",
+		"int",
+		"null"
+	},
+	{
+		"is_double",
+		"int",
+		"null"
+	},
+	{
+		"push_type",
+		"int",
+		"null"
+	}
+}
+m_copy_story_first_reward_tos = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	}
+}
+m_copy_story_first_reward_toc = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	}
+}
+m_copy_story_red_point_toc = {
+	{
+		"can_reward",
+		"array",
+		"int"
+	}
+}
+m_copy_barrier_info_tos = {
+	{
+		"copy",
+		"int",
+		"null"
+	},
+	{
+		"chapter",
+		"int",
+		"null"
+	}
+}
+m_copy_barrier_info_toc = {
+	{
+		"copy",
+		"int",
+		"null"
+	},
+	{
+		"cur_chapter",
+		"int",
+		"null"
+	},
+	{
+		"chapter",
+		"int",
+		"null"
+	},
+	{
+		"barriers",
+		"array",
+		"p_copy_barrier"
+	},
+	{
+		"act_end_time",
+		"array",
+		"p_kvi"
+	},
+	{
+		"max_chapter",
+		"int",
+		"null"
+	}
+}
+m_copy_monster_num_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	}
+}
+m_copy_monster_num_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"now",
+		"int",
+		"null"
+	},
+	{
+		"monster",
+		"int",
+		"null"
+	}
+}
+m_copy_fight_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"helper",
+		"long",
+		"null"
+	},
+	{
+		"hard_factor",
+		"int",
+		"null"
+	},
+	{
+		"enemy",
+		"int",
+		"null"
+	}
+}
+m_copy_fight_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_copy_fight_force_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_data",
+		"array",
+		"binary"
+	}
+}
+p_unmap_barrier = {
+	{
+		"barriers",
+		"array",
+		"p_kvt"
+	},
+	{
+		"multi",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_unlock_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_unlock_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_enter_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_enter_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_state_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_state_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_quit_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_unmapped_copy_quit_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier_id",
+		"int",
+		"null"
+	}
+}
+m_copy_ngnl_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_ngnl_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barriers",
+		"array",
+		"p_copy_barrier"
+	},
+	{
+		"strongpoints",
+		"array",
+		"p_kvi"
+	},
+	{
+		"copy_list",
+		"array",
+		"int"
+	},
+	{
+		"time_strongpoints",
+		"array",
+		"p_kvi"
+	},
+	{
+		"main_db_point",
+		"int",
+		"null"
+	},
+	{
+		"strategy_point",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_copy_ngnl_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"strongpoint_id",
+		"int",
+		"null"
+	}
+}
+m_copy_ngnl_get_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"strongpoint_id",
+		"int",
+		"null"
+	},
+	{
+		"strategy_point",
+		"int",
+		"null"
+	}
+}
+m_fight_cancel_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_cancel_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_give_up_tos = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_fight_give_up_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_copy_fight_prepare_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	}
+}
+m_copy_fight_prepare_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"team",
+		"array",
+		"p_formation"
+	},
+	{
+		"last_id",
+		"int",
+		"null"
+	}
+}
+m_theatre_play_tos = {
+	{
+		"theatre_id",
+		"int",
+		"null"
+	}
+}
+m_theatre_end_tos = {
+	{
+		"theatre_id",
+		"int",
+		"null"
+	}
+}
+m_theatre_info_tos = {}
+m_theatre_info_toc = {
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_theatre_delay_tos = {}
+m_theatre_delay_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_copy_story_init_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"team_ids",
+		"array",
+		"int"
+	}
+}
+m_map_info_toc = {
+	{
+		"map_ids",
+		"array",
+		"int"
+	}
+}
+m_copy_daily_info_tos = {}
+m_copy_daily_info_toc = {
+	{
+		"chapters",
+		"array",
+		"int"
+	}
+}
+m_map_enter_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_map_enter_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"areas",
+		"array",
+		"p_kvi"
+	},
+	{
+		"obj_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"trans_point",
+		"array",
+		"p_kvi"
+	},
+	{
+		"monster_list",
+		"array",
+		"p_kvl"
+	},
+	{
+		"team",
+		"array",
+		"p_formation"
+	},
+	{
+		"select_team",
+		"int",
+		"null"
+	},
+	{
+		"monster_id",
+		"int",
+		"null"
+	}
+}
+m_map_find_monster_toc = {
+	{
+		"monster_id",
+		"array",
+		"int"
+	}
+}
+m_map_fighting_monster_toc = {
+	{
+		"monster_id",
+		"int",
+		"null"
+	}
+}
+m_map_close_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_map_quit_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_map_quit_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_map_transfer_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_map_trans_point_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvt"
+	}
+}
+m_map_area_update_toc = {
+	{
+		"areas",
+		"array",
+		"p_kvi"
+	}
+}
+m_map_monster_update_toc = {
+	{
+		"update",
+		"array",
+		"p_map_monster"
+	}
+}
+m_map_obj_update_toc = {
+	{
+		"objs",
+		"array",
+		"p_kvi"
+	}
+}
+m_map_pause_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_map_pause_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+p_fight_team = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"p_servant_brief"
+	},
+	{
+		"bench",
+		"array",
+		"p_servant_brief"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	}
+}
+m_move_dst_tos = {}
+m_move_path_tos = {
+	{
+		"path",
+		"array",
+		"int"
+	}
+}
+m_move_path_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_move_path_ack_toc = {}
+m_move_sync_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_theater_map_query_drop_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_theater_map_query_drop_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_theater_map_last_diff_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_theater_map_last_diff_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"diff",
+		"int",
+		"null"
+	}
+}
+m_theater_map_init_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"diff",
+		"int",
+		"null"
+	}
+}
+m_theater_map_init_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"diff",
+		"int",
+		"null"
+	}
+}
+m_theater_map_enter_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_theater_map_enter_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"areas",
+		"array",
+		"p_kvi"
+	},
+	{
+		"obj_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"skin_list",
+		"array",
+		"int"
+	},
+	{
+		"step",
+		"int",
+		"null"
+	},
+	{
+		"diff",
+		"int",
+		"null"
+	},
+	{
+		"dyn_obj",
+		"array",
+		"p_kvt"
+	},
+	{
+		"buff",
+		"array",
+		"p_kvi"
+	}
+}
+m_theater_map_close_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_theater_map_quit_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_theater_map_quit_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_theater_map_event_toc = {
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_theater_map_transfer_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_theater_map_area_update_toc = {
+	{
+		"areas",
+		"array",
+		"p_kvi"
+	}
+}
+m_theater_map_obj_update_toc = {
+	{
+		"objs",
+		"array",
+		"p_kvi"
+	}
+}
+m_theater_map_dyn_obj_update_toc = {
+	{
+		"obj",
+		"array",
+		"p_kvt"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_theater_map_buff_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvi"
+	}
+}
+m_theater_map_follow_update_toc = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_theater_map_step_update_toc = {
+	{
+		"step",
+		"int",
+		"null"
+	}
+}
+m_theater_map_move_dst_tos = {}
+m_theater_map_move_path_tos = {
+	{
+		"path",
+		"array",
+		"int"
+	}
+}
+m_theater_map_move_path_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_theater_map_move_path_ack_toc = {}
+m_theater_map_move_sync_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+p_maze_obj = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"effect",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_maze_enter_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_maze_enter_toc = {
+	{
+		"maze_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"born_point",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	},
+	{
+		"layer",
+		"int",
+		"null"
+	},
+	{
+		"blockout_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"event_obj_list",
+		"array",
+		"p_maze_obj"
+	},
+	{
+		"theater",
+		"array",
+		"p_kvi"
+	},
+	{
+		"counter",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_maze_quit_tos = {}
+m_maze_quit_toc = {}
+m_maze_update_counter_toc = {
+	{
+		"counter",
+		"int",
+		"null"
+	}
+}
+m_maze_update_layer_toc = {
+	{
+		"layer",
+		"int",
+		"null"
+	}
+}
+m_maze_update_blockout_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"blockout",
+		"int",
+		"null"
+	}
+}
+m_maze_update_event_obj_toc = {
+	{
+		"obj",
+		"array",
+		"p_maze_obj"
+	}
+}
+m_maze_finish_event_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_maze_finish_event_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_maze_move_tos = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_maze_move_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_maze_transfer_tos = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_maze_transfer_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_maze_trigger_tos = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_maze_trigger_toc = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_fight_result_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	},
+	{
+		"mvp",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"array",
+		"p_kvi"
+	},
+	{
+		"gold",
+		"int",
+		"null"
+	},
+	{
+		"silver",
+		"int",
+		"null"
+	},
+	{
+		"role_exp",
+		"int",
+		"null"
+	},
+	{
+		"servant_reward",
+		"array",
+		"p_kvt"
+	},
+	{
+		"item_reward",
+		"array",
+		"p_reward"
+	},
+	{
+		"servant_exp",
+		"array",
+		"p_kvt"
+	},
+	{
+		"kill_num",
+		"int",
+		"null"
+	},
+	{
+		"mvp_stats",
+		"array",
+		"p_fight_stats"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"add_score",
+		"int",
+		"null"
+	},
+	{
+		"replace_list",
+		"array",
+		"p_reward_replace"
+	}
+}
+m_fight_scene_result_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	}
+}
+m_servant_helper_info_tos = {}
+m_servant_helper_info_toc = {
+	{
+		"list",
+		"array",
+		"p_helper_info"
+	}
+}
+m_helper_get_tos = {}
+m_helper_get_toc = {
+	{
+		"helper",
+		"array",
+		"p_helper_info"
+	}
+}
+p_helper_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"role_level",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"last_online_ts",
+		"int",
+		"null"
+	}
+}
+p_copy_barrier = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"stars",
+		"array",
+		"int"
+	},
+	{
+		"servant_types",
+		"array",
+		"int"
+	},
+	{
+		"drop_rate_up",
+		"array",
+		"p_kvi"
+	},
+	{
+		"servant_rate_up",
+		"array",
+		"int"
+	},
+	{
+		"pass_times",
+		"int",
+		"null"
+	},
+	{
+		"first_reward",
+		"int",
+		"null"
+	}
+}
+p_daily_entry = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"current_times",
+		"int",
+		"null"
+	}
+}
+m_achievement_info_tos = {}
+m_achievement_info_toc = {
+	{
+		"list",
+		"array",
+		"p_achievement"
+	}
+}
+m_achievement_get_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_achievement_get_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_reward"
+	}
+}
+m_achievement_update_toc = {
+	{
+		"update",
+		"array",
+		"p_achievement"
+	}
+}
+p_achievement = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"cur_progress",
+		"int",
+		"null"
+	},
+	{
+		"total_progress",
+		"int",
+		"null"
+	}
+}
+m_debugger_info_toc = {
+	{
+		"data",
+		"String",
+		"null"
+	}
+}
+m_ladder_servant_select_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kvi"
+	}
+}
+m_ladder_season2_formation_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_ladder_season2_formation_toc = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kvi"
+	}
+}
+m_ladder_info_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_ladder_info_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"season_type",
+		"int",
+		"null"
+	},
+	{
+		"season_data",
+		"array",
+		"p_tower_servant_limit"
+	},
+	{
+		"season_data2",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"threshold",
+		"array",
+		"int"
+	},
+	{
+		"last_threshold",
+		"array",
+		"int"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"start_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"reward_time",
+		"int",
+		"null"
+	},
+	{
+		"give_up_times",
+		"int",
+		"null"
+	}
+}
+m_ladder_match_hb_tos = {}
+m_ladder_match_notify_toc = {}
+m_ladder_start_match_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_ladder_start_match_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_ladder_start_seal_tos = {
+	{
+		"ban_ids",
+		"array",
+		"int"
+	}
+}
+m_ladder_start_seal_toc = {
+	{
+		"ban_ids",
+		"array",
+		"int"
+	}
+}
+m_ladder_servant_formation_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"position",
+		"array",
+		"int"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+m_ladder_servant_formation_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"int"
+	},
+	{
+		"bench",
+		"array",
+		"int"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_team_servant"
+	}
+}
+m_ladder_start_prepare_tos = {
+	{
+		"is_ready",
+		"int",
+		"null"
+	}
+}
+m_ladder_start_prepare_toc = {
+	{
+		"is_ready",
+		"int",
+		"null"
+	}
+}
+m_ladder_give_up_tos = {}
+m_ladder_give_up_toc = {}
+m_ladder_fight_end_toc = {
+	{
+		"result",
+		"int",
+		"null"
+	},
+	{
+		"finish_type",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	}
+}
+m_ladder_state_info_toc = {
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"state_time",
+		"int",
+		"null"
+	},
+	{
+		"self_state",
+		"int",
+		"null"
+	},
+	{
+		"self_fight_data",
+		"array",
+		"p_ladder_fight"
+	},
+	{
+		"target_fight_data",
+		"array",
+		"p_ladder_fight"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+p_ladder_fight = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"bench",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"ban_servant",
+		"array",
+		"int"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_miracle_battle_info_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_miracle_battle_info_toc = {
+	{
+		"rival_list",
+		"array",
+		"p_rival"
+	},
+	{
+		"battle_score",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"int",
+		"null"
+	},
+	{
+		"miracle_score",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	},
+	{
+		"end_day",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	}
+}
+p_rival = {
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"title",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"bench",
+		"array",
+		"p_servant_battle_brief"
+	}
+}
+p_servant_battle_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	}
+}
+m_miracle_battle_fight_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_miracle_battle_fight_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_miracle_battle_refresh_tos = {}
+m_area_battle_info_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_area_battle_info_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_area_battle_prepare_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"team",
+		"array",
+		"p_formation"
+	},
+	{
+		"opponent",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"target_avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_area_battle_fight_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_area_battle_fight_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_area_battle_cancel_tos = {}
+m_area_battle_update_toc = {
+	{
+		"target_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_area_battle_detail_tos = {}
+m_area_battle_detail_toc = {
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"target_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"team",
+		"array",
+		"p_formation"
+	},
+	{
+		"opponent",
+		"array",
+		"p_servant_battle_brief"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"target_avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_casual_battle_match_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_casual_battle_match_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_friend_battle_list_tos = {}
+m_friend_battle_list_toc = {
+	{
+		"area_list",
+		"array",
+		"long"
+	},
+	{
+		"fighting_list",
+		"array",
+		"long"
+	}
+}
+m_friend_battle_request_tos = {
+	{
+		"target",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_friend_battle_request_toc = {
+	{
+		"target",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+p_mission = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"counter",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"daily_counter",
+		"int",
+		"null"
+	},
+	{
+		"finish_times",
+		"int",
+		"null"
+	},
+	{
+		"reward_times",
+		"int",
+		"null"
+	},
+	{
+		"extra_reward",
+		"array",
+		"p_kvi"
+	}
+}
+m_mission_list_tos = {}
+m_mission_list_toc = {
+	{
+		"list",
+		"array",
+		"p_mission"
+	},
+	{
+		"activity",
+		"int",
+		"null"
+	},
+	{
+		"activity_reward",
+		"array",
+		"int"
+	}
+}
+m_mission_complete_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_mission_complete_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"activity",
+		"int",
+		"null"
+	}
+}
+m_mission_activity_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_mission_activity_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_mission_update_toc = {
+	{
+		"list",
+		"array",
+		"p_mission"
+	}
+}
+m_mission_supply_res_tos = {
+	{
+		"mission_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_mission_supply_res_toc = {
+	{
+		"mission_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_trigger_mission_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_trigger_mission_toc = {}
+m_role_cdk_tos = {
+	{
+		"cdk",
+		"String",
+		"null"
+	}
+}
+m_role_cdk_toc = {
+	{
+		"items",
+		"array",
+		"p_item"
+	}
+}
+m_family_pre_merge_request_tos = {
+	{
+		"to_family_id",
+		"int",
+		"null"
+	},
+	{
+		"to_family_name",
+		"String",
+		"null"
+	}
+}
+m_family_pre_merge_request_toc = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	},
+	{
+		"from_family_name",
+		"String",
+		"null"
+	},
+	{
+		"from_family_role_num",
+		"int",
+		"null"
+	},
+	{
+		"from_family_kick_num",
+		"int",
+		"null"
+	},
+	{
+		"to_family_id",
+		"int",
+		"null"
+	},
+	{
+		"to_family_name",
+		"String",
+		"null"
+	},
+	{
+		"to_family_role_num",
+		"int",
+		"null"
+	},
+	{
+		"to_family_kick_num",
+		"int",
+		"null"
+	},
+	{
+		"max_role_num",
+		"int",
+		"null"
+	}
+}
+m_family_merge_request_tos = {
+	{
+		"to_family_id",
+		"int",
+		"null"
+	},
+	{
+		"kick_roles",
+		"array",
+		"long"
+	}
+}
+m_family_merge_request_toc = {
+	{
+		"to_family_id",
+		"int",
+		"null"
+	}
+}
+m_family_merge_reject_tos = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	}
+}
+m_family_merge_reject_toc = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	}
+}
+m_family_pre_merge_response_tos = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	}
+}
+m_family_pre_merge_response_toc = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	},
+	{
+		"from_family_name",
+		"String",
+		"null"
+	},
+	{
+		"from_family_role_num",
+		"int",
+		"null"
+	},
+	{
+		"from_family_kick_num",
+		"int",
+		"null"
+	},
+	{
+		"to_family_id",
+		"int",
+		"null"
+	},
+	{
+		"to_family_name",
+		"String",
+		"null"
+	},
+	{
+		"to_family_role_num",
+		"int",
+		"null"
+	},
+	{
+		"to_family_kick_num",
+		"int",
+		"null"
+	},
+	{
+		"max_role_num",
+		"int",
+		"null"
+	}
+}
+m_family_merge_response_tos = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	},
+	{
+		"kick_roles",
+		"array",
+		"long"
+	}
+}
+m_family_merge_response_toc = {
+	{
+		"from_family_id",
+		"int",
+		"null"
+	}
+}
+m_family_close_toc = {}
+m_family_info_tos = {
+	{
+		"family_id",
+		"int",
+		"null"
+	}
+}
+m_family_info_toc = {
+	{
+		"family_id",
+		"int",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"family_lv",
+		"int",
+		"null"
+	},
+	{
+		"family_exp",
+		"int",
+		"null"
+	},
+	{
+		"notice",
+		"array",
+		"p_family_notice"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	},
+	{
+		"logo",
+		"int",
+		"null"
+	},
+	{
+		"owner_name",
+		"String",
+		"null"
+	},
+	{
+		"member_num",
+		"int",
+		"null"
+	},
+	{
+		"request_num",
+		"int",
+		"null"
+	},
+	{
+		"job",
+		"int",
+		"null"
+	},
+	{
+		"sign",
+		"int",
+		"null"
+	},
+	{
+		"auto_accept",
+		"int",
+		"null"
+	},
+	{
+		"auto_exchange",
+		"array",
+		"p_kvi"
+	},
+	{
+		"contribution_reward",
+		"array",
+		"int"
+	},
+	{
+		"halo",
+		"array",
+		"p_kvi"
+	},
+	{
+		"merge_request",
+		"array",
+		"p_family_merge_request"
+	}
+}
+m_family_request_tos = {
+	{
+		"family_id",
+		"int",
+		"null"
+	}
+}
+m_family_request_toc = {
+	{
+		"family_id",
+		"int",
+		"null"
+	}
+}
+m_family_apply_tos = {}
+m_family_apply_toc = {
+	{
+		"list",
+		"array",
+		"p_family_request"
+	}
+}
+m_family_read_merge_apply_result_tos = {}
+m_family_merge_time_segment_toc = {
+	{
+		"begin_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_family_accept_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_accept_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"res",
+		"int",
+		"null"
+	}
+}
+m_family_refuse_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_refuse_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_give_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_give_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_job_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"job",
+		"int",
+		"null"
+	}
+}
+m_family_job_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"job",
+		"int",
+		"null"
+	}
+}
+m_family_edit_notice_tos = {
+	{
+		"update",
+		"array",
+		"p_family_notice"
+	}
+}
+m_family_edit_notice_toc = {
+	{
+		"update",
+		"array",
+		"p_family_notice"
+	}
+}
+m_family_edit_info_tos = {
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	},
+	{
+		"logo",
+		"int",
+		"null"
+	},
+	{
+		"auto_accept",
+		"int",
+		"null"
+	}
+}
+m_family_edit_info_toc = {
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	},
+	{
+		"logo",
+		"int",
+		"null"
+	},
+	{
+		"auto_accept",
+		"int",
+		"null"
+	}
+}
+m_family_sign_tos = {
+	{
+		"family_id",
+		"int",
+		"null"
+	}
+}
+m_family_sign_toc = {
+	{
+		"family_lv",
+		"int",
+		"null"
+	},
+	{
+		"family_exp",
+		"int",
+		"null"
+	}
+}
+m_family_search_tos = {
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	}
+}
+m_family_search_toc = {
+	{
+		"list",
+		"array",
+		"p_family_search"
+	}
+}
+m_family_create_tos = {
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	},
+	{
+		"logo",
+		"int",
+		"null"
+	},
+	{
+		"auto_accept",
+		"int",
+		"null"
+	}
+}
+m_family_create_toc = {}
+m_family_quit_tos = {}
+m_family_quit_toc = {}
+m_family_expel_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_expel_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_family_member_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_family_member_toc = {
+	{
+		"list",
+		"array",
+		"p_family_member"
+	},
+	{
+		"delete_list",
+		"array",
+		"long"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_family_boss_info_tos = {}
+m_family_boss_info_toc = {
+	{
+		"nature",
+		"int",
+		"null"
+	},
+	{
+		"has_times",
+		"int",
+		"null"
+	},
+	{
+		"use_times",
+		"int",
+		"null"
+	},
+	{
+		"helper",
+		"array",
+		"p_family_boss_helper"
+	}
+}
+m_family_boss_fight_tos = {
+	{
+		"list",
+		"array",
+		"long"
+	}
+}
+m_family_boss_fight_toc = {
+	{
+		"list",
+		"array",
+		"long"
+	},
+	{
+		"reward",
+		"array",
+		"p_reward"
+	}
+}
+m_family_change_auto_exchange_list_tos = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_family_change_auto_exchange_list_toc = {}
+m_family_contribution_reward_tos = {}
+m_family_contribution_reward_toc = {}
+m_family_contribution_info_tos = {}
+m_family_contribution_info_toc = {
+	{
+		"contribution_reward",
+		"array",
+		"int"
+	}
+}
+m_family_halo_set_tos = {
+	{
+		"change_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_family_halo_set_toc = {
+	{
+		"change_list",
+		"array",
+		"p_kvi"
+	}
+}
+p_family_notice = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"str",
+		"String",
+		"null"
+	},
+	{
+		"color",
+		"int",
+		"null"
+	}
+}
+p_family_boss_helper = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	},
+	{
+		"is_family",
+		"int",
+		"null"
+	}
+}
+p_family_search = {
+	{
+		"family_id",
+		"int",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"family_lv",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"intro",
+		"String",
+		"null"
+	},
+	{
+		"style",
+		"int",
+		"null"
+	},
+	{
+		"logo",
+		"int",
+		"null"
+	},
+	{
+		"owner_name",
+		"String",
+		"null"
+	},
+	{
+		"member_num",
+		"int",
+		"null"
+	},
+	{
+		"request_num",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+p_family_member = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"lv",
+		"int",
+		"null"
+	},
+	{
+		"job",
+		"int",
+		"null"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"contribution",
+		"int",
+		"null"
+	},
+	{
+		"history_contribution",
+		"int",
+		"null"
+	},
+	{
+		"login_time",
+		"int",
+		"null"
+	},
+	{
+		"offline_time",
+		"int",
+		"null"
+	},
+	{
+		"is_online",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	},
+	{
+		"last_contribution",
+		"int",
+		"null"
+	},
+	{
+		"cur_contribution",
+		"int",
+		"null"
+	}
+}
+p_family_request = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"lv",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	}
+}
+p_family_merge_request = {
+	{
+		"oppo_family_id",
+		"int",
+		"null"
+	},
+	{
+		"oppo_family_name",
+		"String",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"begin_time",
+		"int",
+		"null"
+	}
+}
+m_altar_info_toc = {
+	{
+		"camp_list",
+		"array",
+		"p_altar_camp"
+	}
+}
+m_altar_unlock_camp_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	}
+}
+m_altar_unlock_camp_toc = {
+	{
+		"camp",
+		"array",
+		"p_altar_camp"
+	}
+}
+m_altar_unlock_slot_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	}
+}
+m_altar_unlock_slot_toc = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	}
+}
+m_altar_servant_in_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_altar_servant_in_toc = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_altar_servant_out_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_altar_servant_out_toc = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_servant_type_fame_list_toc = {
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_servant_type_fame_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvt"
+	}
+}
+p_altar_camp = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"slot_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_act_medal_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_medal_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_act_medal"
+	}
+}
+p_act_medal = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"String",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_act_medal_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_act_medal_get_toc = {}
+m_act_puzzle_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_puzzle_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"puzzle_list",
+		"array",
+		"int"
+	},
+	{
+		"reward_list",
+		"array",
+		"p_act_puzzle"
+	},
+	{
+		"puzzle_num",
+		"int",
+		"null"
+	},
+	{
+		"kill_num",
+		"int",
+		"null"
+	},
+	{
+		"activity_times",
+		"int",
+		"null"
+	}
+}
+p_act_puzzle = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	},
+	{
+		"need_puzzle",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_act_puzzle_active_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_act_puzzle_active_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_puzzle_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_act_puzzle_get_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_act_archer_shoot_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"target",
+		"int",
+		"null"
+	}
+}
+m_act_archer_shoot_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"target",
+		"int",
+		"null"
+	},
+	{
+		"reduce",
+		"int",
+		"null"
+	},
+	{
+		"arrow",
+		"int",
+		"null"
+	}
+}
+m_act_archer_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_act_archer_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"arrow",
+		"int",
+		"null"
+	},
+	{
+		"balloon_id",
+		"int",
+		"null"
+	},
+	{
+		"target_id",
+		"int",
+		"null"
+	},
+	{
+		"target_hp",
+		"int",
+		"null"
+	}
+}
+m_act_score_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"expand",
+		"int",
+		"null"
+	}
+}
+m_act_score_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"expand",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	}
+}
+m_act_time_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_time_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"begin_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_role_agreement_tos = {}
+m_role_agreement_toc = {}
+p_role_data = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"attr",
+		"array",
+		"p_role_attr"
+	},
+	{
+		"asset",
+		"array",
+		"p_role_asset"
+	},
+	{
+		"fight",
+		"array",
+		"p_role_fight"
+	},
+	{
+		"guide",
+		"array",
+		"p_role_guide"
+	},
+	{
+		"last_reset_time",
+		"int",
+		"null"
+	}
+}
+p_bag_content = {
+	{
+		"bag_type",
+		"int",
+		"null"
+	},
+	{
+		"size",
+		"int",
+		"null"
+	},
+	{
+		"goods_list",
+		"array",
+		"p_goods"
+	}
+}
+p_role_attr = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"account_name",
+		"String",
+		"null"
+	},
+	{
+		"create_time",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"next_level_exp",
+		"int",
+		"null"
+	},
+	{
+		"family_id",
+		"long",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"family_ban_time",
+		"int",
+		"null"
+	},
+	{
+		"helper_list",
+		"array",
+		"p_helper_brief"
+	},
+	{
+		"last_login_ip",
+		"String",
+		"null"
+	},
+	{
+		"last_login_time",
+		"int",
+		"null"
+	},
+	{
+		"last_offline_time",
+		"int",
+		"null"
+	},
+	{
+		"sustained_time_per_day",
+		"int",
+		"null"
+	},
+	{
+		"agreement",
+		"int",
+		"null"
+	},
+	{
+		"agent_id",
+		"int",
+		"null"
+	},
+	{
+		"server_id",
+		"int",
+		"null"
+	},
+	{
+		"platform",
+		"int",
+		"null"
+	},
+	{
+		"is_internal",
+		"int",
+		"null"
+	},
+	{
+		"create_ip",
+		"String",
+		"null"
+	},
+	{
+		"device",
+		"String",
+		"null"
+	},
+	{
+		"imei",
+		"String",
+		"null"
+	},
+	{
+		"phone_os",
+		"String",
+		"null"
+	},
+	{
+		"avatar_border",
+		"int",
+		"null"
+	},
+	{
+		"servant_face",
+		"int",
+		"null"
+	},
+	{
+		"head",
+		"int",
+		"null"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"use_avatar",
+		"int",
+		"null"
+	}
+}
+p_role_asset = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"gold",
+		"int",
+		"null"
+	},
+	{
+		"gold_given",
+		"int",
+		"null"
+	},
+	{
+		"silver",
+		"int",
+		"null"
+	},
+	{
+		"total_pay_gold",
+		"int",
+		"null"
+	},
+	{
+		"total_consume_gold",
+		"int",
+		"null"
+	},
+	{
+		"total_consume_money",
+		"int",
+		"null"
+	},
+	{
+		"role_scores",
+		"array",
+		"p_kvi"
+	}
+}
+p_role_fight = {
+	{
+		"fighting_id",
+		"int",
+		"null"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+p_role_guide = {
+	{
+		"guide_groups",
+		"array",
+		"int"
+	},
+	{
+		"last_guide_id",
+		"int",
+		"null"
+	}
+}
+p_add_prop = {
+	{
+		"prop_code",
+		"int",
+		"null"
+	},
+	{
+		"prop_value",
+		"int",
+		"null"
+	}
+}
+p_fight_stats = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"atk",
+		"int",
+		"null"
+	},
+	{
+		"hp_recover",
+		"int",
+		"null"
+	},
+	{
+		"hp_reduce",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	}
+}
+p_goods_type_stats = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"lock_num",
+		"int",
+		"null"
+	}
+}
+p_goods_type_detail = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"goods_list",
+		"array",
+		"p_goods"
+	}
+}
+p_goods = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"bag_type",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"cur_num",
+		"int",
+		"null"
+	},
+	{
+		"cur_color",
+		"int",
+		"null"
+	},
+	{
+		"start_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"long",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_ids",
+		"array",
+		"long"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_data",
+		"array",
+		"binary"
+	}
+}
+p_goods_faith = {
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"color",
+		"array",
+		"p_kvi"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	}
+}
+p_role_change = {
+	{
+		"change_type",
+		"int",
+		"null"
+	},
+	{
+		"new_value",
+		"long",
+		"null"
+	},
+	{
+		"new_string",
+		"String",
+		"null"
+	},
+	{
+		"string_list",
+		"array",
+		"string"
+	},
+	{
+		"result_type",
+		"int",
+		"null"
+	}
+}
+p_shop_detail = {
+	{
+		"shop_id",
+		"int",
+		"null"
+	},
+	{
+		"shop_goods",
+		"array",
+		"p_shop_item"
+	},
+	{
+		"next_refresh_time",
+		"int",
+		"null"
+	},
+	{
+		"open_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+p_other_role_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"faction_id",
+		"int",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"office_name",
+		"String",
+		"null"
+	},
+	{
+		"charm",
+		"int",
+		"null"
+	},
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"level_rank",
+		"int",
+		"null"
+	},
+	{
+		"vip_level",
+		"int",
+		"null"
+	},
+	{
+		"pk_point",
+		"int",
+		"null"
+	},
+	{
+		"moral_value",
+		"int",
+		"null"
+	},
+	{
+		"hit_rate",
+		"int",
+		"null"
+	},
+	{
+		"dodge",
+		"int",
+		"null"
+	},
+	{
+		"attack_speed",
+		"int",
+		"null"
+	},
+	{
+		"move_speed",
+		"int",
+		"null"
+	},
+	{
+		"phy_attack",
+		"int",
+		"null"
+	},
+	{
+		"magic_attack",
+		"int",
+		"null"
+	},
+	{
+		"double_attack",
+		"int",
+		"null"
+	},
+	{
+		"double_attack_anti",
+		"int",
+		"null"
+	},
+	{
+		"phy_defence",
+		"int",
+		"null"
+	},
+	{
+		"magic_defence",
+		"int",
+		"null"
+	},
+	{
+		"pet_id",
+		"long",
+		"null"
+	},
+	{
+		"couple_name",
+		"String",
+		"null"
+	},
+	{
+		"hp",
+		"int",
+		"null"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"mp",
+		"int",
+		"null"
+	},
+	{
+		"max_mp",
+		"int",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"skins",
+		"array",
+		"long"
+	},
+	{
+		"role_scores",
+		"array",
+		"p_kvi"
+	},
+	{
+		"dizzy",
+		"int",
+		"null"
+	},
+	{
+		"poison",
+		"int",
+		"null"
+	},
+	{
+		"freeze",
+		"int",
+		"null"
+	},
+	{
+		"burning",
+		"int",
+		"null"
+	},
+	{
+		"poison_anti",
+		"int",
+		"null"
+	},
+	{
+		"dizzy_anti",
+		"int",
+		"null"
+	},
+	{
+		"freeze_anti",
+		"int",
+		"null"
+	},
+	{
+		"burning_anti",
+		"int",
+		"null"
+	},
+	{
+		"mount_info",
+		"array",
+		"p_mount"
+	},
+	{
+		"title_type_id",
+		"int",
+		"null"
+	},
+	{
+		"contempt",
+		"int",
+		"null"
+	},
+	{
+		"admire",
+		"int",
+		"null"
+	},
+	{
+		"pfvip_level",
+		"long",
+		"null"
+	},
+	{
+		"power_infos",
+		"array",
+		"p_kvi"
+	},
+	{
+		"use_names",
+		"array",
+		"string"
+	},
+	{
+		"achieve_rank",
+		"int",
+		"null"
+	},
+	{
+		"achieve_info",
+		"array",
+		"p_achieve_info"
+	},
+	{
+		"kill_value",
+		"int",
+		"null"
+	},
+	{
+		"max_talisman",
+		"int",
+		"null"
+	},
+	{
+		"pearl_skill",
+		"int",
+		"null"
+	},
+	{
+		"pearl_skills",
+		"array",
+		"p_kvi"
+	},
+	{
+		"max_talisman_skill",
+		"int",
+		"null"
+	},
+	{
+		"talisman_skill",
+		"int",
+		"null"
+	},
+	{
+		"potency_power",
+		"int",
+		"null"
+	},
+	{
+		"category_list",
+		"array",
+		"int"
+	},
+	{
+		"stones",
+		"array",
+		"p_stones"
+	},
+	{
+		"soul_infos",
+		"array",
+		"p_souls"
+	},
+	{
+		"hammers",
+		"array",
+		"int"
+	},
+	{
+		"wing",
+		"array",
+		"p_show_wing"
+	},
+	{
+		"ring",
+		"array",
+		"p_show_ring"
+	},
+	{
+		"fashion",
+		"array",
+		"p_show_fahsion"
+	},
+	{
+		"devote",
+		"array",
+		"p_show_devote"
+	},
+	{
+		"deploy",
+		"array",
+		"p_show_deploy"
+	}
+}
+p_role_observe_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"power_val",
+		"int",
+		"null"
+	},
+	{
+		"observe_attr",
+		"array",
+		"p_observe_attr"
+	},
+	{
+		"fashions",
+		"array",
+		"p_observe_fashion"
+	},
+	{
+		"rings",
+		"array",
+		"p_observe_ring"
+	},
+	{
+		"pets",
+		"array",
+		"p_observe_pet"
+	},
+	{
+		"mount",
+		"array",
+		"p_observe_mount"
+	},
+	{
+		"power",
+		"array",
+		"p_observe_power"
+	}
+}
+p_observe_attr = {
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"title_type_id",
+		"int",
+		"null"
+	},
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"category_list",
+		"array",
+		"int"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"couple_name",
+		"String",
+		"null"
+	},
+	{
+		"double_attack",
+		"int",
+		"null"
+	},
+	{
+		"double_attack_anti",
+		"int",
+		"null"
+	},
+	{
+		"poison",
+		"int",
+		"null"
+	},
+	{
+		"dizzy",
+		"int",
+		"null"
+	},
+	{
+		"freeze",
+		"int",
+		"null"
+	},
+	{
+		"burning",
+		"int",
+		"null"
+	},
+	{
+		"poison_anti",
+		"int",
+		"null"
+	},
+	{
+		"dizzy_anti",
+		"int",
+		"null"
+	},
+	{
+		"freeze_anti",
+		"int",
+		"null"
+	},
+	{
+		"burning_anti",
+		"int",
+		"null"
+	},
+	{
+		"category_info",
+		"array",
+		"p_category_info"
+	},
+	{
+		"charm",
+		"int",
+		"null"
+	},
+	{
+		"contempt",
+		"int",
+		"null"
+	},
+	{
+		"admire",
+		"int",
+		"null"
+	},
+	{
+		"pk_point",
+		"int",
+		"null"
+	},
+	{
+		"vip_level",
+		"int",
+		"null"
+	},
+	{
+		"vip_expire",
+		"array",
+		"bool"
+	},
+	{
+		"pfvip_level",
+		"long",
+		"null"
+	},
+	{
+		"fight_pet_attr",
+		"array",
+		"p_add_prop"
+	},
+	{
+		"devote_pet_attr",
+		"array",
+		"p_add_prop"
+	},
+	{
+		"wings",
+		"array",
+		"p_wing"
+	}
+}
+p_observe_fashion = {
+	{
+		"fashions",
+		"array",
+		"p_fashion"
+	},
+	{
+		"show_ids",
+		"array",
+		"long"
+	}
+}
+p_observe_ring = {
+	{
+		"couple_name",
+		"String",
+		"null"
+	},
+	{
+		"rings",
+		"array",
+		"p_ring"
+	}
+}
+p_observe_mount = {
+	{
+		"mount_info",
+		"array",
+		"p_mount"
+	},
+	{
+		"mount_skins",
+		"array",
+		"p_mount_skin"
+	}
+}
+p_observe_power = {
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"rank_infos",
+		"array",
+		"p_kvi"
+	},
+	{
+		"power_infos",
+		"array",
+		"p_kvi"
+	}
+}
+p_category_info = {
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"skins",
+		"array",
+		"long"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"phy_attack",
+		"int",
+		"null"
+	},
+	{
+		"magic_attack",
+		"int",
+		"null"
+	},
+	{
+		"phy_defence",
+		"int",
+		"null"
+	},
+	{
+		"magic_defence",
+		"int",
+		"null"
+	}
+}
+p_other_role_chat_info = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"faction_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"family_id",
+		"long",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	}
+}
+p_achieve_info = {
+	{
+		"achieve_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"gain_time",
+		"int",
+		"null"
+	},
+	{
+		"cur_progress",
+		"array",
+		"int"
+	},
+	{
+		"total_progress",
+		"int",
+		"null"
+	},
+	{
+		"color",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_achieve_reward"
+	}
+}
+p_achieve_reward = {
+	{
+		"gold_bind",
+		"int",
+		"null"
+	},
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"formula",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"int",
+		"null"
+	}
+}
+p_copy_items = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_copy_goods"
+	},
+	{
+		"used_items",
+		"array",
+		"p_kvi"
+	}
+}
+p_copy_goods = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"cur_num",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+p_chat_role = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"titles",
+		"array",
+		"int"
+	},
+	{
+		"helper_type",
+		"int",
+		"null"
+	},
+	{
+		"helper_star",
+		"int",
+		"null"
+	},
+	{
+		"extra",
+		"array",
+		"int"
+	},
+	{
+		"medals",
+		"array",
+		"p_kvi"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+p_role_chat_bubble = {
+	{
+		"bubble_id",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+p_map_role = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"title_type_id",
+		"int",
+		"null"
+	},
+	{
+		"family_id",
+		"long",
+		"null"
+	},
+	{
+		"family_name",
+		"String",
+		"null"
+	},
+	{
+		"family_title_id",
+		"int",
+		"null"
+	},
+	{
+		"curr_server_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"long",
+		"null"
+	},
+	{
+		"move_pos",
+		"long",
+		"null"
+	},
+	{
+		"target_pos",
+		"long",
+		"null"
+	},
+	{
+		"hp",
+		"int",
+		"null"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"mp",
+		"int",
+		"null"
+	},
+	{
+		"max_mp",
+		"int",
+		"null"
+	},
+	{
+		"skins",
+		"array",
+		"long"
+	},
+	{
+		"move_speed",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"danger_lv",
+		"int",
+		"null"
+	},
+	{
+		"buff_status",
+		"long",
+		"null"
+	},
+	{
+		"show_cloth",
+		"int",
+		"null"
+	},
+	{
+		"equip_ring_color",
+		"int",
+		"null"
+	},
+	{
+		"show_equip_ring",
+		"int",
+		"null"
+	},
+	{
+		"vip_level",
+		"int",
+		"null"
+	},
+	{
+		"camp_id",
+		"int",
+		"null"
+	},
+	{
+		"other_value",
+		"String",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"category",
+		"int",
+		"null"
+	},
+	{
+		"pfvip_level",
+		"long",
+		"null"
+	},
+	{
+		"couple_name",
+		"String",
+		"null"
+	},
+	{
+		"changing_map",
+		"int",
+		"null"
+	},
+	{
+		"sunbath_sitlv",
+		"int",
+		"null"
+	},
+	{
+		"show_status",
+		"long",
+		"null"
+	}
+}
+p_map_dropthing = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"drop_type",
+		"int",
+		"null"
+	},
+	{
+		"bind",
+		"array",
+		"bool"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"roles",
+		"array",
+		"long"
+	},
+	{
+		"pos",
+		"long",
+		"null"
+	},
+	{
+		"quantity",
+		"int",
+		"null"
+	},
+	{
+		"goodsid",
+		"int",
+		"null"
+	},
+	{
+		"color",
+		"int",
+		"null"
+	},
+	{
+		"goodstype_id",
+		"int",
+		"null"
+	},
+	{
+		"drop_property",
+		"array",
+		"p_drop_property"
+	},
+	{
+		"pick_to",
+		"int",
+		"null"
+	},
+	{
+		"monster_id",
+		"long",
+		"null"
+	}
+}
+p_drop_property = {
+	{
+		"bind",
+		"array",
+		"bool"
+	},
+	{
+		"color",
+		"int",
+		"null"
+	},
+	{
+		"quality",
+		"int",
+		"null"
+	},
+	{
+		"hole_num",
+		"int",
+		"null"
+	},
+	{
+		"use_bind",
+		"int",
+		"null"
+	}
+}
+p_map_monster = {
+	{
+		"monster_id",
+		"int",
+		"null"
+	},
+	{
+		"pos_list",
+		"array",
+		"int"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+p_map_action = {
+	{
+		"action_id",
+		"int",
+		"null"
+	},
+	{
+		"trigger_msecond",
+		"long",
+		"null"
+	},
+	{
+		"repeated_times",
+		"int",
+		"null"
+	},
+	{
+		"progress_bar",
+		"array",
+		"bool"
+	}
+}
+p_map_collect = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"owner_id",
+		"long",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"long",
+		"null"
+	}
+}
+p_map_trap = {
+	{
+		"trap_id",
+		"long",
+		"null"
+	},
+	{
+		"owner_id",
+		"long",
+		"null"
+	},
+	{
+		"skill_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"long",
+		"null"
+	},
+	{
+		"trap_type",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	}
+}
+p_act_goods = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"light",
+		"int",
+		"null"
+	}
+}
+p_letter_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"letter_code",
+		"long",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"string"
+	},
+	{
+		"title_num",
+		"array",
+		"long"
+	},
+	{
+		"send_time",
+		"int",
+		"null"
+	},
+	{
+		"attachment_num",
+		"int",
+		"null"
+	},
+	{
+		"goods_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"is_lock",
+		"int",
+		"null"
+	}
+}
+p_letter_info = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"send_id",
+		"long",
+		"null"
+	},
+	{
+		"sender",
+		"array",
+		"string"
+	},
+	{
+		"receiver",
+		"String",
+		"null"
+	},
+	{
+		"letter_code",
+		"long",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"string"
+	},
+	{
+		"text",
+		"array",
+		"string"
+	},
+	{
+		"title_num",
+		"array",
+		"long"
+	},
+	{
+		"text_num",
+		"array",
+		"long"
+	},
+	{
+		"send_time",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"goods_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"is_lock",
+		"int",
+		"null"
+	}
+}
+p_laba_msg = {
+	{
+		"content",
+		"String",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"laba_id",
+		"int",
+		"null"
+	}
+}
+p_role = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"ranking",
+		"int",
+		"null"
+	}
+}
+p_kv = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"long",
+		"null"
+	}
+}
+p_kvi = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+p_ks = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"str",
+		"String",
+		"null"
+	}
+}
+p_kb = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"array",
+		"bool"
+	}
+}
+p_kvl = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+p_dkv = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+p_kvt = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+p_kvlt = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"long",
+		"null"
+	}
+}
+p_lvt = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+p_score = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"give_type",
+		"int",
+		"null"
+	}
+}
+p_kvll = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"long"
+	}
+}
+p_dks = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"val",
+		"String",
+		"null"
+	}
+}
+p_dkl = {
+	{
+		"id",
+		"long",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+p_item = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"is_bind",
+		"int",
+		"null"
+	}
+}
+p_update = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"id2",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	},
+	{
+		"vals",
+		"array",
+		"int"
+	}
+}
+p_servant_skill = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"int",
+		"null"
+	},
+	{
+		"power_point",
+		"int",
+		"null"
+	},
+	{
+		"max_power_point",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"state_reason",
+		"array",
+		"int"
+	}
+}
+p_attr = {
+	{
+		"hp",
+		"int",
+		"null"
+	},
+	{
+		"max_hp",
+		"int",
+		"null"
+	},
+	{
+		"phy_atk",
+		"int",
+		"null"
+	},
+	{
+		"mag_atk",
+		"int",
+		"null"
+	},
+	{
+		"phy_def",
+		"int",
+		"null"
+	},
+	{
+		"mag_def",
+		"int",
+		"null"
+	},
+	{
+		"hit_fix",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	},
+	{
+		"crit_hit_lv",
+		"int",
+		"null"
+	},
+	{
+		"hit_rate_lv",
+		"int",
+		"null"
+	},
+	{
+		"dodge_lv",
+		"int",
+		"null"
+	}
+}
+p_prop = {
+	{
+		"code",
+		"int",
+		"null"
+	},
+	{
+		"value",
+		"int",
+		"null"
+	}
+}
+p_skill = {
+	{
+		"skill_id",
+		"int",
+		"null"
+	},
+	{
+		"power_point",
+		"int",
+		"null"
+	},
+	{
+		"max_power_point",
+		"int",
+		"null"
+	}
+}
+p_shop_item = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"tag",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"array",
+		"p_kvi"
+	},
+	{
+		"currency",
+		"int",
+		"null"
+	},
+	{
+		"buy_times",
+		"int",
+		"null"
+	},
+	{
+		"total_times",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"seq",
+		"int",
+		"null"
+	},
+	{
+		"discount_end",
+		"int",
+		"null"
+	},
+	{
+		"origin_price",
+		"int",
+		"null"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_data",
+		"array",
+		"binary"
+	}
+}
+p_skin_shop_item = {
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"has_live",
+		"int",
+		"null"
+	},
+	{
+		"buy_type",
+		"int",
+		"null"
+	},
+	{
+		"currency",
+		"int",
+		"null"
+	},
+	{
+		"discount_end",
+		"int",
+		"null"
+	},
+	{
+		"origin_price",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"int",
+		"null"
+	}
+}
+p_team_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"max_level",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"relic",
+		"int",
+		"null"
+	},
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"power_relic",
+		"array",
+		"p_kvi"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"fight_skill",
+		"array",
+		"p_skill"
+	},
+	{
+		"attr",
+		"array",
+		"p_attr"
+	},
+	{
+		"buffs",
+		"array",
+		"p_fight_buff"
+	},
+	{
+		"is_field",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"pl",
+		"int",
+		"null"
+	},
+	{
+		"element_id",
+		"int",
+		"null"
+	},
+	{
+		"faith",
+		"array",
+		"p_kvi"
+	},
+	{
+		"energy_points",
+		"array",
+		"p_kvi"
+	}
+}
+p_energy = {
+	{
+		"prop_code",
+		"int",
+		"null"
+	},
+	{
+		"ceil",
+		"int",
+		"null"
+	}
+}
+p_tower_servant_detail = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"owner_id",
+		"long",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"feature",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"relic",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"skill",
+		"array",
+		"p_skill"
+	},
+	{
+		"attr",
+		"array",
+		"p_attr"
+	}
+}
+p_servant_detail = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"relic",
+		"int",
+		"null"
+	},
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"power_relic",
+		"array",
+		"p_kvi"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"dream_lv",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"feeling",
+		"int",
+		"null"
+	},
+	{
+		"skill",
+		"array",
+		"int"
+	},
+	{
+		"using_skill",
+		"array",
+		"int"
+	},
+	{
+		"rage_skill",
+		"int",
+		"null"
+	},
+	{
+		"energy",
+		"array",
+		"p_energy"
+	},
+	{
+		"energy_points",
+		"array",
+		"p_kvi"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"status2",
+		"int",
+		"null"
+	},
+	{
+		"team_ids",
+		"array",
+		"int"
+	},
+	{
+		"vigor",
+		"int",
+		"null"
+	},
+	{
+		"sp_exp",
+		"int",
+		"null"
+	},
+	{
+		"feeling_record",
+		"array",
+		"p_kvi"
+	},
+	{
+		"satisfaction",
+		"int",
+		"null"
+	},
+	{
+		"pledge",
+		"int",
+		"null"
+	},
+	{
+		"pledge_time",
+		"int",
+		"null"
+	},
+	{
+		"type_gain_time",
+		"int",
+		"null"
+	},
+	{
+		"message",
+		"String",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"change_name_time",
+		"int",
+		"null"
+	},
+	{
+		"faith",
+		"array",
+		"p_kvi"
+	},
+	{
+		"chaos",
+		"array",
+		"p_kvi"
+	},
+	{
+		"act_rage_skill",
+		"array",
+		"p_kvi"
+	},
+	{
+		"gain_time",
+		"int",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"ai_skills",
+		"array",
+		"int"
+	},
+	{
+		"element_id",
+		"int",
+		"null"
+	},
+	{
+		"fame",
+		"int",
+		"null"
+	}
+}
+p_servant_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"dream_lv",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"status2",
+		"int",
+		"null"
+	},
+	{
+		"team_ids",
+		"array",
+		"int"
+	},
+	{
+		"skill",
+		"array",
+		"int"
+	},
+	{
+		"rage_skill",
+		"int",
+		"null"
+	},
+	{
+		"feeling_record",
+		"array",
+		"p_kvi"
+	},
+	{
+		"feeling",
+		"int",
+		"null"
+	},
+	{
+		"satisfaction",
+		"int",
+		"null"
+	},
+	{
+		"pledge",
+		"int",
+		"null"
+	},
+	{
+		"pledge_time",
+		"int",
+		"null"
+	},
+	{
+		"filter_value",
+		"int",
+		"null"
+	},
+	{
+		"act_rage_skill",
+		"array",
+		"p_kvi"
+	},
+	{
+		"gain_time",
+		"int",
+		"null"
+	},
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"fame",
+		"int",
+		"null"
+	}
+}
+p_lobby_servant = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"vigor",
+		"int",
+		"null"
+	},
+	{
+		"sp_exp",
+		"int",
+		"null"
+	}
+}
+p_servant_add = {
+	{
+		"servant",
+		"array",
+		"p_servant_detail"
+	},
+	{
+		"is_first",
+		"int",
+		"null"
+	}
+}
+p_building = {
+	{
+		"bd_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_reward"
+	}
+}
+p_crusade_troop = {
+	{
+		"crusade_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_ids",
+		"array",
+		"int"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+p_reward = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+p_reward_replace = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"replace_type",
+		"int",
+		"null"
+	},
+	{
+		"replace_num",
+		"int",
+		"null"
+	}
+}
+p_servant_brief_change = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"key",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+p_formation_brief = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"p_servant_brief"
+	},
+	{
+		"bench",
+		"array",
+		"p_servant_brief"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	}
+}
+p_formation = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"field",
+		"array",
+		"int"
+	},
+	{
+		"bench",
+		"array",
+		"int"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	},
+	{
+		"lineup",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_team_servant"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"fight_field",
+		"array",
+		"int"
+	},
+	{
+		"fight_bench",
+		"array",
+		"int"
+	}
+}
+p_team_change = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"fight_field",
+		"array",
+		"int"
+	},
+	{
+		"fight_bench",
+		"array",
+		"int"
+	},
+	{
+		"positions",
+		"array",
+		"int"
+	},
+	{
+		"servant_changes",
+		"array",
+		"p_team_servant_change"
+	}
+}
+p_dorm_plan = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"img_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+p_team_servant_change = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"attr_changes",
+		"array",
+		"p_kvi"
+	},
+	{
+		"skill_changes",
+		"array",
+		"p_kvi"
+	}
+}
+m_relic_change_enchant_tos = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_relic_change_enchant_toc = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_relic_enchant_info_tos = {}
+p_relic_enchant_info = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"cur_enchant_type",
+		"int",
+		"null"
+	},
+	{
+		"enchant_level_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_relic_enchant_info_toc = {
+	{
+		"relic_list",
+		"array",
+		"p_relic_enchant_info"
+	}
+}
+m_relic_upgrade_enchant_tos = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"relic_list",
+		"array",
+		"int"
+	}
+}
+m_relic_upgrade_enchant_toc = {
+	{
+		"relic_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_role_sign_info_tos = {
+	{
+		"reward_list_id",
+		"int",
+		"null"
+	}
+}
+p_daily_sign = {
+	{
+		"day",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"effect",
+		"int",
+		"null"
+	}
+}
+m_role_sign_info_toc = {
+	{
+		"sign_days",
+		"int",
+		"null"
+	},
+	{
+		"reward_list_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_list",
+		"array",
+		"p_daily_sign"
+	},
+	{
+		"today_sign",
+		"int",
+		"null"
+	}
+}
+m_role_sign_tos = {}
+m_role_sign_toc = {}
+m_role_handbook_red_point_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_handbook_view_check_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"view",
+		"int",
+		"null"
+	}
+}
+m_role_handbook_filter_toc = {
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_role_hide_skin_list_toc = {
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_role_handbook_info_tos = {}
+m_role_handbook_info_toc = {
+	{
+		"servants",
+		"array",
+		"p_handbook_brief"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	},
+	{
+		"num2",
+		"int",
+		"null"
+	}
+}
+m_role_handbook_detail_tos = {
+	{
+		"servants_type_id",
+		"int",
+		"null"
+	}
+}
+m_role_handbook_detail_toc = {
+	{
+		"servants_type_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"feeling",
+		"int",
+		"null"
+	},
+	{
+		"gain_time",
+		"int",
+		"null"
+	},
+	{
+		"cv_list",
+		"array",
+		"int"
+	},
+	{
+		"first_cv_list",
+		"array",
+		"int"
+	},
+	{
+		"tips_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"mv_list",
+		"array",
+		"p_mv"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"tags",
+		"array",
+		"int"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	},
+	{
+		"red_point",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_handbook_play_cv_tos = {
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"cv_id",
+		"int",
+		"null"
+	},
+	{
+		"play_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_active_mv_tos = {
+	{
+		"mv_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_active_mv_toc = {
+	{
+		"mv_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_mv_reward_tos = {
+	{
+		"mv_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_mv_reward_toc = {
+	{
+		"mv_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_tags_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_tags_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"tags",
+		"array",
+		"p_kvt"
+	}
+}
+m_handbook_like_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"tag",
+		"int",
+		"null"
+	}
+}
+m_handbook_like_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"tag",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_handbook_unlike_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"tag",
+		"int",
+		"null"
+	}
+}
+m_handbook_unlike_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"tag",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_handbook_unlock_tips_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_handbook_unlock_tips_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+p_mv = {
+	{
+		"mv_id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"cur_progress",
+		"array",
+		"int"
+	}
+}
+p_handbook_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	},
+	{
+		"red_point",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_freeshop_get_goods_tos = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_role_freeshop_get_goods_toc = {
+	{
+		"goods_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_role_freeshop_god_tos = {}
+m_servant_skin_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_skin_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"cur_skin",
+		"int",
+		"null"
+	},
+	{
+		"com_skin",
+		"array",
+		"int"
+	},
+	{
+		"priv_skin",
+		"array",
+		"int"
+	}
+}
+m_servant_shop_active_skin_toc = {
+	{
+		"skin_type_id",
+		"int",
+		"null"
+	},
+	{
+		"gain_live",
+		"int",
+		"null"
+	},
+	{
+		"gain_servant",
+		"int",
+		"null"
+	}
+}
+m_servant_active_skin_with_id_toc = {
+	{
+		"skin_type_id",
+		"array",
+		"int"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_servant_change_skin_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skin_type_id",
+		"int",
+		"null"
+	}
+}
+m_servant_type_change_skin_tos = {
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"skin_type_id",
+		"int",
+		"null"
+	}
+}
+m_servant_type_change_skin_toc = {
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"skin_type_id",
+		"int",
+		"null"
+	}
+}
+m_servant_change_skin_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"skin_type_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_skin_live_state_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_skin_live_state_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_setting_put_tos = {
+	{
+		"data",
+		"array",
+		"p_kv"
+	}
+}
+m_setting_put_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_setting_put_list_tos = {
+	{
+		"data_list",
+		"array",
+		"p_kv"
+	}
+}
+m_setting_put_list_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_setting_get_tos = {
+	{
+		"key",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_setting_get_toc = {
+	{
+		"data",
+		"array",
+		"p_kv"
+	}
+}
+m_setting_del_tos = {
+	{
+		"key",
+		"array",
+		"p_kv"
+	}
+}
+m_setting_del_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_setting_key_num_tos = {}
+m_setting_key_num_toc = {
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_setting_get_all_toc = {
+	{
+		"data",
+		"array",
+		"p_kv"
+	}
+}
+m_active_code_tos = {
+	{
+		"code",
+		"int",
+		"null"
+	}
+}
+m_active_code_toc = {}
+m_act_summon_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_summon_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_act_summon_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_act_summon_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+p_select_summon = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"pool_id",
+		"int",
+		"null"
+	},
+	{
+		"total_times",
+		"int",
+		"null"
+	},
+	{
+		"protect_times",
+		"int",
+		"null"
+	},
+	{
+		"select_times",
+		"int",
+		"null"
+	},
+	{
+		"day_times",
+		"int",
+		"null"
+	}
+}
+m_summon_touch_pool_tos = {
+	{
+		"pool_id",
+		"int",
+		"null"
+	}
+}
+m_summon_select_pool_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"pool_id",
+		"int",
+		"null"
+	}
+}
+m_summon_select_pool_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"pool_id",
+		"int",
+		"null"
+	}
+}
+m_summon_act_pools_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_summon_act_pools_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"pools",
+		"array",
+		"int"
+	}
+}
+m_role_summon_info_tos = {}
+m_role_summon_info_toc = {
+	{
+		"shop_price",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_summon_info"
+	},
+	{
+		"protect_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"select_list",
+		"array",
+		"p_select_summon"
+	}
+}
+p_summon_info = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"start_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"day_times",
+		"int",
+		"null"
+	},
+	{
+		"close_time",
+		"int",
+		"null"
+	},
+	{
+		"daily_free_times",
+		"int",
+		"null"
+	}
+}
+m_role_summon_pool_tos = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	},
+	{
+		"cached_since",
+		"int",
+		"null"
+	}
+}
+m_role_summon_pool_toc = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	},
+	{
+		"last_modified",
+		"int",
+		"null"
+	},
+	{
+		"summon_rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"need_unlock",
+		"array",
+		"int"
+	}
+}
+m_role_servant_summon_tos = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	},
+	{
+		"summon_times",
+		"int",
+		"null"
+	},
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_role_servant_summon_toc = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	},
+	{
+		"summon_rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"protect_rewards",
+		"array",
+		"p_kvi"
+	},
+	{
+		"protect_times",
+		"int",
+		"null"
+	},
+	{
+		"summon_times",
+		"int",
+		"null"
+	},
+	{
+		"day_times",
+		"int",
+		"null"
+	},
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"daily_free_times",
+		"int",
+		"null"
+	}
+}
+m_role_summon_close_tos = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	}
+}
+m_role_summon_close_toc = {
+	{
+		"summon_type",
+		"int",
+		"null"
+	},
+	{
+		"close_time",
+		"int",
+		"null"
+	}
+}
+m_affinity_summon_info_tos = {}
+m_affinity_summon_info_toc = {
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_affinity_summon_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_affinity_summon_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_faith_summon_tos = {
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_faith_summon_toc = {}
+m_dorm_list_tos = {}
+m_dorm_list_toc = {
+	{
+		"dorms",
+		"array",
+		"p_dorm"
+	}
+}
+p_dorm = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"slots",
+		"int",
+		"null"
+	},
+	{
+		"comfort",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_kvi"
+	}
+}
+m_dorm_detail_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	}
+}
+m_dorm_detail_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"dorm_level",
+		"int",
+		"null"
+	},
+	{
+		"furnitures",
+		"array",
+		"p_furniture"
+	},
+	{
+		"slots",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_dorm_servant"
+	},
+	{
+		"tourists",
+		"array",
+		"p_dorm_tourist"
+	},
+	{
+		"prosperity",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"has_like",
+		"int",
+		"null"
+	},
+	{
+		"use_theme",
+		"int",
+		"null"
+	},
+	{
+		"theme_lists",
+		"array",
+		"p_kvi"
+	},
+	{
+		"gift_time",
+		"int",
+		"null"
+	},
+	{
+		"indoor_plans",
+		"array",
+		"p_dorm_plan"
+	},
+	{
+		"outdoor_plans",
+		"array",
+		"p_dorm_plan"
+	},
+	{
+		"outdoor_plan",
+		"int",
+		"null"
+	},
+	{
+		"indoor_plan",
+		"int",
+		"null"
+	}
+}
+m_dorm_tourist_detail_tos = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_dorm_tourist_detail_toc = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"profile",
+		"String",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_theme_add_toc = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_theme_unlock_tos = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	}
+}
+m_theme_unlock_toc = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_theme_select_tos = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	}
+}
+m_theme_select_toc = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_building_list_tos = {}
+m_building_list_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_building_reward_notify_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_kvi"
+	}
+}
+m_dorm_like_tos = {
+	{
+		"target_id",
+		"long",
+		"null"
+	}
+}
+m_dorm_like_toc = {
+	{
+		"target_id",
+		"long",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_dorm_servant_pos_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_dorm_servant_pos_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_dorm_stranger_list_tos = {}
+m_dorm_stranger_list_toc = {
+	{
+		"list",
+		"array",
+		"p_brief_friend_info"
+	}
+}
+m_dorm_get_reward_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_dorm_get_reward_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_kvi"
+	}
+}
+m_dorm_reward_notify_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_kvi"
+	}
+}
+p_dorm_tourist = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+p_furniture = {
+	{
+		"fur_id",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_dorm_unlock_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	}
+}
+m_dorm_unlock_toc = {
+	{
+		"dorm",
+		"array",
+		"p_dorm"
+	}
+}
+m_dorm_rename_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_dorm_rename_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_dorm_upgrade_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"to_level",
+		"int",
+		"null"
+	}
+}
+m_dorm_upgrade_toc = {
+	{
+		"dorm",
+		"array",
+		"p_dorm"
+	}
+}
+m_dorm_slot_unlock_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	}
+}
+m_dorm_slot_unlock_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	}
+}
+m_dorm_servants_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	}
+}
+m_dorm_servants_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_dorm_servant"
+	}
+}
+p_dorm_servant = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_kvi"
+	}
+}
+m_dorm_servant_in_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"slot",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_dorm_servant_in_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"p_dorm_servant"
+	}
+}
+m_dorm_servant_out_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_dorm_servant_out_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_dorm_rearrange_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"fur_id",
+		"int",
+		"null"
+	},
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_dorm_rearrange_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"updates",
+		"array",
+		"p_furniture"
+	},
+	{
+		"removed",
+		"array",
+		"int"
+	}
+}
+m_dorm_save_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"op",
+		"int",
+		"null"
+	}
+}
+m_dorm_save_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"op",
+		"int",
+		"null"
+	},
+	{
+		"furnitures",
+		"array",
+		"p_furniture"
+	},
+	{
+		"outdoor_plan",
+		"int",
+		"null"
+	},
+	{
+		"indoor_plan",
+		"int",
+		"null"
+	},
+	{
+		"theme",
+		"int",
+		"null"
+	}
+}
+m_dorm_reset_tos = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"excludes",
+		"array",
+		"int"
+	}
+}
+m_dorm_reset_toc = {
+	{
+		"dorm_id",
+		"int",
+		"null"
+	},
+	{
+		"furnitures",
+		"array",
+		"p_furniture"
+	}
+}
+m_dorm_add_plan_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"out_door",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_dorm_add_plan_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"out_door",
+		"int",
+		"null"
+	},
+	{
+		"img_id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_dorm_change_plan_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"out_door",
+		"int",
+		"null"
+	}
+}
+m_dorm_change_plan_toc = {}
+m_dorm_del_plan_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"out_door",
+		"int",
+		"null"
+	}
+}
+m_dorm_del_plan_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"out_door",
+		"int",
+		"null"
+	}
+}
+m_check_dorm_servant_tos = {
+	{
+		"id",
+		"array",
+		"int"
+	}
+}
+m_check_dorm_servant_toc = {
+	{
+		"id",
+		"array",
+		"int"
+	}
+}
+m_furnitures_list_tos = {}
+m_furnitures_list_toc = {
+	{
+		"content",
+		"array",
+		"p_kvt"
+	}
+}
+m_furnitures_update_toc = {
+	{
+		"content",
+		"array",
+		"p_kvt"
+	}
+}
+m_role_acts_tos = {}
+m_role_acts_toc = {
+	{
+		"acts",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_act_update_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_role_act_update_list_toc = {
+	{
+		"lsit",
+		"array",
+		"p_kvi"
+	}
+}
+m_act_reg_notify_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"bool_int",
+		"int",
+		"null"
+	}
+}
+m_act_reg_notify_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"bool_int",
+		"int",
+		"null"
+	}
+}
+m_act_notify_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_notify_registry_toc = {
+	{
+		"id_list",
+		"array",
+		"int"
+	}
+}
+m_act_login_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_login_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"days",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_act_login_set_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"key",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+m_act_login_set_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"data",
+		"array",
+		"p_kvt"
+	}
+}
+m_copy_reward_list_tos = {}
+m_copy_reward_list_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_copy_reward_get_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_copy_reward_get_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_newcomer_info_tos = {}
+m_role_newcomer_info_toc = {
+	{
+		"days",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvt"
+	},
+	{
+		"pending_rewards",
+		"int",
+		"null"
+	}
+}
+m_role_newcomer_sign_tos = {}
+m_role_newcomer_sign_toc = {
+	{
+		"days",
+		"int",
+		"null"
+	}
+}
+p_sign_table = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"days",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvt"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"remain_day",
+		"int",
+		"null"
+	}
+}
+m_role_accumulative_info_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_accumulative_info_toc = {
+	{
+		"sign_tables",
+		"array",
+		"p_sign_table"
+	}
+}
+m_role_accumulative_sign_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_accumulative_sign_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"days",
+		"int",
+		"null"
+	}
+}
+m_avatar_border_detail_tos = {}
+m_avatar_border_detail_toc = {
+	{
+		"borders",
+		"array",
+		"p_kvi"
+	}
+}
+m_change_avatar_border_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_change_avatar_border_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_activate_avatar_border_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_check_avatar_border_tos = {}
+m_check_servant_face_tos = {
+	{
+		"face_group_id",
+		"int",
+		"null"
+	}
+}
+m_check_servant_face_toc = {
+	{
+		"face_group_id",
+		"int",
+		"null"
+	}
+}
+m_buy_servant_face_tos = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"face_type",
+		"int",
+		"null"
+	}
+}
+m_buy_servant_face_toc = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"face_type",
+		"int",
+		"null"
+	}
+}
+m_check_head_tos = {}
+m_check_head_toc = {
+	{
+		"heads",
+		"array",
+		"p_head"
+	},
+	{
+		"faces",
+		"array",
+		"p_kvi"
+	}
+}
+p_head = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"unlock",
+		"int",
+		"null"
+	},
+	{
+		"currency",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"int",
+		"null"
+	}
+}
+m_buy_head_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_buy_head_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_change_head_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_change_head_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+p_avatar = {
+	{
+		"use",
+		"int",
+		"null"
+	},
+	{
+		"face",
+		"int",
+		"null"
+	},
+	{
+		"head",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	},
+	{
+		"border",
+		"int",
+		"null"
+	},
+	{
+		"costume",
+		"array",
+		"p_costume"
+	}
+}
+m_new_head_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_check_medal_tos = {}
+m_check_medal_toc = {
+	{
+		"use",
+		"array",
+		"p_kvi"
+	},
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_equip_medal_tos = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_equip_medal_toc = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_discharge_medal_tos = {
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_discharge_medal_toc = {
+	{
+		"nth",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_show_team_info_tos = {
+	{
+		"to_role",
+		"long",
+		"null"
+	}
+}
+m_role_show_team_info_toc = {
+	{
+		"to_role",
+		"long",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_change_show_team_tos = {
+	{
+		"servant",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_change_show_team_toc = {
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_change_show_team_name_tos = {
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_change_show_team_name_toc = {
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_life_achievement_info_tos = {
+	{
+		"to_role",
+		"long",
+		"null"
+	}
+}
+m_life_achievement_info_toc = {
+	{
+		"to_role",
+		"long",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_artwork_info_tos = {
+	{
+		"to_role",
+		"long",
+		"null"
+	},
+	{
+		"page",
+		"int",
+		"null"
+	}
+}
+m_artwork_info_toc = {
+	{
+		"to_role",
+		"long",
+		"null"
+	},
+	{
+		"paint",
+		"array",
+		"p_artwork"
+	},
+	{
+		"size",
+		"int",
+		"null"
+	}
+}
+p_artwork = {
+	{
+		"page",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_place_material"
+	}
+}
+m_graffiti_material_tos = {}
+m_graffiti_material_toc = {
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_unlock_artwork_page_tos = {}
+m_unlock_artwork_page_toc = {
+	{
+		"sum_page",
+		"int",
+		"null"
+	}
+}
+m_place_artwork_material_tos = {
+	{
+		"page",
+		"int",
+		"null"
+	},
+	{
+		"opts",
+		"array",
+		"p_place_material"
+	}
+}
+p_place_material = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"material_id",
+		"int",
+		"null"
+	},
+	{
+		"transform",
+		"int",
+		"null"
+	},
+	{
+		"tier",
+		"int",
+		"null"
+	}
+}
+m_place_artwork_material_toc = {
+	{
+		"page",
+		"int",
+		"null"
+	},
+	{
+		"updates",
+		"array",
+		"p_place_material"
+	},
+	{
+		"deletes",
+		"array",
+		"int"
+	}
+}
+m_copy_maze_init_tos = {
+	{
+		"chapter",
+		"int",
+		"null"
+	},
+	{
+		"area",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_copy_maze_init_toc = {
+	{
+		"chapter",
+		"int",
+		"null"
+	},
+	{
+		"area",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_get_maze_brief_tos = {}
+m_get_maze_brief_toc = {
+	{
+		"data",
+		"array",
+		"p_maze_chapter_brief"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"event_num",
+		"int",
+		"null"
+	}
+}
+p_maze_chapter_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"is_open",
+		"int",
+		"null"
+	},
+	{
+		"explore",
+		"int",
+		"null"
+	},
+	{
+		"events",
+		"array",
+		"int"
+	}
+}
+m_maze_chapter_brief_tos = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	}
+}
+m_maze_chapter_brief_toc = {
+	{
+		"reward_lv",
+		"int",
+		"null"
+	},
+	{
+		"area",
+		"array",
+		"p_kvt"
+	},
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"team_leader",
+		"int",
+		"null"
+	},
+	{
+		"now_area",
+		"int",
+		"null"
+	}
+}
+m_maze_chapter_reward_tos = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_lv",
+		"int",
+		"null"
+	}
+}
+m_maze_chapter_reward_toc = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_lv",
+		"int",
+		"null"
+	}
+}
+m_get_maze_chapter_detail_tos = {
+	{
+		"chapter",
+		"int",
+		"null"
+	}
+}
+m_get_maze_chapter_detail_toc = {
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"event_obj_list",
+		"array",
+		"p_maze_obj"
+	},
+	{
+		"layer",
+		"int",
+		"null"
+	},
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"guides",
+		"array",
+		"int"
+	},
+	{
+		"using_guide",
+		"int",
+		"null"
+	},
+	{
+		"servants",
+		"array",
+		"int"
+	}
+}
+m_maze_copy_end_reward_toc = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvt"
+	},
+	{
+		"glory_stone",
+		"int",
+		"null"
+	}
+}
+m_change_maze_guide_tos = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"guide",
+		"int",
+		"null"
+	}
+}
+m_change_maze_guide_toc = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"guide",
+		"int",
+		"null"
+	}
+}
+m_unlock_maze_guide_toc = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"guide",
+		"int",
+		"null"
+	}
+}
+m_maze_explore_change_toc = {
+	{
+		"chapter_id",
+		"int",
+		"null"
+	},
+	{
+		"explore",
+		"int",
+		"null"
+	}
+}
+m_fight_record_notify_toc = {
+	{
+		"record_id",
+		"long",
+		"null"
+	}
+}
+m_fight_record_brief_tos = {
+	{
+		"record_type",
+		"int",
+		"null"
+	}
+}
+m_fight_record_brief_toc = {
+	{
+		"record_type",
+		"int",
+		"null"
+	},
+	{
+		"record_list",
+		"array",
+		"p_brief_record"
+	}
+}
+p_brief_record = {
+	{
+		"record_id",
+		"long",
+		"null"
+	},
+	{
+		"target_id",
+		"long",
+		"null"
+	},
+	{
+		"target_name",
+		"String",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	},
+	{
+		"value",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_fight_record_info_tos = {
+	{
+		"record_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_fight_record_info_toc = {
+	{
+		"record_id",
+		"long",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"record_num",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	},
+	{
+		"result_index",
+		"array",
+		"int"
+	}
+}
+m_fight_record_msg_tos = {
+	{
+		"record_id",
+		"long",
+		"null"
+	},
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_fight_record_msg_toc = {
+	{
+		"record_id",
+		"long",
+		"null"
+	},
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	}
+}
+m_background_theme_tos = {
+	{
+		"del_red_point",
+		"int",
+		"null"
+	}
+}
+m_background_theme_toc = {
+	{
+		"ids",
+		"array",
+		"int"
+	},
+	{
+		"new_ids",
+		"array",
+		"int"
+	}
+}
+m_background_theme_check_tos = {
+	{
+		"theme_id",
+		"int",
+		"null"
+	}
+}
+m_change_background_theme_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"use_effect",
+		"int",
+		"null"
+	}
+}
+m_change_background_theme_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"use_effect",
+		"int",
+		"null"
+	}
+}
+m_background_use_now_tos = {}
+m_background_use_now_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"use_effect",
+		"int",
+		"null"
+	}
+}
+m_love_vote_reward_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_reward_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_list",
+		"array",
+		"int"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	}
+}
+m_love_vote_normal_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_normal_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_title_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_types",
+		"array",
+		"int"
+	}
+}
+m_love_vote_title_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_types",
+		"array",
+		"int"
+	}
+}
+m_love_vote_title_list_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_title_list_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"title_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_love_vote_line_chart_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_line_chart_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"data",
+		"array",
+		"p_love_vote_chart_point"
+	}
+}
+m_love_vote_final_tos = {
+	{
+		"group_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_final_toc = {
+	{
+		"group_id",
+		"int",
+		"null"
+	},
+	{
+		"act_data",
+		"array",
+		"p_love_vote_final"
+	}
+}
+p_love_vote_chart_point = {
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	}
+}
+p_love_vote_final = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"detail",
+		"array",
+		"p_kvt"
+	},
+	{
+		"winer",
+		"int",
+		"null"
+	}
+}
+m_love_vote_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"vote_servants",
+		"array",
+		"p_kvi"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_love_vote_vote_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_love_vote_vote_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_love_vote_rank_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_love_vote_rank_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_love_vote_servant_row"
+	},
+	{
+		"refresh_time",
+		"int",
+		"null"
+	}
+}
+m_love_vote_self_vote_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_love_vote_self_vote_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	},
+	{
+		"end_ranks",
+		"array",
+		"p_kvt"
+	}
+}
+m_love_vote_top_support_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_love_vote_top_support_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"role_list",
+		"array",
+		"p_love_vote_support"
+	}
+}
+p_love_vote_support = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	}
+}
+p_love_vote_servant_row = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	}
+}
+m_christmas_servant_rank_tos = {}
+m_christmas_servant_rank_toc = {
+	{
+		"can_vote",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_christmas_servant"
+	},
+	{
+		"christmas_box",
+		"int",
+		"null"
+	}
+}
+p_christmas_servant = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	}
+}
+m_christmas_servant_support_tos = {
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	}
+}
+m_christmas_servant_support_toc = {
+	{
+		"ticket_num",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_christmas_support"
+	}
+}
+p_christmas_support = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	}
+}
+m_christmas_my_vote_tos = {}
+m_christmas_my_vote_toc = {
+	{
+		"ticket_num",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_christmas_my_vote"
+	}
+}
+p_christmas_my_vote = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	},
+	{
+		"percentage",
+		"int",
+		"null"
+	}
+}
+m_christmas_role_tos = {
+	{
+		"index",
+		"int",
+		"null"
+	}
+}
+m_christmas_role_toc = {
+	{
+		"rows",
+		"array",
+		"p_rank_row"
+	},
+	{
+		"reward_type",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"my_ticket",
+		"int",
+		"null"
+	}
+}
+p_christmas_role = {
+	{
+		"ranking",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+p_invite_task = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	},
+	{
+		"role_list",
+		"array",
+		"p_invite_role"
+	}
+}
+p_invite_role = {
+	{
+		"role_id",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"online_time",
+		"int",
+		"null"
+	},
+	{
+		"offline_time",
+		"int",
+		"null"
+	},
+	{
+		"is_online",
+		"int",
+		"null"
+	}
+}
+p_invite_reward = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"count",
+		"int",
+		"null"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	}
+}
+m_invite_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_invite_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_invite_reward"
+	},
+	{
+		"code",
+		"String",
+		"null"
+	},
+	{
+		"role_num",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	}
+}
+m_invite_get_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward_id",
+		"int",
+		"null"
+	}
+}
+m_invite_get_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_invite_reward"
+	}
+}
+m_invite_list_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_invite_list_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_invite_role"
+	}
+}
+m_invite_view_task_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_invite_view_task_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_invite_task"
+	}
+}
+m_invite_code_use_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"code",
+		"String",
+		"null"
+	}
+}
+m_invite_code_use_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_invite_code_query_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"code",
+		"String",
+		"null"
+	}
+}
+m_invite_code_query_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"code",
+		"String",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	}
+}
+m_font_share_log_tos = {
+	{
+		"society",
+		"int",
+		"null"
+	},
+	{
+		"share_type",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	}
+}
+m_christmas_banner_tos = {}
+m_christmas_banner_toc = {
+	{
+		"christmas_box",
+		"int",
+		"null"
+	},
+	{
+		"snowball",
+		"int",
+		"null"
+	}
+}
+m_christmas_vote_tos = {
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	}
+}
+m_christmas_vote_toc = {
+	{
+		"christmas_box",
+		"int",
+		"null"
+	},
+	{
+		"servant_type_id",
+		"int",
+		"null"
+	},
+	{
+		"ticket_num",
+		"int",
+		"null"
+	}
+}
+m_annual_report_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_annual_report_toc = {
+	{
+		"create_time",
+		"int",
+		"null"
+	},
+	{
+		"first_servant",
+		"int",
+		"null"
+	},
+	{
+		"total_login_days",
+		"int",
+		"null"
+	},
+	{
+		"total_login_days_year",
+		"int",
+		"null"
+	},
+	{
+		"copy_times",
+		"int",
+		"null"
+	},
+	{
+		"freq_copy_id",
+		"int",
+		"null"
+	},
+	{
+		"freq_copy_times",
+		"int",
+		"null"
+	},
+	{
+		"miracle_battle_times",
+		"int",
+		"null"
+	},
+	{
+		"miracle_win_rate",
+		"int",
+		"null"
+	},
+	{
+		"achievement_count",
+		"int",
+		"null"
+	},
+	{
+		"achievement_count_year",
+		"int",
+		"null"
+	},
+	{
+		"achievement_lead",
+		"int",
+		"null"
+	},
+	{
+		"handbook_count",
+		"int",
+		"null"
+	},
+	{
+		"handbook_lead",
+		"int",
+		"null"
+	},
+	{
+		"handbook_count_year",
+		"int",
+		"null"
+	},
+	{
+		"first_pledge",
+		"int",
+		"null"
+	},
+	{
+		"pledge_count",
+		"int",
+		"null"
+	},
+	{
+		"first_pledge_fight_count_year",
+		"int",
+		"null"
+	},
+	{
+		"gift_times",
+		"int",
+		"null"
+	},
+	{
+		"freq_login_hour",
+		"int",
+		"null"
+	},
+	{
+		"midnight_online_days",
+		"int",
+		"null"
+	},
+	{
+		"total_online_hours",
+		"int",
+		"null"
+	},
+	{
+		"longest_online_date",
+		"int",
+		"null"
+	},
+	{
+		"longest_online_date_hours",
+		"int",
+		"null"
+	},
+	{
+		"lv100_servant_count",
+		"int",
+		"null"
+	},
+	{
+		"lv100_servant_lead",
+		"int",
+		"null"
+	},
+	{
+		"lv120_servant_count",
+		"int",
+		"null"
+	},
+	{
+		"lv130_servant_count",
+		"int",
+		"null"
+	},
+	{
+		"total_vit",
+		"int",
+		"null"
+	},
+	{
+		"total_vit_lead",
+		"int",
+		"null"
+	},
+	{
+		"total_gold",
+		"int",
+		"null"
+	},
+	{
+		"total_silver",
+		"int",
+		"null"
+	},
+	{
+		"feeling100_servant_count",
+		"int",
+		"null"
+	},
+	{
+		"is_mail_sent",
+		"int",
+		"null"
+	},
+	{
+		"max_battle_servant",
+		"int",
+		"null"
+	},
+	{
+		"max_battle_servant_battle",
+		"int",
+		"null"
+	}
+}
+m_annual_mail_set_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	},
+	{
+		"wishes",
+		"String",
+		"null"
+	}
+}
+m_annual_mail_set_toc = {}
+m_annual_select_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_annual_select_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_faith_equip_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_equip_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"line",
+		"array",
+		"p_kvi"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_unload_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_unload_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	},
+	{
+		"line",
+		"array",
+		"p_kvi"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_decompose_tos = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_faith_decompose_toc = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_faith_upgrade_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_faith_upgrade_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"old_level",
+		"int",
+		"null"
+	}
+}
+m_faith_refresh_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"item_id",
+		"int",
+		"null"
+	},
+	{
+		"border",
+		"int",
+		"null"
+	},
+	{
+		"color",
+		"int",
+		"null"
+	}
+}
+m_faith_refresh_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"line",
+		"array",
+		"p_kvi"
+	},
+	{
+		"color",
+		"array",
+		"p_kvi"
+	}
+}
+m_faith_unload_all_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_unload_all_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_save_plan_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_save_plan_toc = {
+	{
+		"plan",
+		"array",
+		"p_faith_plan"
+	}
+}
+m_faith_plan_info_tos = {}
+m_faith_plan_info_toc = {
+	{
+		"plans",
+		"array",
+		"p_faith_plan"
+	}
+}
+p_faith_plan = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"detail",
+		"array",
+		"p_kvi"
+	}
+}
+m_faith_change_plan_name_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_faith_change_plan_name_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	}
+}
+m_faith_plan_use_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_faith_plan_use_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_faith_equip_info_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	},
+	{
+		"faiths",
+		"array",
+		"p_kvi"
+	}
+}
+m_faith_plan_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvt"
+	}
+}
+m_valentines_info_tos = {
+	{
+		"is_guide",
+		"int",
+		"null"
+	}
+}
+m_valentines_info_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	},
+	{
+		"hearts",
+		"int",
+		"null"
+	},
+	{
+		"maxed_servant_types",
+		"array",
+		"int"
+	},
+	{
+		"is_guide",
+		"int",
+		"null"
+	}
+}
+m_valentines_choose_tos = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_valentines_choose_toc = {
+	{
+		"servant_id",
+		"int",
+		"null"
+	}
+}
+m_valentines_gift_tos = {
+	{
+		"amount",
+		"int",
+		"null"
+	}
+}
+m_valentines_gift_toc = {
+	{
+		"hearts",
+		"int",
+		"null"
+	},
+	{
+		"maxed_servant_types",
+		"array",
+		"int"
+	}
+}
+m_act_helper_servant_detail_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"pl",
+		"int",
+		"null"
+	}
+}
+m_act_favor_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_favor_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"mission_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"favor",
+		"int",
+		"null"
+	},
+	{
+		"is_helper",
+		"int",
+		"null"
+	}
+}
+m_act_favor_score_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"favor",
+		"int",
+		"null"
+	}
+}
+m_act_favor_helper_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"value",
+		"int",
+		"null"
+	}
+}
+m_act_favor_helper_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"value",
+		"int",
+		"null"
+	}
+}
+m_act_helper_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"switch",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_act_helper_detail"
+	},
+	{
+		"select",
+		"int",
+		"null"
+	}
+}
+m_act_helper_select_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"select",
+		"int",
+		"null"
+	}
+}
+m_act_helper_select_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"select",
+		"int",
+		"null"
+	}
+}
+p_act_helper_detail = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"lv",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"pl",
+		"int",
+		"null"
+	}
+}
+m_act_favor_get_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_act_favor_get_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_echo_shop_info_tos = {}
+m_echo_shop_info_toc = {
+	{
+		"items",
+		"array",
+		"p_echo_item"
+	}
+}
+p_echo_item = {
+	{
+		"type_id",
+		"int",
+		"null"
+	},
+	{
+		"price",
+		"int",
+		"null"
+	},
+	{
+		"buy_times",
+		"int",
+		"null"
+	},
+	{
+		"total_times",
+		"int",
+		"null"
+	}
+}
+m_echo_servant_info_tos = {}
+m_echo_servant_info_toc = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_echo_exchange_tos = {
+	{
+		"item",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_echo_exchange_toc = {
+	{
+		"item",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_client_info_get_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_client_info_get_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+m_client_info_set_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+m_client_info_set_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"val",
+		"int",
+		"null"
+	}
+}
+m_lty_music_info_tos = {}
+m_lty_music_info_toc = {
+	{
+		"info",
+		"array",
+		"p_kvt"
+	},
+	{
+		"score_reward",
+		"int",
+		"null"
+	}
+}
+m_play_lty_start_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_play_lty_start_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_play_lty_give_up_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_play_lty_give_up_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_play_lty_end_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"combo",
+		"int",
+		"null"
+	},
+	{
+		"rate",
+		"int",
+		"null"
+	},
+	{
+		"check",
+		"String",
+		"null"
+	}
+}
+m_play_lty_end_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"max_score",
+		"int",
+		"null"
+	},
+	{
+		"point",
+		"int",
+		"null"
+	},
+	{
+		"sum_point",
+		"int",
+		"null"
+	}
+}
+m_lty_rank_info_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"is_history",
+		"int",
+		"null"
+	}
+}
+m_lty_rank_info_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_lty_rank_row"
+	},
+	{
+		"self",
+		"array",
+		"p_lty_rank_row"
+	}
+}
+p_lty_rank_row = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"border",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"combo",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	}
+}
+p_jump_game_player = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"dead_nth",
+		"int",
+		"null"
+	}
+}
+p_jump_game_rank = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"dead_nth",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	}
+}
+m_jump_game_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_jump_game_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"max_score",
+		"int",
+		"null"
+	},
+	{
+		"daily_score",
+		"int",
+		"null"
+	},
+	{
+		"top_times",
+		"int",
+		"null"
+	},
+	{
+		"daily_ten_reward",
+		"int",
+		"null"
+	},
+	{
+		"is_pvp_open",
+		"int",
+		"null"
+	}
+}
+m_jump_game_heartbeat_tos = {}
+m_jump_game_start_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_jump_game_start_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"timestamp",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"player_list",
+		"array",
+		"p_jump_game_player"
+	}
+}
+m_jump_game_match_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_jump_game_match_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"timestamp",
+		"int",
+		"null"
+	}
+}
+m_jump_game_cancel_match_tos = {}
+m_jump_game_cancel_match_toc = {}
+m_jump_game_update_matching_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"role_num",
+		"int",
+		"null"
+	}
+}
+m_jump_game_update_player_toc = {
+	{
+		"update",
+		"array",
+		"p_lvt"
+	}
+}
+m_jump_game_end_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"height",
+		"int",
+		"null"
+	}
+}
+m_jump_game_end_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"is_max",
+		"int",
+		"null"
+	},
+	{
+		"height",
+		"int",
+		"null"
+	},
+	{
+		"reward_num",
+		"int",
+		"null"
+	},
+	{
+		"is_reward_ceil",
+		"int",
+		"null"
+	},
+	{
+		"player_list",
+		"array",
+		"p_jump_game_rank"
+	},
+	{
+		"is_timeout",
+		"int",
+		"null"
+	},
+	{
+		"sp_rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_jump_game_sync_score_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"check",
+		"String",
+		"null"
+	}
+}
+m_jump_game_sync_score_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	}
+}
+m_music_info_tos = {}
+m_music_info_toc = {
+	{
+		"info",
+		"array",
+		"p_kvt"
+	},
+	{
+		"times_left",
+		"int",
+		"null"
+	},
+	{
+		"start_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"is_first_week",
+		"int",
+		"null"
+	},
+	{
+		"point",
+		"int",
+		"null"
+	}
+}
+m_music_drop_coin_tos = {}
+m_music_drop_coin_toc = {
+	{
+		"times_left",
+		"int",
+		"null"
+	}
+}
+m_music_play_start_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_music_play_start_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"times_left",
+		"int",
+		"null"
+	}
+}
+m_music_play_give_up_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_music_play_give_up_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_music_play_end_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"combo",
+		"int",
+		"null"
+	},
+	{
+		"rate",
+		"int",
+		"null"
+	},
+	{
+		"check",
+		"String",
+		"null"
+	}
+}
+m_music_play_end_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"max_score",
+		"int",
+		"null"
+	},
+	{
+		"point",
+		"int",
+		"null"
+	},
+	{
+		"sum_point",
+		"int",
+		"null"
+	}
+}
+m_music_rank_info_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"is_history",
+		"int",
+		"null"
+	}
+}
+m_music_rank_info_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"rows",
+		"array",
+		"p_music_rank_row"
+	},
+	{
+		"self",
+		"array",
+		"p_music_rank_row"
+	}
+}
+p_music_rank_row = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"combo",
+		"int",
+		"null"
+	},
+	{
+		"rank",
+		"int",
+		"null"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	}
+}
+m_act_mission_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_mission_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"mission_list",
+		"array",
+		"p_kvt"
+	}
+}
+m_get_act_mission_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_get_act_mission_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_white_valentine_score_tos = {}
+m_white_valentine_score_toc = {
+	{
+		"score",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_get_white_valentine_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_get_white_valentine_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_act_children_day_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_children_day_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"remain",
+		"int",
+		"null"
+	},
+	{
+		"rare_reward",
+		"array",
+		"p_kvi"
+	},
+	{
+		"protect_times",
+		"int",
+		"null"
+	},
+	{
+		"buff_times",
+		"int",
+		"null"
+	}
+}
+m_act_children_day_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_act_children_day_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_act_children_buff_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_children_buff_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+p_permit_grade = {
+	{
+		"grade",
+		"int",
+		"null"
+	},
+	{
+		"got",
+		"array",
+		"int"
+	}
+}
+m_act_permit_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_permit_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"grade",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_permit_grade"
+	}
+}
+m_act_permit_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"grade",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+m_act_permit_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"grade",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+m_act_permit_reward_all_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_permit_reward_all_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_permit_grade"
+	}
+}
+m_act_permit_buy_level_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"buy_lv",
+		"int",
+		"null"
+	}
+}
+m_act_permit_buy_level_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	}
+}
+m_act_score_exchange_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_score_exchange_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"array",
+		"p_kvi"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvi"
+	}
+}
+m_get_act_score_exchange_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"select_item",
+		"int",
+		"null"
+	}
+}
+m_get_act_score_exchange_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_get_all_exchange_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_get_all_exchange_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_count_buff_info_toc = {
+	{
+		"list",
+		"array",
+		"p_kvi"
+	}
+}
+m_count_buff_update_toc = {
+	{
+		"update",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_buff_info_tos = {}
+m_role_buff_info_toc = {
+	{
+		"buffs",
+		"array",
+		"p_role_buff"
+	}
+}
+m_role_buff_update_toc = {
+	{
+		"buffs",
+		"array",
+		"p_role_buff"
+	}
+}
+p_role_buff = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"buff_type",
+		"int",
+		"null"
+	},
+	{
+		"buff_value",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+m_skin_brief_info_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_skin_brief_info_toc = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_item_skin_handbook_info_tos = {}
+m_item_skin_handbook_info_toc = {
+	{
+		"info",
+		"array",
+		"p_item_skin"
+	}
+}
+p_item_skin = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"like",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"unlock",
+		"int",
+		"null"
+	},
+	{
+		"sell_id",
+		"int",
+		"null"
+	},
+	{
+		"is_new",
+		"int",
+		"null"
+	}
+}
+m_pledge_skin_handbook_info_tos = {}
+m_pledge_skin_handbook_info_toc = {
+	{
+		"info",
+		"array",
+		"p_pledge_skin"
+	}
+}
+p_pledge_skin = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"like",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"unlock",
+		"int",
+		"null"
+	},
+	{
+		"feeling",
+		"int",
+		"null"
+	},
+	{
+		"is_new",
+		"int",
+		"null"
+	}
+}
+m_skin_handbook_like_tos = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	}
+}
+m_skin_handbook_like_toc = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	}
+}
+m_skin_handbook_unlike_tos = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	}
+}
+m_skin_handbook_unlike_toc = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	}
+}
+m_skin_shop_detail_tos = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_skin_shop_detail_toc = {
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"detail",
+		"array",
+		"p_shop_item"
+	},
+	{
+		"op_type",
+		"int",
+		"null"
+	}
+}
+m_skin_handbook_red_point_toc = {
+	{
+		"theme_num",
+		"int",
+		"null"
+	},
+	{
+		"marry_num",
+		"int",
+		"null"
+	}
+}
+m_europe_copy_enter_tos = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"team_id",
+		"int",
+		"null"
+	}
+}
+m_europe_copy_enter_toc = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_europe_copy_state_tos = {}
+m_europe_copy_state_toc = {
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_europe_quit_copy_tos = {}
+m_europe_quit_copy_toc = {
+	{
+		"barrier_id",
+		"int",
+		"null"
+	}
+}
+m_constellation_mission_info_tos = {}
+m_constellation_mission_info_toc = {
+	{
+		"login",
+		"int",
+		"null"
+	},
+	{
+		"servant",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_kvt"
+	}
+}
+m_get_constellation_mission_reward_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"choice",
+		"int",
+		"null"
+	}
+}
+m_get_constellation_mission_reward_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"choice",
+		"int",
+		"null"
+	}
+}
+m_fantasy_info_tos = {}
+m_fantasy_info_toc = {
+	{
+		"angel",
+		"int",
+		"null"
+	},
+	{
+		"demon",
+		"int",
+		"null"
+	},
+	{
+		"win_side",
+		"int",
+		"null"
+	},
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"array",
+		"p_kvi"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"change_time",
+		"int",
+		"null"
+	},
+	{
+		"win_time",
+		"int",
+		"null"
+	}
+}
+m_fantasy_change_camp_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	}
+}
+m_fantasy_change_camp_toc = {
+	{
+		"camp",
+		"int",
+		"null"
+	}
+}
+m_fantasy_casino_info_tos = {}
+m_fantasy_casino_info_toc = {
+	{
+		"limit",
+		"int",
+		"null"
+	},
+	{
+		"history",
+		"array",
+		"p_invest"
+	}
+}
+p_invest = {
+	{
+		"date",
+		"int",
+		"null"
+	},
+	{
+		"score",
+		"array",
+		"int"
+	},
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"vote",
+		"int",
+		"null"
+	},
+	{
+		"give_back",
+		"int",
+		"null"
+	}
+}
+m_fantasy_casino_invest_tos = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_fantasy_casino_invest_toc = {
+	{
+		"camp",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_infinite_fantasy_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_infinite_fantasy_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"int",
+		"null"
+	},
+	{
+		"kill",
+		"int",
+		"null"
+	},
+	{
+		"effect_id",
+		"int",
+		"null"
+	}
+}
+m_front_log_tos = {
+	{
+		"log_id",
+		"int",
+		"null"
+	},
+	{
+		"keys",
+		"array",
+		"int"
+	}
+}
+m_role_astrolabe_info_tos = {}
+m_role_astrolabe_info_toc = {
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"week_exp",
+		"int",
+		"null"
+	},
+	{
+		"stars",
+		"array",
+		"p_kvi"
+	},
+	{
+		"exp_limit",
+		"int",
+		"null"
+	}
+}
+m_astrolabe_level_up_star_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_astrolabe_level_up_star_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"lv",
+		"int",
+		"null"
+	},
+	{
+		"exp",
+		"int",
+		"null"
+	},
+	{
+		"need",
+		"int",
+		"null"
+	}
+}
+m_astrolabe_config_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_astrolabe_config_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"next_exp",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_costume_tos = {}
+m_role_costume_toc = {
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"motion",
+		"array",
+		"int"
+	},
+	{
+		"suit",
+		"array",
+		"p_suit"
+	}
+}
+p_costume = {
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"motion",
+		"array",
+		"int"
+	},
+	{
+		"suit",
+		"array",
+		"p_suit"
+	}
+}
+p_suit = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"parts",
+		"array",
+		"p_kvi"
+	}
+}
+m_role_wardrobe_info_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_wardrobe_info_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"clothes",
+		"array",
+		"p_suit2"
+	}
+}
+p_suit2 = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"view",
+		"int",
+		"null"
+	},
+	{
+		"parts",
+		"array",
+		"p_kvi"
+	}
+}
+m_check_new_clothe_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_check_new_clothe_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_wear_costume_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_wear_costume_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_un_wear_costume_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_un_wear_costume_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_change_sex_tos = {
+	{
+		"sex",
+		"int",
+		"null"
+	}
+}
+m_change_sex_toc = {
+	{
+		"sex",
+		"int",
+		"null"
+	}
+}
+m_change_motion_tos = {
+	{
+		"motion",
+		"int",
+		"null"
+	}
+}
+m_change_motion_toc = {
+	{
+		"motion",
+		"array",
+		"int"
+	}
+}
+m_costume_dye_info_tos = {}
+m_costume_dye_info_toc = {
+	{
+		"dye",
+		"array",
+		"p_kvi"
+	}
+}
+m_costume_dye_tos = {
+	{
+		"dye",
+		"int",
+		"null"
+	},
+	{
+		"suit",
+		"array",
+		"p_kvl"
+	}
+}
+m_costume_dye_toc = {
+	{
+		"suit",
+		"array",
+		"p_suit"
+	}
+}
+m_costume_init_tos = {
+	{
+		"sex",
+		"int",
+		"null"
+	},
+	{
+		"motion",
+		"array",
+		"int"
+	},
+	{
+		"suit",
+		"array",
+		"p_kvi"
+	}
+}
+m_costume_init_toc = {
+	{
+		"costume",
+		"array",
+		"p_costume"
+	}
+}
+m_dynamic_limit_tos = {}
+m_dynamic_limit_toc = {
+	{
+		"silver",
+		"int",
+		"null"
+	},
+	{
+		"vit",
+		"int",
+		"null"
+	}
+}
+m_holo_servant_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"int",
+		"null"
+	}
+}
+m_holo_servant_toc = {
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_holo_info_tos = {}
+m_holo_info_toc = {
+	{
+		"servants",
+		"array",
+		"int"
+	},
+	{
+		"history",
+		"array",
+		"p_holo_his"
+	},
+	{
+		"speed_up",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"int",
+		"null"
+	},
+	{
+		"buff",
+		"int",
+		"null"
+	},
+	{
+		"next",
+		"int",
+		"null"
+	}
+}
+p_holo_his = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"p_kvi"
+	},
+	{
+		"param",
+		"array",
+		"int"
+	}
+}
+m_holo_supply_tos = {}
+m_holo_supply_toc = {
+	{
+		"goods",
+		"int",
+		"null"
+	}
+}
+m_holo_get_reward_tos = {
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_holo_get_reward_toc = {
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"items",
+		"array",
+		"p_kvi"
+	}
+}
+m_holo_speed_up_tos = {}
+m_holo_speed_up_toc = {
+	{
+		"speed_up",
+		"int",
+		"null"
+	}
+}
+m_holo_obj_attr_tos = {
+	{
+		"obj",
+		"int",
+		"null"
+	}
+}
+m_holo_obj_attr_toc = {
+	{
+		"obj",
+		"int",
+		"null"
+	},
+	{
+		"attr",
+		"array",
+		"p_kvi"
+	},
+	{
+		"event",
+		"array",
+		"p_kvi"
+	},
+	{
+		"event_num",
+		"int",
+		"null"
+	},
+	{
+		"next",
+		"array",
+		"p_kvi"
+	}
+}
+m_holo_obj_reward_tos = {
+	{
+		"obj",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_holo_obj_reward_toc = {
+	{
+		"obj",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_notify_holo_event_toc = {
+	{
+		"history",
+		"array",
+		"p_holo_his"
+	},
+	{
+		"buff",
+		"int",
+		"null"
+	},
+	{
+		"goods",
+		"int",
+		"null"
+	},
+	{
+		"next",
+		"int",
+		"null"
+	}
+}
+m_holo_send_gift_tos = {
+	{
+		"object",
+		"int",
+		"null"
+	},
+	{
+		"gift",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_holo_send_gift_toc = {
+	{
+		"object",
+		"int",
+		"null"
+	},
+	{
+		"can_theatre",
+		"int",
+		"null"
+	}
+}
+m_holo_base_info_tos = {}
+m_holo_base_info_toc = {
+	{
+		"objects",
+		"array",
+		"p_holo_object"
+	},
+	{
+		"front",
+		"array",
+		"p_kvt"
+	}
+}
+p_holo_object = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"event",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"front",
+		"array",
+		"p_kvt"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	},
+	{
+		"skin_list",
+		"int",
+		"null"
+	},
+	{
+		"pos",
+		"array",
+		"p_kvi"
+	}
+}
+m_holo_sync_pos_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"x",
+		"int",
+		"null"
+	},
+	{
+		"y",
+		"int",
+		"null"
+	}
+}
+m_holo_sync_pos_toc = {}
+m_holo_sync_event_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"event",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_holo_sync_event_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"event",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_holo_sync_state_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"front",
+		"array",
+		"p_kvt"
+	}
+}
+m_holo_sync_state_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"front",
+		"array",
+		"p_kvt"
+	}
+}
+m_holo_sync_object_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"born",
+		"array",
+		"p_holo_object"
+	}
+}
+m_holo_trigger_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"param1",
+		"int",
+		"null"
+	},
+	{
+		"param2",
+		"int",
+		"null"
+	}
+}
+m_holo_trigger_toc = {}
+m_holo_pause_tos = {
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"object",
+		"array",
+		"p_kvt"
+	}
+}
+m_holo_pause_toc = {
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_holo_change_skin_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_holo_change_skin_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"skin",
+		"int",
+		"null"
+	}
+}
+m_holo_give_up_fight_tos = {}
+m_holo_give_up_fight_toc = {}
+m_avalon_info_tos = {}
+m_avalon_info_toc = {
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"array",
+		"p_kvt"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	}
+}
+m_avalon_unlock_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_avalon_unlock_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_india_info_tos = {}
+m_india_info_toc = {
+	{
+		"opt",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"array",
+		"p_kvi"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	},
+	{
+		"daily",
+		"array",
+		"p_kvi"
+	}
+}
+m_india_dream_info_tos = {}
+m_india_dream_info_toc = {
+	{
+		"barrier",
+		"array",
+		"p_india_dream"
+	},
+	{
+		"now_copy",
+		"int",
+		"null"
+	}
+}
+p_india_dream = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"process",
+		"int",
+		"null"
+	},
+	{
+		"ticket",
+		"int",
+		"null"
+	}
+}
+m_india_buy_ticket_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_india_buy_ticket_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_india_dream_quit_tos = {}
+m_india_dream_quit_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_role_come_back_tos = {}
+m_role_come_back_toc = {
+	{
+		"lost_day",
+		"int",
+		"null"
+	},
+	{
+		"begin_time",
+		"int",
+		"null"
+	},
+	{
+		"end_time",
+		"int",
+		"null"
+	}
+}
+p_unmap_clannad = {
+	{
+		"barriers",
+		"array",
+		"p_kvt"
+	},
+	{
+		"can_open_helper",
+		"int",
+		"null"
+	},
+	{
+		"helpers",
+		"array",
+		"int"
+	}
+}
+m_clannad_select_helper_tos = {
+	{
+		"helper_id",
+		"int",
+		"null"
+	}
+}
+m_clannad_select_helper_toc = {
+	{
+		"helper_id",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	}
+}
+m_copy_act_batch_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_act_batch_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"copy",
+		"array",
+		"p_kvt"
+	}
+}
+m_copy_act_batch_update_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"copy",
+		"array",
+		"p_kvt"
+	}
+}
+m_main_app_save_tos = {
+	{
+		"pages",
+		"array",
+		"p_app_page"
+	}
+}
+m_main_app_info_tos = {}
+m_main_app_info_toc = {
+	{
+		"pages",
+		"array",
+		"p_app_page"
+	}
+}
+p_app_page = {
+	{
+		"page",
+		"int",
+		"null"
+	},
+	{
+		"positions",
+		"array",
+		"p_kvi"
+	}
+}
+m_copy_war_tos = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	}
+}
+m_copy_war_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_restart_war_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_war_debug_toc = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_war_enter_war_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_war_use_card_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"use_card_id",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	}
+}
+m_war_drop_card_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"card_id",
+		"int",
+		"null"
+	}
+}
+m_war_drop_card_toc = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"card_id",
+		"int",
+		"null"
+	}
+}
+m_war_use_card_toc = {
+	{
+		"is_self",
+		"int",
+		"null"
+	},
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"use_card_id",
+		"int",
+		"null"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	},
+	{
+		"change_list",
+		"array",
+		"p_card_update"
+	},
+	{
+		"effect_list",
+		"array",
+		"p_war_effect"
+	}
+}
+p_card_update = {
+	{
+		"change_type",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"update",
+		"array",
+		"p_update"
+	},
+	{
+		"servant",
+		"array",
+		"p_servant_war"
+	},
+	{
+		"buffs",
+		"array",
+		"p_update"
+	},
+	{
+		"list",
+		"array",
+		"int"
+	}
+}
+m_war_start_round_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_war_round_process_toc = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"war_round",
+		"int",
+		"null"
+	},
+	{
+		"pk_list",
+		"array",
+		"p_servant_pk"
+	},
+	{
+		"enter_list",
+		"array",
+		"p_servant_war"
+	},
+	{
+		"fall_list",
+		"array",
+		"int"
+	},
+	{
+		"final_list",
+		"array",
+		"p_servant_war_brief"
+	},
+	{
+		"other_buffs",
+		"array",
+		"p_update"
+	},
+	{
+		"effect_list",
+		"array",
+		"p_war_effect"
+	},
+	{
+		"opp_servant_num",
+		"int",
+		"null"
+	},
+	{
+		"round_start",
+		"int",
+		"null"
+	},
+	{
+		"self_cards",
+		"array",
+		"p_war_card"
+	}
+}
+m_war_round_info_toc = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"war_round",
+		"int",
+		"null"
+	},
+	{
+		"war_servants",
+		"array",
+		"p_servant_war"
+	},
+	{
+		"other_buffs",
+		"array",
+		"p_update"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"batch",
+		"int",
+		"null"
+	},
+	{
+		"batch_num",
+		"int",
+		"null"
+	},
+	{
+		"opp_servant_num",
+		"int",
+		"null"
+	},
+	{
+		"side",
+		"int",
+		"null"
+	},
+	{
+		"self_cards",
+		"array",
+		"p_war_card"
+	}
+}
+m_war_fight_result_toc = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"batch",
+		"int",
+		"null"
+	},
+	{
+		"batch_num",
+		"int",
+		"null"
+	}
+}
+m_war_cancel_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+m_war_give_up_tos = {
+	{
+		"war_id",
+		"int",
+		"null"
+	}
+}
+p_servant_war = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"int",
+		"null"
+	},
+	{
+		"attr",
+		"array",
+		"p_war_attr"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	},
+	{
+		"states",
+		"array",
+		"p_kvt"
+	}
+}
+p_servant_war_fall = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"name",
+		"String",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	}
+}
+p_servant_war_brief = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"nature",
+		"int",
+		"null"
+	},
+	{
+		"attr",
+		"array",
+		"p_war_attr"
+	},
+	{
+		"brief_pos",
+		"int",
+		"null"
+	},
+	{
+		"states",
+		"array",
+		"p_kvt"
+	}
+}
+p_war_card = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"from_id",
+		"int",
+		"null"
+	}
+}
+p_war_effect = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"phase",
+		"int",
+		"null"
+	},
+	{
+		"tar_type",
+		"int",
+		"null"
+	},
+	{
+		"tar_value",
+		"array",
+		"p_kvt"
+	},
+	{
+		"buff_type",
+		"int",
+		"null"
+	},
+	{
+		"client_id",
+		"int",
+		"null"
+	},
+	{
+		"effect_value",
+		"array",
+		"int"
+	}
+}
+p_war_attr = {
+	{
+		"power",
+		"int",
+		"null"
+	},
+	{
+		"max_power",
+		"int",
+		"null"
+	},
+	{
+		"orig_power",
+		"int",
+		"null"
+	}
+}
+p_servant_pk = {
+	{
+		"index",
+		"int",
+		"null"
+	},
+	{
+		"left_id",
+		"int",
+		"null"
+	},
+	{
+		"right_id",
+		"int",
+		"null"
+	},
+	{
+		"effect_list",
+		"array",
+		"p_kvt"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	}
+}
+m_war_fight_result_show_toc = {
+	{
+		"war_id",
+		"int",
+		"null"
+	},
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"int",
+		"null"
+	},
+	{
+		"item_reward",
+		"array",
+		"p_reward"
+	},
+	{
+		"replace_list",
+		"array",
+		"p_reward_replace"
+	}
+}
+m_ark_info_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_ark_info_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"event",
+		"array",
+		"p_ark_event"
+	},
+	{
+		"war",
+		"int",
+		"null"
+	},
+	{
+		"war_event",
+		"int",
+		"null"
+	}
+}
+p_ark_event = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"refresh",
+		"int",
+		"null"
+	},
+	{
+		"spec_type",
+		"String",
+		"null"
+	},
+	{
+		"spec_data",
+		"array",
+		"binary"
+	}
+}
+m_ark_go_tos = {}
+m_ark_go_toc = {}
+m_ark_change_map_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_ark_change_map_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	}
+}
+m_ark_buy_fuel_tos = {}
+m_ark_buy_fuel_toc = {}
+m_ark_get_reward_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+p_ark_copy = {
+	{
+		"copy_id",
+		"int",
+		"null"
+	},
+	{
+		"tier",
+		"array",
+		"p_ark_tier"
+	},
+	{
+		"mop",
+		"int",
+		"null"
+	},
+	{
+		"now",
+		"int",
+		"null"
+	}
+}
+p_ark_tier = {
+	{
+		"tier_id",
+		"int",
+		"null"
+	},
+	{
+		"prop",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"int"
+	},
+	{
+		"batch",
+		"array",
+		"p_ark_batch"
+	}
+}
+p_ark_batch = {
+	{
+		"batch_id",
+		"int",
+		"null"
+	},
+	{
+		"military",
+		"int",
+		"null"
+	},
+	{
+		"strategy",
+		"int",
+		"null"
+	},
+	{
+		"prop",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+p_ark_resource = {
+	{
+		"base_reward",
+		"int",
+		"null"
+	},
+	{
+		"speed",
+		"int",
+		"null"
+	},
+	{
+		"gain",
+		"int",
+		"null"
+	},
+	{
+		"can_gain",
+		"int",
+		"null"
+	},
+	{
+		"limit",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"int"
+	}
+}
+p_ark_reward = {
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"reward",
+		"array",
+		"int"
+	}
+}
+m_ark_resource_update_toc = {
+	{
+		"event_id",
+		"int",
+		"null"
+	},
+	{
+		"gain",
+		"int",
+		"null"
+	},
+	{
+		"can_gain",
+		"int",
+		"null"
+	},
+	{
+		"next_refresh",
+		"int",
+		"null"
+	}
+}
+m_ark_get_reward_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	},
+	{
+		"nth",
+		"int",
+		"null"
+	}
+}
+m_ark_mop_up_tos = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_ark_mop_up_toc = {
+	{
+		"map_id",
+		"int",
+		"null"
+	},
+	{
+		"event_id",
+		"int",
+		"null"
+	}
+}
+m_room_create_tos = {
+	{
+		"type_value",
+		"int",
+		"null"
+	}
+}
+m_room_create_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"type_value",
+		"int",
+		"null"
+	}
+}
+m_room_dissolve_tos = {}
+m_room_dissolve_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_enter_tos = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_enter_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_match_tos = {
+	{
+		"type_value",
+		"int",
+		"null"
+	}
+}
+m_room_invite_tos = {
+	{
+		"target_id",
+		"long",
+		"null"
+	}
+}
+m_room_invite_toc = {
+	{
+		"target_id",
+		"long",
+		"null"
+	}
+}
+m_room_be_invited_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"type_value",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	}
+}
+m_room_invite_reply_tos = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"reply",
+		"int",
+		"null"
+	}
+}
+m_room_invite_reply_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"reply",
+		"int",
+		"null"
+	}
+}
+m_room_kick_tos = {
+	{
+		"target_id",
+		"long",
+		"null"
+	}
+}
+m_room_kick_toc = {
+	{
+		"target_id",
+		"long",
+		"null"
+	}
+}
+m_room_be_kicked_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"type_value",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"int",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	}
+}
+m_room_setting_tos = {
+	{
+		"change",
+		"array",
+		"p_kvi"
+	},
+	{
+		"change2",
+		"array",
+		"p_ks"
+	}
+}
+m_room_setting_toc = {}
+m_room_operation_tos = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"op_value",
+		"long",
+		"null"
+	}
+}
+m_room_operation_toc = {
+	{
+		"op_type",
+		"int",
+		"null"
+	},
+	{
+		"op_value",
+		"long",
+		"null"
+	}
+}
+m_room_quit_tos = {}
+m_room_quit_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_info_tos = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_info_toc = {
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"type_value",
+		"int",
+		"null"
+	},
+	{
+		"create",
+		"long",
+		"null"
+	},
+	{
+		"setting",
+		"array",
+		"p_kvi"
+	},
+	{
+		"members",
+		"array",
+		"p_room_member"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"state_time",
+		"int",
+		"null"
+	},
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+p_room_member = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"costume",
+		"array",
+		"p_costume"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	},
+	{
+		"servant_type",
+		"int",
+		"null"
+	},
+	{
+		"explain",
+		"int",
+		"null"
+	}
+}
+m_room_update_toc = {
+	{
+		"update_type",
+		"int",
+		"null"
+	},
+	{
+		"room_id",
+		"int",
+		"null"
+	},
+	{
+		"change",
+		"array",
+		"p_dkv"
+	},
+	{
+		"members",
+		"array",
+		"p_room_member"
+	}
+}
+m_room_team_tos = {
+	{
+		"room_id",
+		"int",
+		"null"
+	}
+}
+m_room_team_toc = {
+	{
+		"update_type",
+		"int",
+		"null"
+	},
+	{
+		"update_vals",
+		"array",
+		"p_room_team_servant"
+	}
+}
+p_room_team_servant = {
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"role_state",
+		"int",
+		"null"
+	},
+	{
+		"role_explain",
+		"int",
+		"null"
+	},
+	{
+		"role_sort",
+		"int",
+		"null"
+	},
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"skin_id",
+		"int",
+		"null"
+	},
+	{
+		"star",
+		"int",
+		"null"
+	},
+	{
+		"overstep",
+		"int",
+		"null"
+	},
+	{
+		"relic",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"fight_skill",
+		"array",
+		"p_skill"
+	},
+	{
+		"attr",
+		"array",
+		"p_attr"
+	},
+	{
+		"element",
+		"array",
+		"p_fight_element"
+	}
+}
+m_room_start_toc = {
+	{
+		"fight_id",
+		"int",
+		"null"
+	}
+}
+m_copy_straight_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_straight_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"array",
+		"p_straight_barrier"
+	}
+}
+p_straight_barrier = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"pass",
+		"int",
+		"null"
+	},
+	{
+		"first_reward",
+		"int",
+		"null"
+	},
+	{
+		"open_time",
+		"int",
+		"null"
+	},
+	{
+		"open",
+		"int",
+		"null"
+	}
+}
+m_buy_copy_multi_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"num",
+		"int",
+		"null"
+	}
+}
+m_buy_copy_multi_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"group",
+		"int",
+		"null"
+	},
+	{
+		"has",
+		"int",
+		"null"
+	},
+	{
+		"buy",
+		"int",
+		"null"
+	},
+	{
+		"max",
+		"int",
+		"null"
+	}
+}
+m_get_straight_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"int",
+		"null"
+	}
+}
+m_get_straight_reward_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"barrier",
+		"int",
+		"null"
+	}
+}
+m_copy_multi_reward_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_copy_multi_reward_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"group",
+		"int",
+		"null"
+	},
+	{
+		"max",
+		"int",
+		"null"
+	},
+	{
+		"has",
+		"int",
+		"null"
+	},
+	{
+		"buy",
+		"int",
+		"null"
+	}
+}
+m_act_banner_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_act_banner_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"banner",
+		"array",
+		"int"
+	}
+}
+m_comment_main_info_tos = {
+	{
+		"ids",
+		"array",
+		"int"
+	}
+}
+m_comment_main_info_toc = {
+	{
+		"mains",
+		"array",
+		"p_comment_main"
+	}
+}
+p_comment_main = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_num",
+		"int",
+		"null"
+	},
+	{
+		"comment",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	}
+}
+m_comment_main_like_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_comment_main_like_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	}
+}
+m_get_act_comment_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"sort_type",
+		"int",
+		"null"
+	},
+	{
+		"from",
+		"int",
+		"null"
+	},
+	{
+		"to",
+		"int",
+		"null"
+	}
+}
+m_get_act_comment_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comments",
+		"array",
+		"p_act_comment"
+	}
+}
+p_act_comment = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"time",
+		"int",
+		"null"
+	},
+	{
+		"role_id",
+		"long",
+		"null"
+	},
+	{
+		"role_name",
+		"String",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	},
+	{
+		"title",
+		"array",
+		"int"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	},
+	{
+		"extra",
+		"int",
+		"null"
+	}
+}
+m_act_comment_release_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	}
+}
+m_act_comment_release_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"content",
+		"String",
+		"null"
+	}
+}
+m_act_comment_del_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	}
+}
+m_act_comment_del_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	}
+}
+m_act_comment_like_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"opt",
+		"int",
+		"null"
+	}
+}
+m_act_comment_like_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"comment_id",
+		"int",
+		"null"
+	},
+	{
+		"like_num",
+		"int",
+		"null"
+	},
+	{
+		"is_like",
+		"int",
+		"null"
+	}
+}
+m_mea_channel_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+m_mea_channel_toc = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"dynamic",
+		"array",
+		"p_kvi"
+	}
+}
+m_mea_tag_info_tos = {}
+m_mea_tag_info_toc = {
+	{
+		"tag_info",
+		"array",
+		"p_mea_tag"
+	}
+}
+m_mea_check_tag_tos = {
+	{
+		"id",
+		"int",
+		"null"
+	}
+}
+p_mea_tag = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"has_new",
+		"int",
+		"null"
+	},
+	{
+		"new_main",
+		"array",
+		"int"
+	}
+}
+m_rabbit_house_info_tos = {}
+m_rabbit_house_info_toc = {
+	{
+		"column",
+		"array",
+		"p_rabbit_column"
+	},
+	{
+		"effect",
+		"array",
+		"p_kvi"
+	},
+	{
+		"stats",
+		"array",
+		"p_kvi"
+	}
+}
+p_rabbit_column = {
+	{
+		"id",
+		"int",
+		"null"
+	},
+	{
+		"menu",
+		"array",
+		"p_kvt"
+	}
+}
+m_rabbit_house_upgrade_menu_tos = {
+	{
+		"column",
+		"int",
+		"null"
+	},
+	{
+		"menu_id",
+		"int",
+		"null"
+	}
+}
+m_rabbit_house_upgrade_menu_toc = {
+	{
+		"column",
+		"int",
+		"null"
+	},
+	{
+		"menu_id",
+		"int",
+		"null"
+	},
+	{
+		"level",
+		"int",
+		"null"
+	},
+	{
+		"state",
+		"int",
+		"null"
+	}
+}
+m_sync_rabbit_house_effect_toc = {
+	{
+		"effect",
+		"array",
+		"p_kvi"
+	}
+}
+m_score_exchange_score_tos = {
+	{
+		"plan_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_score_exchange_score_toc = {
+	{
+		"plan_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_auto_exchange_toc = {
+	{
+		"lost_list",
+		"array",
+		"p_kvi"
+	},
+	{
+		"got_list",
+		"array",
+		"p_kvi"
+	}
+}
+m_sync_rabbit_house_state_toc = {
+	{
+		"menu",
+		"array",
+		"p_kvt"
+	},
+	{
+		"stats",
+		"array",
+		"p_kvi"
+	}
+}
+m_daily_luck_draw_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_daily_luck_draw_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"process",
+		"array",
+		"p_kvi"
+	},
+	{
+		"status",
+		"int",
+		"null"
+	},
+	{
+		"rewards",
+		"array",
+		"p_kvt"
+	}
+}
+m_daily_luck_draw_result_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_daily_luck_draw_result_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"result",
+		"array",
+		"p_draw_result"
+	}
+}
+p_draw_result = {
+	{
+		"timestamp",
+		"int",
+		"null"
+	},
+	{
+		"list",
+		"array",
+		"p_draw_people"
+	}
+}
+p_draw_people = {
+	{
+		"type",
+		"int",
+		"null"
+	},
+	{
+		"roles",
+		"array",
+		"p_dks"
+	}
+}
+m_daily_luck_draw_reward_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_daily_luck_draw_reward_toc = {
+	{
+		"rewards",
+		"array",
+		"p_kvt"
+	}
+}
+m_anniversary_data_tos = {}
+m_anniversary_data_toc = {
+	{
+		"handbook",
+		"int",
+		"null"
+	},
+	{
+		"day",
+		"int",
+		"null"
+	},
+	{
+		"avatar",
+		"array",
+		"p_avatar"
+	},
+	{
+		"tags",
+		"array",
+		"int"
+	},
+	{
+		"flag",
+		"String",
+		"null"
+	}
+}
+m_anniversary_tag_tos = {
+	{
+		"tags",
+		"array",
+		"int"
+	}
+}
+m_anniversary_tag_toc = {
+	{
+		"tags",
+		"array",
+		"int"
+	}
+}
+m_anniversary_flag_tos = {
+	{
+		"flag",
+		"String",
+		"null"
+	}
+}
+m_anniversary_flag_toc = {
+	{
+		"flag",
+		"String",
+		"null"
+	}
+}
+m_anniversary_log_click_tos = {
+	{
+		"page",
+		"int",
+		"null"
+	},
+	{
+		"hold_time",
+		"int",
+		"null"
+	}
+}
+m_anniversary_log_share_tos = {
+	{
+		"type",
+		"int",
+		"null"
+	}
+}
+m_guess_picture_info_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	}
+}
+m_guess_picture_info_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}
+m_guess_picture_end_tos = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"start_time",
+		"int",
+		"null"
+	},
+	{
+		"hp",
+		"int",
+		"null"
+	}
+}
+m_guess_picture_end_toc = {
+	{
+		"act_id",
+		"int",
+		"null"
+	},
+	{
+		"times",
+		"int",
+		"null"
+	}
+}

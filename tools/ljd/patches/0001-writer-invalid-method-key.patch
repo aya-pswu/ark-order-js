@@ -1,0 +1,25 @@
+diff --git a/ljd/lua/writer.py b/ljd/lua/writer.py
+index 0e5dfd4..6b5b0ee 100644
+--- a/ljd/lua/writer.py
++++ b/ljd/lua/writer.py
+@@ -707,9 +707,17 @@ class Visitor(traverse.Visitor):
+ 
+             self._write(":")
+ 
+-            assert self._is_valid_name(func.key)
+-
+-            self._write(func.key.value)
++            if not self._is_valid_name(func.key):
++                self._write("[")
++                if isinstance(func.key, nodes.Identifier):
++                    self._visit(func.key)
++                elif isinstance(func.key.value, str):
++                    self._write("%q" % func.key.value)
++                else:
++                    self._write(repr(func.key.value))
++                self._write("]")
++            else:
++                self._write(func.key.value)
+             self._skip(func.key)
+ 
+             self._skip(node.function)
