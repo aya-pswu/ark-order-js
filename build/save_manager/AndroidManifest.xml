@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 方舟指令单机版 · 存档管理器（与游戏包不同包名，可独立安装/卸载互不影响） -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fzzl.savemgr"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <!-- Internet：连游戏内置服务端 127.0.0.1:8081（HTTP 明文回环 → usesCleartextTraffic） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 存储：备份文件写公共 Download（targetSdk 29 + legacy 视图） -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29" />
+
+    <application
+        android:label="存档管理器"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

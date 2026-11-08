@@ -1,0 +1,1 @@
+{"presets": [["@babel/preset-env", {"targets": {"ie": "9"}, "modules": false}]], "sourceType": "script", "parserOpts": {"allowReturnOutsideFunction": true}}

@@ -1,0 +1,51 @@
+{
+  "abi": "arm64",
+  "built_at": "2026-10-18 18:34:58",
+  "psnode": {
+    "bytes": 8456,
+    "md5": "d07ff134935b"
+  },
+  "libnode": {
+    "bytes": 62475584,
+    "md5": "4babb0b33d86",
+    "elf64": true,
+    "machine": "0xb7",
+    "is_aarch64": true,
+    "min_align": "0x1000",
+    "load_off_mod_16k": [
+      0,
+      1792,
+      10416,
+      3976
+    ],
+    "load_va_mod_16k": [
+      0,
+      5888,
+      2224,
+      16264
+    ]
+  },
+  "libc++_shared": {
+    "bytes": 6761584,
+    "md5": "9129e5922bb9"
+  },
+  "psnode_elf": {
+    "elf64": true,
+    "machine": "0xb7",
+    "is_aarch64": true,
+    "min_align": "0x1000",
+    "load_off_mod_16k": [
+      0,
+      2652,
+      3760,
+      4512
+    ],
+    "load_va_mod_16k": [
+      0,
+      6748,
+      11952,
+      416
+    ]
+  },
+  "total_bytes": 69245624
+}

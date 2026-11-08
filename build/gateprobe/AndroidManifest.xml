@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  64 位 exec 闸门探针（B0-1）
+
+  存在的唯一目的：在一个 **untrusted_app 域的应用进程内** 测试
+  "能否 execve 自己私有目录里的 64 位二进制"。
+
+  为什么不能直接用 `adb shell run-as <pkg> sh -c ...` 测（2026-10-18 实测踩到）：
+  run-as 会把进程切到 `u:r:runas_app:s0`，**不是** untrusted_app_27。
+  只有本 Activity 所在的进程（zygote fork、应用自己的域）才是要测的那个域。
+
+  · targetSdk=26 —— 与游戏包一致，落到同一个 SELinux 域（untrusted_app_27），
+    这也是"用 8 KB 探针包代替 1.5 GB 主包"方案的前提；Activity 会打印自己的域自证。
+  · 绝不分发。
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bilibili.fzzl.gateprobe"
+    android:versionCode="2"
+    android:versionName="2.0">
+
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="26" />
+
+    <application
+        android:label="gateprobe"
+        android:debuggable="true">
+        <activity
+            android:name=".GateActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

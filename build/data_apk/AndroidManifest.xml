@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  数据包 APK（com.bilibili.fzzl.guopan.data）——主包的资源载体，本包不含任何代码（hasCode=false）。
+
+  设计要点（2026-09-16 按需求调整）：
+  1) 图标与主包一致：res/drawable-*/app_icon.png 由 build_data_apk.py 从主包 APK 提取
+     （用 aapt list -v 的逻辑名 + CRC 反查 zip 实际条目，见脚本内注释）。
+  2) 名称标注为「数据包」，与主包「方舟指令」区分。
+  3) **桌面像正常 app 一样可见**，便于主包首启拷贝完 res 之后直接卸载本包。
+     做法：注册 LAUNCHER 入口，Activity 直接用 framework 的 android.app.Activity
+     （本包无代码，只能引用系统类），配半透明主题 —— 点开不白屏、返回即退。
+     android:exported="true" 是必须的（带 intent-filter 且在较新 targetSdk 上为硬性要求）。
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bilibili.fzzl.guopan.data"
+    android:versionCode="2"
+    android:versionName="1.1">
+
+    <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="26"/>
+
+    <application
+        android:label="数据包"
+        android:icon="@drawable/app_icon"
+        android:hasCode="false"
+        android:extractNativeLibs="false">
+
+        <activity
+            android:name="android.app.Activity"
+            android:label="数据包"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,88 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net40</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RootNamespace>PsLocalServer</RootNamespace>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- ★ 2026-09-14 真机教训：用【游戏自带 DLL】作为编译引用（NoStdLib + 显式 Reference），
+         编译器直接产出与设备 mono profile（mscorlib 2.0/System.Core 3.5）完全匹配的 IL：
+         老式 lock（Monitor.Enter(object)）、2 参 Path.Combine、System.Core 的 Action/Func、
+         System.dll 的 DeflateStream —— 从根上消除 TypeLoadException/MissingMethodException。
+         参考程序集（net40 ref asm）已弃用：它把类型摆在与设备不同的程序集里。 -->
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <FrameworkPathOverride>$(MSBuildThisFileDirectory)..\..\..\fzzl\assets\bin\Data\Managed</FrameworkPathOverride>
+    <OutputPath>bin\Debug\net40device\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 设备 profile 基础程序集（游戏自带，只读引用；CopyLocal=false 防拷进输出） -->
+    <Reference Include="mscorlib">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\mscorlib.dll</HintPath>
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\System.dll</HintPath>
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\System.Core.dll</HintPath>
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Jint" Version="2.11.58" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- 引用游戏自带的 Unity 程序集（只读引用，打进 APK 的仍是游戏原有文件） -->
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- BootUi 海报加载用 WWW（旧式 jar URI 读 StreamingAssets；2026-11-08 三百一十九）。
+         WWW 在本引擎被类型转发到 UnityWebRequestWWWModule，须显式引用（编译期即抓）。 -->
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- ★ zlib.net（纯托管 zlib 移植，游戏自带、客户端 LuaRemoteSocket 自己就在用它解帧）。
+         ⚠️ 2026-09-16 真机教训：**绝不能用 System.IO.Compression.DeflateStream** ——
+         mono 的 DeflateStream 底层 P/Invoke libMonoPosixHelper.so，而设备 APK 里
+         该 .so 被 Unity 链接器剥离（与当年 tz 问题同源），一压就抛
+         `DllNotFoundException: MonoPosixHelper`。详见 Shims/PsZlib.cs。 -->
+    <Reference Include="zlib.net">
+      <HintPath>..\..\..\fzzl\assets\bin\Data\Managed\zlib.net.dll</HintPath>
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RemoveDeviceAssemblies" AfterTargets="Build">
+    <!-- 设备 profile 程序集是只读引用，绝不能拷进产物（APK 里已有游戏原版） -->
+    <Delete Files="$(OutputPath)mscorlib.dll;$(OutputPath)System.dll;$(OutputPath)System.Core.dll;$(OutputPath)System.Xml.dll" ContinueOnError="true" />
+  </Target>
+</Project>
