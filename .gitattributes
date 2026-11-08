@@ -1,0 +1,26 @@
+# Normalize all text files to LF (checked out as LF even on Windows).
+# This kills the recurring CRLF/LF drift problem for good.
+* text=auto eol=lf
+
+# Windows script files that must keep CRLF for cmd.exe compatibility
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.apk binary
+*.keystore binary
+*.jks binary
+*.bin binary
+*.ab binary
+*.dll binary
+*.exe binary
+*.so binary
+*.zip binary
+*.7z binary

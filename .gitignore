@@ -1,0 +1,69 @@
+# --- runtime data (written by the server; NEVER commit) --------------------
+server/logs/
+server/saves/
+server/accounts.json
+server/player_state.json
+server/player_state.json.*
+server/*.log
+*.log
+
+# --- build-time generated (client assembly + asset preparation) -------------
+# tools/lua_remote/{bc,src} is assembled by build/client_assembly.py from the
+# local game AB files (see README "Building the APK"); the patch overlay that
+# feeds it lives in client/ (tracked).
+tools/lua_remote/
+build/out/
+build/pslocal/assets_staging/
+build/pslocal/testroot/
+build/pslocal/_trash/
+build/pslocal/babel/node_modules/
+build/pslocal/PsLocalServer/Boot/SeedStamp.g.cs
+build/**/bin/
+build/**/obj/
+
+# --- machine-local external inputs (game files & secrets, not distributable) --
+fzzl/
+fzzl.apk
+tools/fzzl*
+tools/dotnetsdk/
+tools/*.apk
+tools/*.apk.idsig
+tools/*.keystore
+tools/*.jks
+tools/dotsdk.zip
+tools/files.tar
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.key
+*.pem
+*.token
+*.ppk
+id_rsa
+id_dsa
+FZZL_KS_PASS*
+/*.webp
+
+# --- one-off files ----------------------------------------------------------
+*.bak
+*.bak.*
+*.bak_*
+*.bak-*
+tmp/
+_tmp/
+~$*
+-~
+
+# --- editors / OS / session junk --------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+.zcode/
+.agents/
+__pycache__/
+*.py[cod]
+*.pyc
+node_modules/

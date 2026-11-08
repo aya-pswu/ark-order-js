@@ -1,0 +1,29 @@
+NOTICE
+======
+
+This repository contains two clearly separated kinds of content:
+
+1. Original source code and build tooling (everything under `server/`, `build/`,
+   `gates/`, `client/` and the top-level metadata files), authored for this
+   project. This content is licensed under the Creative Commons
+   Attribution-NonCommercial-ShareAlike 4.0 International license (see LICENSE).
+
+2. Game-derived data files (`server/data/*.js`, `tools/key_lua/`, the CfgItems /
+   CfgSkillDetail / CfgMain reference tables under `tools/`). These tables were
+   extracted from the mobile game "Ark Order" purely for interoperability with
+   this project's own server implementation. They are NOT covered by the license
+   above, remain the property of their respective owners, and are included
+   solely for personal and educational use together with this project.
+
+Third-party vendored component:
+
+* `tools/ljd/` — LuaJIT bytecode decompiler, vendored with local patches.
+  Upstream and local modifications are distributed under the GNU GPL-3.0
+  (see tools/ljd/LICENSE and tools/ljd/LICENSE-upstream).
+
+Disclaimer:
+
+  This is an unofficial fan project. It is not affiliated with, endorsed by, or
+  sponsored by the original developers, publishers, or licensors of Ark Order.
+  All trademarks, copyrights, and game assets belong to their respective
+  owners. Use at your own risk, for personal and educational purposes only.
