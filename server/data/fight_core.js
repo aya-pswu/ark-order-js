@@ -2421,6 +2421,8 @@ function resolveTargetPos(pool, briefPos) {
 // 凝视（10269）锁定技除外 × 心灵暗示（10003）只许被锁技 × 天击（10261）禁攻击技
 function aiUsableList(unit) {
   return (unit.skills || []).filter(s => s.pp > 0 && aiUsable(skillCfg(s.id))
+    // 10323 永恒解脱：解脱状态只能使用辅助技能
+    && (!unit.eternalReleased || (() => { const c = skillCfg(s.id); return c && !((c.type === 1 || c.type === 2) && c.power > 0); })())
     && !((unit.gazeRounds || 0) > 0 && Number(s.id) === Number(unit.gazeSkillId))
     && (!(unit.mindShackleCount > 0) || (unit.mindShackleSkillId != null && Number(s.id) === Number(unit.mindShackleSkillId)))
     && (!((unit.noAttackRounds || 0) > 0) || !((c => c && (Number(c.type) === 1 || Number(c.type) === 2) && Number(c.power) > 0)(skillCfg(s.id)))));
@@ -3744,7 +3746,7 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       }
     }
     const totalCritStage = critHitLv + skillCritStage + clannadCritBonus + ayameCritBonus + shionCritDebuff + razielCritBonus + changxiCritBonus + finnCritBonus + virudhakaCritBonus + tomoyoRelicCritExtra;
-    const critRate = Math.min(1.0, Math.max(0, critRateOfStage(totalCritStage) + feelCritBonus(actor) + (actor.critRateBonus || 0) + sifCritRateBonus + tyrTargetCritBonus + yinglongCritBonus + cthughaCritRateBonus));
+    const critRate = Math.min(1.0, Math.max(0, critRateOfStage(totalCritStage) + feelCritBonus(actor) + (actor.critRateBonus || 0) + sifCritRateBonus + tyrTargetCritBonus + yinglongCritBonus + cthughaCritRateBonus + (Number(actor.forgiveCritPct) || 0)));
     const crit = !isImmune && (isForceCrit || rnd() < critRate);
     actor.nextCritBonus = 0; // 10307 临时暴击等级一次性
 
@@ -4819,6 +4821,12 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       if ((t.inDmgUpRounds || 0) > 0) exclusiveOutInMul *= 1 + (Number(t.inDmgUpPct) || 0);
       // 10375 圣甲虫护壳：己方 3 回合内受到伤害降低（teamDmgDownRounds/Pct）
       if ((t.teamDmgDownRounds || 0) > 0) exclusiveOutInMul *= 1 - Math.min(1, (Number(t.teamDmgDownPct) || 0) / 100);
+      // 10253 王座的守护：本回合受到伤害 -25%
+      if ((t.inDmgDownRounds || 0) > 0) exclusiveOutInMul *= 1 - Math.min(1, (Number(t.inDmgDownPct) || 0) / 100);
+      // 10323 永恒解脱：开启期间自身伤害 ×4
+      if ((actor.eternalReleaseRounds || 0) > 0) exclusiveOutInMul *= (Number(actor.eternalReleaseDmgMul) || 4);
+      // 10414 无上宽恕：5 回合内造成伤害 +n×10%
+      if ((actor.forgiveDmgRounds || 0) > 0) exclusiveOutInMul *= 1 + (Number(actor.forgiveDmgPct) || 0);
       // 元素融合（10173）：克制伤害提升30%（同属性修正在 same 段消费）
       if (actor.fusionActive && rel === 1) exclusiveOutInMul *= 1.3;
       // 弱者的反击（10266）：施放时按降低的等级数一次性增伤（本次行动全程有效，行动开始时已重置）
@@ -5085,6 +5093,18 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
           change_type: 200000, change_value: [-back], remove_round: 0,
         });
       }
+    }
+    // 10323 永恒解脱：解脱状态下被魔攻技能攻击必定被击倒（护盾吸收后按剩余生命强制归零）
+    if (t.eternalReleased && Number(cfg.type) === 2 && hurt > 0) hurt = Math.max(hurt, t.hp);
+    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者
+    if ((t.reflectDirectRounds || 0) > 0 && hurt > 0 && actor && actor.hp > 0) {
+      const back = Math.max(1, Math.round(hurt));
+      actor.hp = Math.max(0, actor.hp - back);
+      wakeEffects.push({
+        trigger_count: 0, atk_servant_id: actor.id, src_servant_id: t.id, tar_servant_ids: [actor.id],
+        src_type: 3, src_id: 10399, id: 60120, effect_phase: phase,
+        change_type: 200000, change_value: [-back], remove_round: 0,
+      });
     }
     // 2026-10-27：落账前快照。此行之后到落账为止的 t.hp 直改（暗夜主宰10336吸血/仇恨吸引
     // 回血/狼人20870回血/亥22100盾回/阿修罗22720回血/乌波萨斯拉21880回血/八咫乌21390与
@@ -6153,6 +6173,11 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       if (actor.talent === 21400 && cfg.power > 0) actor.shutenRage = true;
     }
 
+    // 10253 王座的守护：本回合每受到一次攻击，较高一项攻击 +1
+    if ((hurt > 0 || shieldHurt > 0) && (t.kingsGuardRounds || 0) > 0) {
+      const kgProp = (t.attrs && t.attrs.phy_atk >= t.attrs.mag_atk) ? 101 : 102;
+      gainStat(t, kgProp, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
+    }
     // 记录目标受击者历史（供夏色祭友情的力量判定）
     if (hurt > 0) {
       t.hitThisRound = true;
@@ -8137,6 +8162,151 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
       f.tauntRounds = 99; // 次数由 tauntHitsLeft 管理（不让回合递减提前清除）
     });
   }
+  // —— 2026-11-10 P1 辅助技批次（13 个）——
+  if (rule.bloodRuin) {
+    // 10263 血坏：物攻等级提升至最大；之后 3 回合回合末损失递增的生命
+    gainStat(actor, 101, 6, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+    actor.bloodRuinRounds = Math.max(actor.bloodRuinRounds || 0, Number(rule.bloodRuin.rounds) || 3);
+    actor.bloodRuinTurn = 0;
+    actor.bloodRuinPerTurnPct = Number(rule.bloodRuin.perTurnPct) || 10;
+    actor.bloodRuinMaxPct = Number(rule.bloodRuin.maxPct) || 30;
+  }
+  if (rule.selfTaunt) {
+    // 10285 ORa！：本回合获得仇恨吸引；随机一项防御 +1
+    (allUnits || []).filter(u => u && u.hp > 0 && u.side !== actor.side).forEach(f => {
+      f.tauntedBy = actor.id;
+      f.tauntRounds = Math.max(f.tauntRounds || 0, Number(rule.selfTaunt.rounds) || 1);
+    });
+    if (rule.randomDefUp) gainStat(actor, Math.random() < 0.5 ? 103 : 104, Number(rule.randomDefUp), { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+  }
+  if (rule.invertNegativeTarget) {
+    // 10305 善根萌长：负面能力等级转为同数值的正向等级
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      [101, 102, 103, 104, 105].forEach(pr => {
+        const lv = (t.statLevels && t.statLevels[pr]) || 0;
+        if (lv < 0) gainStat(t, pr, -2 * lv, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: t.id, phase });
+      });
+    });
+  }
+  if (rule.statDownImmunityRounds) {
+    // 10320 注意集中：能力等级不会降低
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.statDownImmuneRounds = Math.max(t.statDownImmuneRounds || 0, Number(rule.statDownImmunityRounds) || 3);
+    });
+  }
+  if (rule.noAbnormalRounds) {
+    // 10320 注意集中：不会进入异常
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.noAbnormalRounds = Math.max(t.noAbnormalRounds || 0, Number(rule.noAbnormalRounds) || 3);
+    });
+  }
+  if (rule.kingsGuard) {
+    // 10253 王座的守护：本回合受伤 -25%，每受一次攻击较高攻 +1
+    const kg = rule.kingsGuard;
+    const rounds = Number(kg.rounds) || 1;
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.inDmgDownRounds = Math.max(t.inDmgDownRounds || 0, rounds);
+      t.inDmgDownPct = Math.max(Number(t.inDmgDownPct) || 0, Number(kg.dmgDownPct) || 25);
+      t.kingsGuardRounds = Math.max(t.kingsGuardRounds || 0, rounds);
+    });
+  }
+  if (rule.foresight) {
+    // 10321 后见之明：若本回合该誓灵已受到过攻击，物攻/魔攻/速度 +2（优先度 -1 在 SKILL_PRIO_TABLE）
+    targets.forEach(t => {
+      if (!t || t.hp <= 0 || !t.hitThisRound) return;
+      [101, 102, 105].forEach(pr => gainStat(t, pr, Number(rule.foresight.atkUp) || 2, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: t.id, phase }));
+    });
+  }
+  if (rule.eternalRelease) {
+    // 10323 永恒解脱：4 回合内伤害 ×4；到期进入解脱状态（标志在回合末维护）
+    actor.eternalReleaseRounds = Math.max(actor.eternalReleaseRounds || 0, Number(rule.eternalRelease.rounds) || 4);
+    actor.eternalReleaseDmgMul = Number(rule.eternalRelease.dmgMul) || 4;
+    actor.eternalReleased = false;
+  }
+  if (rule.reflectDirect) {
+    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.reflectDirectRounds = Math.max(t.reflectDirectRounds || 0, Number(rule.reflectDirect.rounds) || 1);
+    });
+  }
+  if (rule.forgive) {
+    // 10414 无上宽恕：清除自身全部能力等级；5 回合内造成伤害/暴击率 +n×10%
+    let cleared = 0;
+    [101, 102, 103, 104, 105, 111, 113, 115].forEach(pr => {
+      const oldLv = (actor.statLevels && actor.statLevels[pr]) || 0;
+      if (oldLv === 0) return;
+      cleared += Math.abs(oldLv);
+      gainStat(actor, pr, -oldLv, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+    });
+    actor.forgiveDmgRounds = Math.max(actor.forgiveDmgRounds || 0, Number(rule.forgive.rounds) || 5);
+    actor.forgiveDmgPct = (Number(rule.forgive.perClearPct) || 10) / 100 * cleared;
+    actor.forgiveCritPct = (Number(rule.forgive.perClearPct) || 10) / 100 * cleared;
+  }
+  if (rule.xuanYou) {
+    // 10431 玄佑：按自身物攻对自身造成 60 威力伤害（非致死），物防魔防 +1，触发 3 次玄武天赋
+    const xy = rule.xuanYou;
+    const lv = Number(actor.level) || 1;
+    const atkLv = (actor.statLevels && actor.statLevels[101]) || 0;
+    const defLv = (actor.statLevels && actor.statLevels[103]) || 0;
+    const atk = (actor.attrs.phy_atk || 100) * attrLvMul(atkLv);
+    const def = (actor.attrs.phy_def || 100) * attrLvMul(defLv);
+    const selfDmg = Math.max(1, Math.round(((lv + 5) / 50) * (Number(xy.power) || 60) * atk / Math.max(1, def)));
+    const before = actor.hp;
+    actor.hp = Math.max(1, actor.hp - selfDmg);
+    if (before > actor.hp) effects.push({
+      trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [actor.id],
+      src_type: 3, src_id: cfg.id, id: 60120, effect_phase: phase,
+      change_type: 200000, change_value: [-(before - actor.hp)], remove_round: 0,
+    });
+    if (xy.defUp) {
+      gainStat(actor, 103, Number(xy.defUp), { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+      gainStat(actor, 104, Number(xy.defUp), { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+    }
+    const hasBaihu = (allUnits || []).some(b => b && b.hp > 0 && b.side === actor.side && b.talent === 23300);
+    const inc = hasBaihu ? 0.30 : 0.20;
+    for (let i = 0; i < (Number(xy.talentHits) || 3); i++) {
+      (allUnits || []).filter(u => u && u.hp > 0 && u.side === actor.side).forEach(ally => {
+        ally.xuanwuNextBonus = (ally.xuanwuNextBonus || 0) + inc;
+      });
+    }
+  }
+  if (rule.bondChain) {
+    // 10432 羁绊连环：目标为青龙/朱雀/玄武时立即释放其最后技能（单体随机目标）；成功后自身跳过下次行动
+    const HOLY = new Set([1543031, 1542032, 1541033]);
+    targets.forEach(t => {
+      if (!t || t.hp <= 0 || !HOLY.has(Number(t.type))) return;
+      const sid = Number(t.lastUsedSkill) || 0;
+      if (!sid || sid === 10432) return;
+      const tcfg = skillCfg(sid);
+      if (!tcfg) return;
+      const friend = isFriendEff(tcfg.effType);
+      const pool = (allUnits || []).filter(u => u && u.hp > 0 && u.side === (friend ? t.side : (t.side === 0 ? 1 : 0)));
+      if (!pool.length) return;
+      const main = pool[Math.floor(Math.random() * pool.length)];
+      const tt = targetsOfEff(tcfg.effType, t.side, allUnits, main, t, tcfg.id);
+      if (!tt.length) return;
+      const tr = settleSkill(t, tcfg, tt, allUnits, null, actIndex, battleState) || [];
+      tr.forEach(r => {
+        const u = (allUnits || []).find(x => x && Number(x.id) === Number(r.target));
+        if (!u) return;
+        const delta = -Math.round(Number(r.hurt) || 0);
+        effects.push({
+          trigger_count: 0, atk_servant_id: t.id, src_servant_id: t.id, tar_servant_ids: [r.target],
+          src_type: 3, src_id: tcfg.id, id: 60120, effect_phase: phase,
+          change_type: 200000, change_value: [delta], remove_round: 0,
+        });
+      });
+      ((tr && tr.wakeEffects) || []).forEach(e => effects.push(e));
+      const te = applySkillEffects(t, tcfg, tt, allUnits, actIndex, battleState);
+      if (te && te.length) effects.push(...te);
+      actor.skipNextAction = true;
+    });
+  }
   if (rule.skillLock) {
     targets.forEach(t => { if (t && t.hp > 0) { t.skillLock = (t.usedSkillsThisRound || []).slice(0, 8); t.skillLockRound = Number(battleState && battleState.round || 0) + 1; } });
   }
@@ -9137,6 +9307,32 @@ function settleRoundEndTicks(units, battleState) {
     }
     if ((u.teamDmgDownRounds || 0) > 0) { u.teamDmgDownRounds -= 1; if (u.teamDmgDownRounds <= 0) u.teamDmgDownPct = 0; }
     if ((u.ascendRounds || 0) > 0) u.ascendRounds--;
+    if ((u.inDmgDownRounds || 0) > 0) { u.inDmgDownRounds -= 1; if (u.inDmgDownRounds <= 0) u.inDmgDownPct = 0; }
+    if ((u.kingsGuardRounds || 0) > 0) u.kingsGuardRounds -= 1;
+    if ((u.reflectDirectRounds || 0) > 0) u.reflectDirectRounds -= 1;
+    if ((u.eternalReleaseRounds || 0) > 0) {
+      u.eternalReleaseRounds -= 1;
+      if (u.eternalReleaseRounds <= 0) { u.eternalReleaseRounds = 0; u.eternalReleased = true; }
+    }
+    if ((u.forgiveDmgRounds || 0) > 0) {
+      u.forgiveDmgRounds -= 1;
+      if (u.forgiveDmgRounds <= 0) { u.forgiveDmgRounds = 0; u.forgiveDmgPct = 0; u.forgiveCritPct = 0; }
+    }
+    // 10263 血坏：回合末损失 最大HP×回合数×10%（上限30%，非致死）
+    if ((u.bloodRuinRounds || 0) > 0) {
+      u.bloodRuinTurn = (u.bloodRuinTurn || 0) + 1;
+      const pct = Math.min(Number(u.bloodRuinMaxPct) || 30, (Number(u.bloodRuinPerTurnPct) || 10) * u.bloodRuinTurn);
+      const loss = Math.max(1, Math.round((u.maxHp || 1) * pct / 100));
+      const before = Math.round(u.hp);
+      u.hp = Math.max(1, u.hp - loss);
+      const real = before - Math.round(u.hp);
+      if (real > 0) effects.push({
+        trigger_count: 0, atk_servant_id: u.id, src_servant_id: u.id, tar_servant_ids: [u.id],
+        src_type: 3, src_id: 10263, id: 60120, effect_phase: 7,
+        change_type: 200000, change_value: [-real], remove_round: 0,
+      });
+      u.bloodRuinRounds -= 1;
+    }
     // 10353 纯洁之心：每回合结束随机提升 1 级能力等级（共 3 回合，施放回合算第 1 回合）
     if ((u.pureHeartRounds || 0) > 0) {
       const phProp = [101, 102, 103, 104, 105][Math.floor(Math.random() * 5)];
@@ -10948,6 +11144,7 @@ const SKILL_PRIO_TABLE = {
   10044: { randomPrio: 1, chance: 30 },      // 音速攻击
   10078: { randomPrio: 1, chance: 30 },      // 潜影奇袭
   10258: { prio: -1 },                       // 沧海遗泪
+  10321: { prio: -1 },                       // 后见之明
   10179: { condHitLastRound: 1 },            // 百炼之拳
   10007: { prio: 4 },                        // 绝对防御（批次H2：优先度+4，百度百科/官方观察数据，屏障类）
   10004: { prio: 3 },                        // 结界盾（批次H2：优先度+3，BWIKI）
@@ -13289,5 +13486,5 @@ module.exports = {
   talentOf, talentInfoOf, talentRuleOf,
   BID_LEFT_BASE, BID_RIGHT_BASE, newBidAllocator, isWireBid,
   elementAwakeOf, elementExclusiveOf, elementExclusiveBehavior, applyExclusiveCastEffects, elementReplacesBase,
-  healReceivedMul, isSupportSkillCfg,
+  healReceivedMul, isSupportSkillCfg, aiUsableList,
 };

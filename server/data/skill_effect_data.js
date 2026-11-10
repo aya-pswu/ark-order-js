@@ -2511,7 +2511,50 @@ const SKILL_EFFECT_RULES = {
     "devotionPact": { "hpCostPct": 30, "defUp": 1, "tauntHits": 3 } },
   "10426": { "id": 10426, "name": "灵归", "effType": 2002, "type": 3,
     // 「回复目标25%生命值，己方其他誓灵获得一半的回复效果」
-    "lifeReturn": { "healPct": 25, "othersPct": 12.5 } }
+    "lifeReturn": { "healPct": 25, "othersPct": 12.5 } },
+  // —— 2026-11-10 P1 辅助技批次（13 个）——
+  "10253": { "id": 10253, "name": "王座的守护", "effType": 2002, "type": 3,
+    // 「本回合受到伤害减少25%，每受到一次攻击，较高一项攻击提升1级」
+    "kingsGuard": { "dmgDownPct": 25, "rounds": 1 } },
+  "10263": { "id": 10263, "name": "血坏", "effType": 2001, "type": 3,
+    // 「物攻提升至最大；血坏状态回合末损失最大HP×回合数×10%（最大30%，至少1HP）」
+    "bloodRuin": { "rounds": 3, "perTurnPct": 10, "maxPct": 30 } },
+  "10270": { "id": 10270, "name": "虚伪创生", "effType": 2001, "type": 3,
+    "statChanges": [
+      { "target": "self", "prop": 102, "delta": 1 },
+      { "target": "self", "prop": 103, "delta": 1 },
+      { "target": "self", "prop": 104, "delta": 1 }
+    ] },
+  "10285": { "id": 10285, "name": "ORa！", "effType": 2001, "type": 3,
+    // 「本回合获得仇恨吸引效果，随机提升1项防御等级1级」
+    "selfTaunt": { "rounds": 1 }, "randomDefUp": 1 },
+  "10289": { "id": 10289, "name": "光之妖刃", "effType": 2002, "type": 3,
+    // 「将自身所有能力等级同步给队友」（替换目标能力等级）
+    "statLevelCopy": true },
+  "10305": { "id": 10305, "name": "善根萌长", "effType": 2002, "type": 3,
+    // 「使友方负面能力等级转为相应的正向能力等级」
+    "invertNegativeTarget": true },
+  "10320": { "id": 10320, "name": "注意集中", "effType": 2002, "type": 3,
+    // 「目标三回合内能力等级不会降低且不会进入异常状态」
+    "statDownImmunityRounds": 3, "noAbnormalRounds": 3 },
+  "10321": { "id": 10321, "name": "后见之明", "effType": 2002, "type": 3,
+    // 「优先度-1；若本回合该誓灵受到过攻击，则物攻、魔攻和速度+2」
+    "foresight": { "atkUp": 2 } },
+  "10323": { "id": 10323, "name": "永恒解脱", "effType": 2001, "type": 3,
+    // 「开启后自身伤害+300%，4回合后进入解脱状态：只能使用辅助技能，被魔攻技能攻击必定被击倒」
+    "eternalRelease": { "rounds": 4, "dmgMul": 4 } },
+  "10399": { "id": 10399, "name": "瑶草", "effType": 2002, "type": 3,
+    // 「本回合内受到的直接技能伤害会反馈至攻击者」
+    "reflectDirect": { "rounds": 1 } },
+  "10414": { "id": 10414, "name": "无上宽恕", "effType": 2001, "type": 3,
+    // 「清除自身所有能力等级；5回合内造成伤害和暴击率提升 n×10%（n=消除级数）」
+    "forgive": { "rounds": 5, "perClearPct": 10 } },
+  "10431": { "id": 10431, "name": "玄佑", "effType": 2001, "type": 3,
+    // 「对自身造成60威力（按自身物攻计算）伤害，触发3次天赋；物防魔防各+1」
+    "xuanYou": { "power": 60, "defUp": 1, "talentHits": 3 } },
+  "10432": { "id": 10432, "name": "羁绊连环", "effType": 2002, "type": 3,
+    // 「目标为青龙/朱雀/玄武时，立即释放其最后释放的技能（单体目标随机）；成功后自身跳过下次行动」
+    "bondChain": true }
 }
 
 function getSkillRule(skillId) {

@@ -2165,6 +2165,13 @@ m_fight_skill_select_tos(conn, obj) {
     const actor = actors[ai];
     if (actor.hp <= 0) continue;
     if (aliveEnemies().length === 0) break; // 敌全灭，剩余行动不结算（客户端播完转场）
+    // 10432 羁绊连环：成功后自身跳过下次行动
+    if (actor.skipNextAction) {
+      actor.skipNextAction = false;
+      fightList.push({ atk_id: bidOfUnit(actor), skill_id: 10081, index: actIndex, power_point: 99, effect_list: [], result: 1 });
+      actIndex++;
+      continue;
+    }
 
     // 行动前异常状态判定（睡眠/冻结/麻痹/混乱/灵魂画手 20% 失手）
     const actCheck = FC.checkUnitCanAct(actor, units, actIndex);
@@ -2280,6 +2287,29 @@ m_fight_skill_select_tos(conn, obj) {
         }
       }
     }
+    // 10323 永恒解脱：解脱状态只能使用辅助技能
+    if (choice && actor.eternalReleased) {
+      const c0 = FC.skillCfg(choice.skillId);
+      if (c0 && (c0.type === 1 || c0.type === 2) && Number(c0.power) > 0) {
+        const sup = (actor.skills || []).find(s => s.pp > 0 && (() => {
+          const x = FC.skillCfg(s.id);
+          return x && !((x.type === 1 || x.type === 2) && Number(x.power) > 0);
+        })());
+        if (sup) {
+          const sc = FC.skillCfg(sup.id);
+          let supMain = choice.main;
+          if (FC.isFriendEff(sc.effType)) {
+            let ratio = 2; supMain = actor;
+            sceneAllies().forEach(f => { const r = f.hp / f.maxHp; if (r < ratio) { ratio = r; supMain = f; } });
+          }
+          log(`[fight] 解脱状态：${actor.id} 强制改用辅助技 ${sup.id}`);
+          choice = { skillId: sup.id, main: supMain };
+        } else {
+          choice = null;
+        }
+      }
+    }
+    if (!choice) continue;
     const cfg = FC.skillCfg(choice.skillId);
     if (!cfg) continue;
     // 10372 反核弹外壳：连续两回合使用 → 50% 失败（不结算、不产生行动）
