@@ -2087,6 +2087,7 @@ m_fight_skill_select_tos(conn, obj) {
     const ch = FC.aiChoose(e, units);
     if (ch && ch.main) st.selMap[e.id] = ch.main.id;
   });
+  units.forEach(u => { if (u && u.eternalReleaseAtRound && Number(st.round) >= Number(u.eternalReleaseAtRound)) u.eternalReleased = true; });
   FC.applySkillPriorities(units, st, selMap); // 批次E：官方技能优先度进排序（chosenSkillPrio/Nature 此前无人写）
   const actors = FC.sortActors(units, st, selMap); // 速度降序（考虑 speed_lv 与麻痹；玩家选技供乱流风系优先度）；行动中阵亡者跳过
   actors.forEach(a => { if (a && a.skillLockRound && a.skillLockRound < st.round) { a.skillLock = null; a.skillLockRound = 0; } });
@@ -2161,6 +2162,42 @@ m_fight_skill_select_tos(conn, obj) {
       src_type: 1, src_id: 21840, id: 218401, effect_phase: 0,
       change_type: 200000, change_value: [0], remove_round: 0,
     }));
+  // 青龙（23270 苍之疾走）：第 2 回合以独立行动补播入场技能（首包 round_start=1 不播 fight_list）
+  if (Number(st.round) >= 2) {
+    units.filter(u => u && u.hp > 0 && u.qinglongPending).forEach(u => {
+      u.qinglongPending = false;
+      const hasBaihu = units.some(b => b && b.hp > 0 && b.side === u.side && b.talent === 23300);
+      const pick = hasBaihu ? u.skills[u.skills.length - 1] : u.skills[Math.floor(Math.random() * u.skills.length)];
+      const qcfg = FC.skillCfg(pick && (pick.id || pick));
+      if (!qcfg) return;
+      const friend = FC.isFriendEff(qcfg.effType);
+      const pool = units.filter(x => x && x.hp > 0 && x.side === (friend ? u.side : (u.side === 0 ? 1 : 0)));
+      if (!pool.length) return;
+      const main = pool[Math.floor(Math.random() * pool.length)];
+      let qTargets = FC.targetsOfEff(qcfg.effType, u.side, units, main, u, qcfg.id);
+      if (!qTargets.length) qTargets = friend ? [u] : [main];
+      const qres = FC.settleSkill(u, qcfg, qTargets, units, null, actIndex, st) || [];
+      const qeff = FC.applySkillEffects(u, qcfg, qTargets, units, actIndex, st) || [];
+      const qtal = FC.checkTalentsAfterSkill(u, qcfg, qTargets, qres, units, actIndex, st) || [];
+      fightList.push({
+        atk_id: bidOfUnit(u), skill_id: qcfg.id, index: actIndex,
+        power_point: ((u.skills || []).find(x => Number(x.id) === Number(qcfg.id)) || {}).pp || 0,
+        effect_list: qres.map(e => ({
+          type: 0, target: bidOfUnit(units.find(x => x.id === e.target) || { bid: e.target }),
+          hurt: e.hurt, final_hp: e.final_hp,
+          shield_hurt: Number(e.shield_hurt) || 0, final_shield: Number(e.final_shield) || 0,
+          element_shield_hurt: 0, final_element_shield: 0, extra: e.extra,
+        })),
+        result: 0,
+      });
+      if (qres.wakeEffects && qres.wakeEffects.length) roundEffects.push(...FC.flattenEffects(qres.wakeEffects));
+      if (qeff.length) roundEffects.push(...qeff);
+      if (qtal.length) roundEffects.push(...qtal);
+      actIndex++;
+      log(`[fight] 青龙天赋补播：${u.id} 释放 ${qcfg.id}（第${st.round}回合）`);
+    });
+  }
+
   for (let ai = 0; ai < actors.length; ai++) {
     const actor = actors[ai];
     if (actor.hp <= 0) continue;
@@ -2429,6 +2466,28 @@ m_fight_skill_select_tos(conn, obj) {
       result: 0, // SKILL_RESULT_SUC
     });
     actIndex++;
+
+    // 10432 羁绊连环：目标为青龙/朱雀/玄武 → 以其身份插入一条独立行动（有技能动画/伤害数字）
+    if (cfg.id === 10432) {
+      const bc = FC.bondChainCast(actor, targets, units, actIndex, st);
+      if (bc) {
+        fightList.push({
+          atk_id: bidOfUnit(units.find(u => u.id === bc.castBy) || { bid: bc.castBy }),
+          skill_id: bc.skillId, index: actIndex, power_point: bc.pp,
+          effect_list: bc.results.map(e => ({
+            type: 0, target: bidOfUnit(units.find(u => u.id === e.target) || { bid: e.target }),
+            hurt: e.hurt, final_hp: e.final_hp,
+            shield_hurt: Number(e.shield_hurt) || 0, final_shield: Number(e.final_shield) || 0,
+            element_shield_hurt: 0, final_element_shield: 0, extra: e.extra,
+          })),
+          result: 0,
+        });
+        if (bc.effects.length) roundEffects.push(...bc.effects);
+        actIndex++;
+        actor.skipNextAction = true;
+        log(`[fight] 10432 羁绊连环：${bc.castBy} 释放最后技能 ${bc.skillId}`);
+      }
+    }
 
     // P3 专属改写·追加施放（一百二十四/二十七泛化）：唤醒中专属行为表驱动——
     //   onKill（暴风雪/兔子退散：击败任一敌方 → 再放一次；后者追加 +70% 伤害）

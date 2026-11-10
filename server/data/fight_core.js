@@ -1877,36 +1877,11 @@ function checkEntranceTalents(units, battleState, currentRound) {
       }
     }
 
-    // 青龙（23270 苍之疾走）：出场后释放一个携带的技能（单体技能目标随机）；白虎在场时必定释放最后一个技能
-    // （三百一十三·续：原 settleSkill 返回值被丢弃 = 目标被扣血但客户端零显示（二百九十"静默 HP 直改族"
-    // 同款）。战斗开始结算时收集 results 逐目标 200000 扣血 + wakeEffects（effect_phase 统一改 1——
-    // 首包只有 BORN 桶会被 onBatchEnd 播放，AFTER_SKILL 等桶需要动作上下文、开局没有）。注意客户端
-    // round_start=1 不 Start 循环 ⇒ fight_list 被无视，施技只能以 effect 形态表现（横幅+扣血）。
+    // 青龙（23270 苍之疾走）：出场后释放一个携带的技能。首包（round_start=1）客户端不播 fight_list，
+    // 旧实现只发静默 HP effect，玩家看不到动画/伤害数字；改由 map_fight 在第 2 回合以独立行动下发。
     if (u.talent === 23270 && !u.qinglongGallopDone && u.skills && u.skills.length > 0) {
       u.qinglongGallopDone = true;
-      const hasBaihu = (units || []).some(b => b && b.hp > 0 && b.side === u.side && b.talent === 23300);
-      const chosenSkillInfo = hasBaihu ? u.skills[u.skills.length - 1] : u.skills[Math.floor(Math.random() * u.skills.length)];
-      const cfg = skillCfg(chosenSkillInfo.id || chosenSkillInfo);
-      if (cfg) {
-        const foes = (units || []).filter(f => f && f.hp > 0 && f.side !== u.side);
-        if (foes.length > 0) {
-          const tar = (cfg.selEffType === 1 || cfg.selEffType === 3) ? foes : [foes[Math.floor(Math.random() * foes.length)]];
-          const castRes = settleSkill(u, cfg, tar, units, () => 0.5, 0, battleState);
-          (castRes || []).forEach(r => {
-            const dmg = Number(r && r.hurt) || 0;
-            if (dmg > 0 && r.target != null) {
-              effects.push({
-                trigger_count: 0, atk_servant_id: u.id, src_servant_id: u.id, tar_servant_ids: [r.target],
-                src_type: 1, src_id: 23270, id: 23270, effect_phase: 1,
-                change_type: 200000, change_value: [-dmg], remove_round: 0,
-              });
-            }
-          });
-          ((castRes && castRes.wakeEffects) || []).forEach(e => {
-            effects.push(Object.assign({}, e, { effect_phase: 1 }));
-          });
-        }
-      }
+      u.qinglongPending = true;
     }
 
     // —— 批次A进场族（二百五十一）——
@@ -5096,14 +5071,13 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     }
     // 10323 永恒解脱：解脱状态下被魔攻技能攻击必定被击倒（护盾吸收后按剩余生命强制归零）
     if (t.eternalReleased && Number(cfg.type) === 2 && hurt > 0) hurt = Math.max(hurt, t.hp);
-    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者
+    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者（写进 results，客户端显示伤害数字）
     if ((t.reflectDirectRounds || 0) > 0 && hurt > 0 && actor && actor.hp > 0) {
       const back = Math.max(1, Math.round(hurt));
       actor.hp = Math.max(0, actor.hp - back);
-      wakeEffects.push({
-        trigger_count: 0, atk_servant_id: actor.id, src_servant_id: t.id, tar_servant_ids: [actor.id],
-        src_type: 3, src_id: 10399, id: 60120, effect_phase: phase,
-        change_type: 200000, change_value: [-back], remove_round: 0,
+      results.push({
+        target: actor.id, hurt: back, final_hp: actor.hp,
+        shield_hurt: 0, final_shield: Math.max(0, actor.shield || 0), extra: 0,
       });
     }
     // 2026-10-27：落账前快照。此行之后到落账为止的 t.hp 直改（暗夜主宰10336吸血/仇恨吸引
@@ -6488,7 +6462,9 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     // 夜刀神十香（21680 公主）：若攻击物防被自身降低的目标，物攻+1且回复15%生命值
     if (actor.talent === 21680 && t.tohkaTargeted && (hurt > 0 || shieldHurt > 0) && t.hp > 0) {
       const atkDelta = gainStat(actor, 101, 1, { effects: wakeEffects, srcId: 21680, atkId: actor.id, srcServantId: actor.id, phase });
-      const healAmt = Math.min(actor.maxHp - actor.hp, Math.round(actor.maxHp * 0.15));
+      // 官方：回复“该次伤害”的 15%（不是最大生命 15%）
+      const dealtForHeal = Math.max(0, Math.round(hurt) + Math.round(shieldHurt || 0));
+      const healAmt = Math.min(actor.maxHp - actor.hp, Math.round(dealtForHeal * 0.15));
       if (healAmt > 0) {
         actor.hp += healAmt;
         // 2026-10-27：回血补 30531 甘露通道（狼人 20870 同款）
@@ -8225,6 +8201,7 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
     // 10323 永恒解脱：4 回合内伤害 ×4；到期进入解脱状态（标志在回合末维护）
     actor.eternalReleaseRounds = Math.max(actor.eternalReleaseRounds || 0, Number(rule.eternalRelease.rounds) || 4);
     actor.eternalReleaseDmgMul = Number(rule.eternalRelease.dmgMul) || 4;
+    actor.eternalReleaseAtRound = (Number(battleState && battleState.round) || 1) + (Number(rule.eternalRelease.rounds) || 4);
     actor.eternalReleased = false;
   }
   if (rule.reflectDirect) {
@@ -8274,38 +8251,6 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
         ally.xuanwuNextBonus = (ally.xuanwuNextBonus || 0) + inc;
       });
     }
-  }
-  if (rule.bondChain) {
-    // 10432 羁绊连环：目标为青龙/朱雀/玄武时立即释放其最后技能（单体随机目标）；成功后自身跳过下次行动
-    const HOLY = new Set([1543031, 1542032, 1541033]);
-    targets.forEach(t => {
-      if (!t || t.hp <= 0 || !HOLY.has(Number(t.type))) return;
-      const sid = Number(t.lastUsedSkill) || 0;
-      if (!sid || sid === 10432) return;
-      const tcfg = skillCfg(sid);
-      if (!tcfg) return;
-      const friend = isFriendEff(tcfg.effType);
-      const pool = (allUnits || []).filter(u => u && u.hp > 0 && u.side === (friend ? t.side : (t.side === 0 ? 1 : 0)));
-      if (!pool.length) return;
-      const main = pool[Math.floor(Math.random() * pool.length)];
-      const tt = targetsOfEff(tcfg.effType, t.side, allUnits, main, t, tcfg.id);
-      if (!tt.length) return;
-      const tr = settleSkill(t, tcfg, tt, allUnits, null, actIndex, battleState) || [];
-      tr.forEach(r => {
-        const u = (allUnits || []).find(x => x && Number(x.id) === Number(r.target));
-        if (!u) return;
-        const delta = -Math.round(Number(r.hurt) || 0);
-        effects.push({
-          trigger_count: 0, atk_servant_id: t.id, src_servant_id: t.id, tar_servant_ids: [r.target],
-          src_type: 3, src_id: tcfg.id, id: 60120, effect_phase: phase,
-          change_type: 200000, change_value: [delta], remove_round: 0,
-        });
-      });
-      ((tr && tr.wakeEffects) || []).forEach(e => effects.push(e));
-      const te = applySkillEffects(t, tcfg, tt, allUnits, actIndex, battleState);
-      if (te && te.length) effects.push(...te);
-      actor.skipNextAction = true;
-    });
   }
   if (rule.skillLock) {
     targets.forEach(t => { if (t && t.hp > 0) { t.skillLock = (t.usedSkillsThisRound || []).slice(0, 8); t.skillLockRound = Number(battleState && battleState.round || 0) + 1; } });
@@ -13468,6 +13413,32 @@ function settleBattleStartTalents(units, battleState) {
   return flattenEffects(entranceEffects);
 }
 
+// 10432 羁绊连环：解析并执行「青龙/朱雀/玄武 立即释放最后技能」的额外行动。
+// map_fight 调用后把结果下发为独立 fight_list（有技能动画与伤害数字）；无合法目标返回 null。
+function bondChainCast(actor, targets, allUnits, actIndex, battleState) {
+  const HOLY = new Set([1543031, 1542032, 1541033]);
+  const t = (targets || []).find(x => x && x.hp > 0 && HOLY.has(Number(x.type)));
+  if (!t) return null;
+  const sid = Number(t.lastUsedSkill) || 0;
+  if (!sid || sid === 10432) return null;
+  const tcfg = skillCfg(sid);
+  if (!tcfg) return null;
+  const friend = isFriendEff(tcfg.effType);
+  const pool = (allUnits || []).filter(u => u && u.hp > 0 && u.side === (friend ? t.side : (t.side === 0 ? 1 : 0)));
+  if (!pool.length) return null;
+  const main = pool[Math.floor(Math.random() * pool.length)];
+  let tt = targetsOfEff(tcfg.effType, t.side, allUnits, main, t, tcfg.id);
+  if (!tt.length) tt = friend ? [t] : [main];
+  const results = settleSkill(t, tcfg, tt, allUnits, null, actIndex, battleState) || [];
+  const effects = [];
+  if (results.wakeEffects && results.wakeEffects.length) effects.push(...flattenEffects(results.wakeEffects));
+  const se = applySkillEffects(t, tcfg, tt, allUnits, actIndex, battleState) || [];
+  if (se.length) effects.push(...se);
+  const tal = checkTalentsAfterSkill(t, tcfg, tt, results, allUnits, actIndex, battleState) || [];
+  if (tal.length) effects.push(...tal);
+  return { castBy: t.id, skillId: sid, results, effects, pp: ((t.skills || []).find(x => Number(x.id) === sid) || {}).pp || 0 };
+}
+
 module.exports = {
   natureOf, stepOf, stepOfStar, phyleOf, natureRelate, naturePer, MAGIC_ARROW, ABSORB_TALENT_NATURE,
   calcAttrs, skillCfg, buildSkillPool, defaultSkills, buildUsingPool, aiUsable, targetsOfEff, resolveTargetPos, isFriendEff, aiChoose, allyChoose, bestAttackChoice, choiceForSkill, estDamageOf, aiChooseDeep, autoChoose, normalizeWeatherState, validateBattleState,
@@ -13486,5 +13457,5 @@ module.exports = {
   talentOf, talentInfoOf, talentRuleOf,
   BID_LEFT_BASE, BID_RIGHT_BASE, newBidAllocator, isWireBid,
   elementAwakeOf, elementExclusiveOf, elementExclusiveBehavior, applyExclusiveCastEffects, elementReplacesBase,
-  healReceivedMul, isSupportSkillCfg, aiUsableList,
+  healReceivedMul, isSupportSkillCfg, aiUsableList, bondChainCast,
 };
