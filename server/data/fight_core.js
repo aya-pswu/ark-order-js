@@ -6097,19 +6097,12 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
         if (atlasFoes.length > 0) {
           const splash = Math.max(1, Math.floor(t.maxHp / atlasFoes.length));
           atlasFoes.forEach(f => {
+            const beforeHp = f.hp;
             f.hp = Math.max(1, f.hp - splash);
-            wakeEffects.push({
-              trigger_count: 0,
-              atk_servant_id: actor.id, // 修复：客户端按 curEffData.atk_id 查桶，必须是攻击者（原 t.id）
-              src_servant_id: t.id,
-              tar_servant_ids: [f.id],
-              src_type: 1,
-              src_id: 22380,
-              id: 22380,
-              effect_phase: phase,
-              change_type: 200000,
-              change_value: [-splash],
-              remove_round: 0,
+            const real = beforeHp - f.hp;
+            if (real > 0) results.push({
+              target: f.id, hurt: real, final_hp: f.hp,
+              shield_hurt: 0, final_shield: Math.max(0, f.shield || 0), extra: 0,
             });
           });
         }
