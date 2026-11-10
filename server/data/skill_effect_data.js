@@ -2392,6 +2392,11 @@ const SKILL_EFFECT_RULES = {
     // 目标（effType 2002 己方单体）获得：skillTargetLocked（目标锁，压过霍德尔/嘲讽/挑拨）
     // + nextAttackForceCrit（下次攻击必暴）+ nextAttackCritDmgUp（爆伤+35%），下次攻击技施放时消费
     "nextAttackCritLock": { "critDmgUp": 0.35 } },
+  "10168": { "id": 10168, "name": "兴奋的秘泉", "effType": 2002, "type": 3,
+    // 「目标速度和伤害翻倍，回合结束时损失最大生命的20%，持续3回合」——
+    // 3 回合（施放回合算第 1 回合）；速度在 effectiveSpeed、伤害在 settleSkill 乘区；
+    // 回合末在 settleRoundEndTicks 扣血并递减，到期发 11502「兴奋的秘泉消失」。
+    "exciteSpring": { "rounds": 3, "hpLossPct": 20, "dmgMul": 2, "speedMul": 2 } },
   "10251": { "id": 10251, "name": "欲望激发", "effType": 2002, "type": 3,
     // 「使目标誓灵较高一项攻击能力上升2级」——statChanges 扩展 prop:'higherAtk'（按目标 attrs 动态解析）
     "statChanges": [{ "target": "target", "prop": "higherAtk", "delta": 2 }] },
@@ -2479,7 +2484,34 @@ const SKILL_EFFECT_RULES = {
   "10319": { "id": 10319, "name": "崩坏琴声", "effType": 1058, "type": 1,
     // 「使用后若该技能击倒敌方，则该技能使用次数增加一次（使用次数不能超过上限）」——
     // 击倒后 pp+1（封顶 cfg.pp）
-    "ppRefundOnKill": true }
+    "ppRefundOnKill": true },
+  // —— 2026-11-09 P0 辅助技批次（未实现清单前 8 个；效果口径见各条注释）——
+  "10186": { "id": 10186, "name": "飞升灵药", "effType": 2002, "type": 3,
+    // 「使目标进入飞升状态，飞升中的誓灵必定被暴击，提升能力等级时额外提升1级」
+    // 3 回合；被攻击必暴（settleSkill 暴击段 isForceCrit）；gainStat 正向提升额外 +1
+    "ascend": { "rounds": 3 } },
+  "10245": { "id": 10245, "name": "圣光救赎", "effType": 2002, "type": 3,
+    // 「回复目标25%HP，同时消除所有负面能力等级，每消除一级，增加5%回复量」
+    "holyRedemption": { "healPct": 25, "perClearPct": 5 } },
+  "10312": { "id": 10312, "name": "光坂的护佑", "effType": 2011, "type": 3,
+    // 「为己方全体添加10%护盾；若为clannad阵营誓灵，护盾量变为15%」
+    "teamShieldPct": 10, "teamShieldPctClannad": 15 },
+  "10314": { "id": 10314, "name": "熊之外套", "effType": 2002, "type": 3,
+    // 「为目标添加自身等级*6的护盾值；如果对象为clannad阵营誓灵，则系数变为8」
+    "targetShieldLevelMul": { "base": 6, "clannad": 8 } },
+  "10353": { "id": 10353, "name": "纯洁之心", "effType": 2002, "type": 3,
+    // 「3回合内免疫异常状态且每回合结束时随机提升1级能力等级」
+    "pureHeart": { "rounds": 3 } },
+  "10375": { "id": 10375, "name": "圣甲虫护壳", "effType": 2011, "type": 3,
+    // 「消耗自身30%最大生命 使己方3回合内受到伤害降低25%，且免疫异常状态一次，
+    //   若已有减伤效果则提升随机防御和攻击1级」
+    "scarabShell": { "hpCostPct": 30, "rounds": 3, "dmgDownPct": 25, "abnormalImmuneCharges": 1, "bonusIfMit": true } },
+  "10391": { "id": 10391, "name": "奉献誓约", "effType": 2001, "type": 3,
+    // 「失去当前30%生命，防御等级提升1级，吸引3次单体攻击，次数消耗完时己方全体较高攻击提升1级」
+    "devotionPact": { "hpCostPct": 30, "defUp": 1, "tauntHits": 3 } },
+  "10426": { "id": 10426, "name": "灵归", "effType": 2002, "type": 3,
+    // 「回复目标25%生命值，己方其他誓灵获得一半的回复效果」
+    "lifeReturn": { "healPct": 25, "othersPct": 12.5 } }
 }
 
 function getSkillRule(skillId) {

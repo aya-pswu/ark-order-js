@@ -291,14 +291,42 @@ function exclusiveBuffEffect(actor, tar, buffId, phase) {
 }
 // 判决目标（10359 生死审判）"不会获得增益效果"的正面 buff 黑名单（渐进扩充；护盾/治疗不算增益）
 const POSITIVE_BUFF_IDS = new Set([10690]); // 10690 心神凝聚（暴击+2）
+// WIKI 异常状态口径（2026-11-09）：烧伤(50002)/中毒(50005)/麻痹(50001)/
+// 畏惧(flinch 标记)/睡眠(50004)/混乱(50007)/冻结(50003)。
+// 注意 50006 嘲讽与 50008 激怒不算异常；畏惧是独立标记不是 buff。
+const ABNORMAL_BUFF_IDS = new Set([50001, 50002, 50003, 50004, 50005, 50007]);
+function abnormalImmuneConsume(tar) {
+  if (!tar) return false;
+  if ((tar.noAbnormalRounds || 0) > 0) return true;
+  if ((tar.abnormalImmuneCharges || 0) > 0) { tar.abnormalImmuneCharges -= 1; return true; }
+  return false;
+}
+function abnormalWindowBlocked(tar, buffId) {
+  return !!tar && ABNORMAL_BUFF_IDS.has(Number(buffId)) && (tar.noAbnormalRounds || 0) > 0;
+}
+function abnormalBlocked(tar, buffId) {
+  if (!tar || !ABNORMAL_BUFF_IDS.has(Number(buffId))) return false;
+  if (abnormalImmuneConsume(tar)) {
+    return true;
+  }
+  return false;
+}
+function flinchBlocked(tar) {
+  if (abnormalImmuneConsume(tar)) {
+    return true;
+  }
+  return false;
+}
+
 function applyExclusiveBuff(actor, tar, buffId, chance, duration, ctx) {
   if (!tar || tar.hp <= 0) return;
   if (tar.talent === 22530) return;
-  if ((tar.noAbnormalRounds || 0) > 0 && buffId >= 50001 && buffId <= 50008) return; // 20970 芬芳之守护窗口
-  if (tar.talent === 21410 && buffId >= 50001 && buffId <= 50008) return; // 21410 正体不明：免异常
+  if (abnormalWindowBlocked(tar, buffId)) return; // 20970/10353：窗口内免异常（不消耗次数）
+  if (tar.talent === 21410 && ABNORMAL_BUFF_IDS.has(Number(buffId))) return; // 21410 正体不明：免异常
   if ((tar.noPositiveRounds || 0) > 0 && POSITIVE_BUFF_IDS.has(buffId)) return; // 判决目标不获增益
   if (tar.buffs && tar.buffs[buffId]) return;
   if (Math.random() * 100 > chance) return;
+  if (abnormalBlocked(tar, buffId)) return; // 10375：免疫异常一次（概率命中才消耗）
   tar.buffs = tar.buffs || {};
   tar.buffs[buffId] = { level: 1, duration: duration || 3 };
   ctx && ctx.effects && ctx.effects.push(exclusiveBuffEffect(actor, tar, buffId, ctx.phase));
@@ -410,6 +438,8 @@ function gainStat(unit, prop, delta, ctx) {
   //    反转只改最终方向，否则会出现"因不可下降被拦 → 反转成上升"这类逻辑倒挂。
   // 事件按 final 方向发（客户端看到的就是实际发生的升降）。
   if (d !== 0 && unit.talent === 20200) d = -d;
+  // 10186 飞升灵药：飞升中的誓灵提升能力等级时额外 +1 级（只加成正向提升）
+  if (d > 0 && (unit.ascendRounds || 0) > 0) d += 1;
   const lv = unit.statLevels || (unit.statLevels = {});
   const oldLv = Number(lv[prop]) || 0;
   const newLv = Math.max(-6, Math.min(6, oldLv + d));
@@ -1961,8 +1991,10 @@ function effectiveSpeed(unit, allUnits, battleState) {
   const kappaSpeedMul = (unit.talent === 20580 && curWeather === WEATHER_IDS.RAIN) ? 1.5 : 1.0;
   // 疾走之风（10009）：4回合内己方速度翻倍（批次H1；施放回合算第1回合，回合末递减）
   const teamSpeedMul = (unit.teamSpeedMulRounds || 0) > 0 ? 2.0 : 1.0;
+  // 兴奋的秘泉（10168）：目标速度翻倍（3回合，回合末递减）
+  const exciteSpringSpeedMul = (unit.exciteSpringRounds || 0) > 0 ? (Number(unit.exciteSpringSpeedMul) || 2.0) : 1.0;
   return Math.round(unit.attrs.speed * attrLvMul(spdLv) * paraMul * nuwaMul * izanagiMul * yamaSpeedMul * ikarosWeatherMul
-    * obsidianMul * justiceSpeedMul * kappaSpeedMul * teamSpeedMul);
+    * obsidianMul * justiceSpeedMul * kappaSpeedMul * teamSpeedMul * exciteSpringSpeedMul);
 }
 
 function initUnitBattleState(unit) {
@@ -2354,6 +2386,22 @@ function targetsOfEff(effType, side, units, main, actor, skillId) {
     if (taunter) return [taunter];
   }
   return main && main.side !== side ? [main] : foes.slice(0, 1);
+}
+
+// 客户端 select_list[].type（brief_pos = (x+500)*1000+(y+500)）→ 目标单位。
+// pool 必须与技能阵营一致：辅助/治疗传己方池，攻击传敌方池。
+// ⚠️ 2026-11-08 修复：map_fight 手动选目标旧实现**只**在 aliveEnemies() 里找，单体辅助/治疗
+//    选己方目标必然落空 → 回落"血量比例最低队友"，表现为"选了 A 却加到 B 身上"。
+function resolveTargetPos(pool, briefPos) {
+  const bp = Number(briefPos) || 0;
+  if (!bp) return null;
+  const tx = Math.floor(bp / 1000) - 500;
+  const ty = (bp % 1000) - 500;
+  const list = (pool || []).filter(u => u && u.hp > 0 && Array.isArray(u.pos));
+  // 精确格优先；再做一次镜像兜底（客户端 isRightSide 时 x 取反）
+  return list.find(u => u.pos[0] === tx && u.pos[1] === ty)
+      || list.find(u => Math.abs(u.pos[0]) === Math.abs(tx) && u.pos[1] === ty)
+      || null;
 }
 
 // 自动选技（findBestSkill 镜像 + 三百零二 B1 增强）：
@@ -2824,12 +2872,19 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
   const rnd = (typeof rng === 'function') ? rng : Math.random;
   const results = [];
   const wakeEffects = [];
+  let tauntHitConsumed = false;
+  let lifeReturnHandled = false;
   const phase = ((actIndex || 0) * 100) + 4;
   const currentRound = (battleState && battleState.round) || 1;
   let skillRule = getSkillRule(cfg.id);
   // replace 型专属：基础规则整段抑制（含 postDamageHeal / forceCrit / 伤害乘区），
   // 与 applySkillEffects 的 rule=null 同口径（见 ELEMENT_REPLACE_BASE）。
   if (skillRule && elementExclusiveOf(actor, cfg.id) && elementReplacesBase(actor, cfg.id)) skillRule = null;
+  // 10391 奉献誓约：嘲讽者在场；若已阵亡则清掉吸引标记（避免行动被死目标吞掉）
+  if (actor && actor.tauntedBy) {
+    const tnt = (allUnits || []).find(u => u && Number(u.id) === Number(actor.tauntedBy));
+    if (!tnt || tnt.hp <= 0) { actor.tauntedBy = null; actor.tauntRounds = 0; }
+  }
   if (battleState && cfg && isSupportSkillCfg(cfg)) {
     battleState.supportUsedSide = battleState.supportUsedSide || {};
     battleState.supportUsedSide[actor.side] = true;
@@ -3092,8 +3147,46 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
   // 但要等主伤害结果入列之后再下发，否则客户端会先弹反击数字再弹主伤害。
   const talentAfterEffects = [];
   targets.forEach(t => {
+    // 10391 奉献誓约：被吸引的敌方单体攻击命中提尔 → 消耗 1 次吸引；3 次耗尽后己方全体较高攻击 +1
+    if (!tauntHitConsumed && actor && actor.side !== t.side && Number(cfg.power) > 0
+        && (EFF_FOE_ONE.has(Number(cfg.effType)) || Number(cfg.effType) === 1007)
+        && (Number(t.tauntHitsLeft) || 0) > 0) {
+      t.tauntHitsLeft -= 1;
+      tauntHitConsumed = true;
+      if (t.tauntHitsLeft <= 0) {
+        t.tauntHitsLeft = 0;
+        (allUnits || []).forEach(u => {
+          if (u && u.side !== t.side && Number(u.tauntedBy) === Number(t.id)) { u.tauntedBy = null; u.tauntRounds = 0; }
+        });
+        (allUnits || []).forEach(a => {
+          if (!a || a.hp <= 0 || a.side !== t.side) return;
+          // 不在此处直接加：敌方行动中的属性 effect 客户端不显示；挂起到本方回合末统一结算
+          a.devotionAtkUpPending = (Number(a.devotionAtkUpPending) || 0) + 1;
+        });
+      }
+    }
     let revivedHp = 0; // 救活类天赋（玉兔 22950）的复活生命；0=未触发
     if (!t || t.hp <= 0) return;
+    // 10426 灵归：回复目标 25% 生命，其他己方获得一半（12.5%）。
+    // 走 results（负 hurt=治疗）——目标满血时其他队友也必须回血且客户端要显示治疗数字。
+    if (!lifeReturnHandled && skillRule && skillRule.lifeReturn) {
+      lifeReturnHandled = true;
+      const lr = skillRule.lifeReturn;
+      const healOne = (u, pct) => {
+        if (!u || u.hp <= 0) return;
+        const before = u.hp;
+        const heal = Math.max(1, Math.round((u.maxHp || 1) * Number(pct) / 100 * healReceivedMul(u) * healDealtMul(actor)));
+        u.hp = Math.min(u.maxHp, u.hp + heal);
+        const real = Math.round(u.hp) - Math.round(before);
+        results.push({ target: u.id, hurt: -real, final_hp: u.hp, shield_hurt: 0, final_shield: Math.max(0, u.shield || 0), extra: 0 });
+      };
+      targets.forEach(u => healOne(u, lr.healPct || 25));
+      (allUnits || []).forEach(a => {
+        if (!a || a.hp <= 0 || a.side !== actor.side) return;
+        if (targets.some(x => x && x.id === a.id)) return;
+        healOne(a, lr.othersPct || 12.5);
+      });
+    }
     // 纯治疗技（power=0）：按目标最大生命百分比回复。
     // 带 healPct 的攻击技（天之甘露10412/蛋烧冲击10406/重生之风10218）不走此分支——
     // 旧实现在此提前 return 导致其目标（敌方）被"治疗"，伤害永不结算（2026-10-05 修复）。
@@ -3113,7 +3206,10 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     }
     // 纯辅助增益技能（power <= 0 且 type === 3），不走伤害与 MISS 流程
     if (cfg.power <= 0 && cfg.type === 3) {
-      results.push({ target: t.id, hurt: 0, final_hp: t.hp, shield_hurt: 0, final_shield: Math.max(0, t.shield || 0), extra: 0 });
+      // 10426 已在本轮目标循环开头写入 results（负 hurt=治疗），此处不再追加 0 伤害条目
+      if (!(skillRule && skillRule.lifeReturn)) {
+        results.push({ target: t.id, hurt: 0, final_hp: t.hp, shield_hurt: 0, final_shield: Math.max(0, t.shield || 0), extra: 0 });
+      }
       return;
     }
 
@@ -3579,6 +3675,10 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     }
     // 连续飞踢（10313）浮空目标：处于浮空状态时，被攻击必定暴击
     if ((t.floatRounds || 0) > 0) {
+      isForceCrit = true;
+    }
+    // 10186 飞升灵药：飞升中的誓灵被攻击必定被暴击
+    if ((t.ascendRounds || 0) > 0) {
       isForceCrit = true;
     }
     // 戟（10316 字典飞击）：丢出的圣器是字典则必定暴击（圣器携带者命中该技能时）
@@ -4579,6 +4679,8 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     }
     let exclusiveOutInMul = 1.0;
     if (Number(cfg.power) > 0) {
+      // 兴奋的秘泉（10168）：被祝福者造成的伤害翻倍（3回合；乘区与其它专属乘区同层）
+      if ((actor.exciteSpringRounds || 0) > 0) exclusiveOutInMul *= (Number(actor.exciteSpringDmgMul) || 2.0);
       if (Number(actor.nextOutDmgUp) > 0) { exclusiveOutInMul *= 1 + Number(actor.nextOutDmgUp); actor.nextOutDmgUp = 0; }
       if (actor.nextRoundDmgUpRound === (battleState && battleState.round) && Number(actor.nextRoundDmgUp) > 0) {
         exclusiveOutInMul *= 1 + Number(actor.nextRoundDmgUp);
@@ -4715,6 +4817,8 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       }
       // 舍命奋进（10398）：自身本回合受到伤害提升40%（通用 inDmgUpRounds 通道，受方立场）
       if ((t.inDmgUpRounds || 0) > 0) exclusiveOutInMul *= 1 + (Number(t.inDmgUpPct) || 0);
+      // 10375 圣甲虫护壳：己方 3 回合内受到伤害降低（teamDmgDownRounds/Pct）
+      if ((t.teamDmgDownRounds || 0) > 0) exclusiveOutInMul *= 1 - Math.min(1, (Number(t.teamDmgDownPct) || 0) / 100);
       // 元素融合（10173）：克制伤害提升30%（同属性修正在 same 段消费）
       if (actor.fusionActive && rel === 1) exclusiveOutInMul *= 1.3;
       // 弱者的反击（10266）：施放时按降低的等级数一次性增伤（本次行动全程有效，行动开始时已重置）
@@ -6178,8 +6282,9 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       });
     }
 
-    // 邪眼（10344）：暴击时 50% 几率施加睡眠
+    // 邪眼（10344）：暴击时 50% 几率施加睡眠（10353/10375 的 WIKI 异常免疫在此也生效）
     if (crit && skillRule && skillRule.sleepOnCrit && rnd() * 100 < skillRule.sleepOnCrit) {
+      if (!abnormalBlocked(t, BUFF_IDS.SLEEP)) {
       t.buffs = t.buffs || {};
       t.buffs[BUFF_IDS.SLEEP] = { level: 1, duration: 3 };
       wakeEffects.push({
@@ -6195,6 +6300,7 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
         change_value: [BUFF_IDS.SLEEP],
         remove_round: 3,
       });
+      }
     }
     // 技能 10208（勇者的激奏）：若使用者攻击时带有护盾值，造成伤害后 50% 几率使目标物防、速度下降 1 级
     if (cfg.id === 10208 && hadShieldBeforeAtk && (hurt > 0 || shieldHurt > 0) && rnd() < 0.50) {
@@ -7759,7 +7865,8 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
   if (rule.roundEndStat) actor.roundEndStat = { prop: rule.roundEndStat.prop, delta: rule.roundEndStat.delta, rounds: rule.roundEndStat.rounds || 3 };
   if (rule.teamShieldPct) {
     (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
-      exclusiveAddShield(actor, a, Math.max(1, Math.round((a.maxHp || 1) * rule.teamShieldPct / 100)), { effects, phase }, cfg.id);
+      const shieldPct = (rule.teamShieldPctClannad && isClannad(a.type)) ? Number(rule.teamShieldPctClannad) : Number(rule.teamShieldPct);
+      exclusiveAddShield(actor, a, Math.max(1, Math.round((a.maxHp || 1) * shieldPct / 100)), { effects, phase }, cfg.id);
     });
   }
   if (rule.defPierceOnHit) {
@@ -7913,6 +8020,122 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
   }
   if (rule.noKnockdown) {
     targets.forEach(t => { if (t && t.hp > 0) t.noKnockdownRounds = Math.max(t.noKnockdownRounds || 0, rule.noKnockdown); });
+  }
+  if (rule.clearDebuffs) {
+    // 10109 痊愈之歌 / 10132 痊愈之颂咏 / 10178 新月之光：解除己方异常；
+    // 10189 元气之音（攻击技）：描述只要求解除己方睡眠。WIKI 异常口径见 ABNORMAL_BUFF_IDS。
+    const onlySleep = Number(cfg.type) !== 3;
+    const clearList = onlySleep ? (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side) : targets;
+    clearList.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      const ids = onlySleep ? [BUFF_IDS.SLEEP] : Array.from(ABNORMAL_BUFF_IDS);
+      ids.forEach(id => {
+        if (t.buffs && t.buffs[id]) {
+          delete t.buffs[id];
+          effects.push({
+            trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [t.id],
+            src_type: 1, src_id: 60120, id: 60120, effect_phase: phase,
+            change_type: 300020, change_value: [id], remove_round: 0,
+          });
+        }
+      });
+      if (t.flinch) t.flinch = false;
+    });
+  }
+  // —— 2026-11-09 P0 辅助技批次 ——
+  if (rule.ascend) {
+    // 10186 飞升灵药：进入飞升状态（被攻击必暴 / 提升能力等级额外 +1 级）
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.ascendRounds = Math.max(t.ascendRounds || 0, Number(rule.ascend.rounds) || 3);
+      t.ascendSrcId = actor.id;
+    });
+  }
+  if (rule.targetShieldLevelMul) {
+    // 10314 熊之外套：目标获得「自身等级 × 6/8」护盾（clannad 对象系数 8）
+    const m = rule.targetShieldLevelMul;
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      const k = isClannad(t.type) ? Number(m.clannad || m.base) : Number(m.base || 6);
+      exclusiveAddShield(actor, t, Math.max(1, Math.round((Number(actor.level) || 1) * k)), { effects, phase }, cfg.id);
+    });
+  }
+  if (rule.holyRedemption) {
+    // 10245 圣光救赎：回复 25%HP，清除所有负面能力等级，每清除 1 级额外 +5% 回复
+    const hr = rule.holyRedemption;
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      let cleared = 0;
+      [101, 102, 103, 104, 105].forEach(pr => {
+        const lv = (t.statLevels && t.statLevels[pr]) || 0;
+        if (lv < 0) { gainStat(t, pr, -lv, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: t.id, phase }); cleared += -lv; }
+      });
+      const pct = Number(hr.healPct || 25) + Number(hr.perClearPct || 5) * cleared;
+      const before = t.hp;
+      const heal = Math.max(1, Math.round((t.maxHp || 1) * pct / 100 * healReceivedMul(t) * healDealtMul(actor)));
+      t.hp = Math.min(t.maxHp, t.hp + heal);
+      const real = Math.round(t.hp) - Math.round(before);
+      if (real > 0) effects.push({
+        trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [t.id],
+        src_type: 3, src_id: cfg.id, id: 60120, effect_phase: phase,
+        change_type: 200000, change_value: [real], remove_round: 0,
+      });
+    });
+  }
+  if (rule.pureHeart) {
+    // 10353 纯洁之心：3 回合免异常 + 每回合末随机 +1 能力等级
+    const rounds = Number(rule.pureHeart.rounds) || 3;
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.pureHeartRounds = Math.max(t.pureHeartRounds || 0, rounds);
+      t.pureHeartSrcId = actor.id;
+      t.noAbnormalRounds = Math.max(t.noAbnormalRounds || 0, rounds);
+    });
+  }
+  if (rule.scarabShell) {
+    // 10375 圣甲虫护壳：自损 30%最大生命；己方 3 回合受到伤害 -25%；免疫异常一次；
+    // 若施放前己方已有减伤效果，则随机防御 +1、随机攻击 +1。
+    const ss = rule.scarabShell;
+    const costBefore = actor.hp;
+    actor.hp = Math.max(1, actor.hp - Math.max(1, Math.round((actor.maxHp || 1) * Number(ss.hpCostPct || 30) / 100)));
+    if (actor.hp < costBefore) effects.push({
+      trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [actor.id],
+      src_type: 3, src_id: cfg.id, id: 60120, effect_phase: phase,
+      change_type: 200000, change_value: [-(costBefore - actor.hp)], remove_round: 0,
+    });
+    const allies = (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side);
+    const hadMit = allies.some(a => (Number(a.nextInDmgDown) || 0) > 0 || (Number(a.phyBarrierRounds) || 0) > 0
+      || (Number(a.magicBarrierRounds) || 0) > 0 || (Number(a.teamDmgDownRounds) || 0) > 0);
+    allies.forEach(a => {
+      a.teamDmgDownRounds = Math.max(a.teamDmgDownRounds || 0, Number(ss.rounds || 3));
+      a.teamDmgDownPct = Math.max(Number(a.teamDmgDownPct) || 0, Number(ss.dmgDownPct || 25));
+      a.abnormalImmuneCharges = Math.max(Number(a.abnormalImmuneCharges) || 0, Number(ss.abnormalImmuneCharges || 1));
+      if (hadMit && ss.bonusIfMit) {
+        gainStat(a, Math.random() < 0.5 ? 103 : 104, 1, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
+        gainStat(a, Math.random() < 0.5 ? 101 : 102, 1, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
+      }
+    });
+  }
+  if (rule.devotionPact) {
+    // 10391 奉献誓约：失去当前 30% 生命，防御 +1，吸引 3 次单体攻击；
+    // 次数耗尽在 settleSkill 命中段消费（tauntHitsLeft），并在那里给己方全体较高攻击 +1。
+    const dp = rule.devotionPact;
+    const before = actor.hp;
+    actor.hp = Math.max(1, actor.hp - Math.max(1, Math.round(actor.hp * Number(dp.hpCostPct || 30) / 100)));
+    if (before > actor.hp) effects.push({
+      trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [actor.id],
+      src_type: 3, src_id: cfg.id, id: 60120, effect_phase: phase,
+      change_type: 200000, change_value: [-(before - actor.hp)], remove_round: 0,
+    });
+    if (dp.defUp) {
+      gainStat(actor, 103, Number(dp.defUp), { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+      gainStat(actor, 104, Number(dp.defUp), { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
+    }
+    actor.tauntHitsLeft = Math.max(Number(actor.tauntHitsLeft) || 0, Number(dp.tauntHits || 3));
+    (allUnits || []).filter(u => u && u.hp > 0 && u.side !== actor.side).forEach(f => {
+      f.tauntedBy = actor.id;
+      f.tauntRounds = 99; // 次数由 tauntHitsLeft 管理（不让回合递减提前清除）
+    });
   }
   if (rule.skillLock) {
     targets.forEach(t => { if (t && t.hp > 0) { t.skillLock = (t.usedSkillsThisRound || []).slice(0, 8); t.skillLockRound = Number(battleState && battleState.round || 0) + 1; } });
@@ -8087,6 +8310,22 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
       t.nextAttackForceCrit = true;
       t.nextAttackCritDmgUp = Math.max(Number(t.nextAttackCritDmgUp) || 0, rule.nextAttackCritLock.critDmgUp || 0.35);
       t.skillTargetLocked = true;
+    });
+  }
+  if (rule.exciteSpring) {
+    // 兴奋的秘泉（10168，2026-11-08 实现）：目标速度/伤害翻倍 + 每回合末损失最大生命 20%，持续 3 回合。
+    // 速度乘区在 effectiveSpeed、伤害乘区在 settleSkill；扣血/递减/到期在 settleRoundEndTicks。
+    // 客户端表现：回合末扣血发 id=11501（FightFeature「兴奋的秘泉」tips 写明 20% 生命），
+    //               到期发 id=11502「兴奋的秘泉消失」。
+    const es = rule.exciteSpring;
+    const rounds = Number(es.rounds) || 3;
+    targets.forEach(t => {
+      if (!t || t.hp <= 0) return;
+      t.exciteSpringRounds = Math.max(Number(t.exciteSpringRounds) || 0, rounds);
+      t.exciteSpringHpLossPct = Number(es.hpLossPct) || 20;
+      t.exciteSpringDmgMul = Number(es.dmgMul) || 2;
+      t.exciteSpringSpeedMul = Number(es.speedMul) || 2;
+      t.exciteSpringSrcId = actor.id;
     });
   }
   if (rule.noPositiveTargetRounds) {
@@ -8398,11 +8637,11 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
         // 阿佛洛狄忒（22530 美神显现）：天赋持有者免疫任何异常状态
         if (tar.talent === 22530) return;
 
-        // 芬芳之守护（20970）施加的「下回合不会进入异常状态」窗口
-        if ((tar.noAbnormalRounds || 0) > 0 && b.buffId >= 50001 && b.buffId <= 50008) return;
+        // 芬芳之守护（20970）/ 10353：窗口内免异常（不消耗次数）
+        if (abnormalWindowBlocked(tar, b.buffId)) return;
 
         // 正体不明（21410 鵺）：不会进入异常状态
-        if (tar.talent === 21410 && b.buffId >= 50001 && b.buffId <= 50008) return;
+        if (tar.talent === 21410 && ABNORMAL_BUFF_IDS.has(Number(b.buffId))) return;
 
         // 睡美人（23220 沉睡魔咒）：沉睡状态下免疫1级异常状态
         if (tar.talent === 23220 && (tar.sleepCurseRounds > 0 || (tar.buffs && tar.buffs[BUFF_IDS.SLEEP]))) return;
@@ -8418,6 +8657,7 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
 
         const chance = Math.min(100, (b.chance != null ? b.chance : 100) * skillChanceMul(actor));
         if (rnd() * 100 > chance) return;
+        if (abnormalBlocked(tar, b.buffId)) return; // 10375：免疫异常一次（概率命中才消耗）
         tar.buffs = tar.buffs || {};
         const featInfo = BUFF_FEATURE_IDS[b.buffId] || { apply: 90001 };
         tar.buffs[b.buffId] = {
@@ -8452,6 +8692,7 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
     targets.forEach(tar => {
       if (!tar || tar.hp <= 0 || tar.flinch) return;
       if (rnd() * 100 < Math.min(100, Number(rule.chanceFlinch) * skillChanceMul(actor))) {
+        if (flinchBlocked(tar)) return;
         applyFlinch(tar, effects, phase, cfg.id, actor.id);
         effects.push({
           trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [tar.id],
@@ -8883,6 +9124,51 @@ function settleRoundEndTicks(units, battleState) {
     if ((u.aoeImmuneRounds || 0) > 0) u.aoeImmuneRounds--;
     if ((u.teamSpeedMulRounds || 0) > 0) u.teamSpeedMulRounds--;
     if ((u.inDmgUpRounds || 0) > 0) u.inDmgUpRounds--;
+    // 10391 奉献誓约：吸引次数耗尽的"己方较高攻击+1"在本回合末结算（客户端可见通道）
+    if ((u.devotionAtkUpPending || 0) > 0) {
+      const stacks = Number(u.devotionAtkUpPending) || 0;
+      u.devotionAtkUpPending = 0;
+      const hi = (u.attrs && u.attrs.phy_atk >= u.attrs.mag_atk) ? 101 : 102;
+      const other = hi === 101 ? 102 : 101;
+      for (let k = 0; k < stacks; k++) {
+        let real = gainStat(u, hi, 1, { effects, srcId: 10391, srcType: 3, atkId: u.id, srcServantId: u.id, phase: 7 });
+        if (real === 0) real = gainStat(u, other, 1, { effects, srcId: 10391, srcType: 3, atkId: u.id, srcServantId: u.id, phase: 7 });
+      }
+    }
+    if ((u.teamDmgDownRounds || 0) > 0) { u.teamDmgDownRounds -= 1; if (u.teamDmgDownRounds <= 0) u.teamDmgDownPct = 0; }
+    if ((u.ascendRounds || 0) > 0) u.ascendRounds--;
+    // 10353 纯洁之心：每回合结束随机提升 1 级能力等级（共 3 回合，施放回合算第 1 回合）
+    if ((u.pureHeartRounds || 0) > 0) {
+      const phProp = [101, 102, 103, 104, 105][Math.floor(Math.random() * 5)];
+      gainStat(u, phProp, 1, { effects, srcId: 10353, srcType: 3, atkId: u.pureHeartSrcId || u.id, srcServantId: u.id, phase: 7 });
+      u.pureHeartRounds -= 1;
+      if (u.pureHeartRounds <= 0) u.pureHeartRounds = 0;
+    }
+    // 兴奋的秘泉（10168）：回合末损失最大生命 20%，共 3 回合（施放回合算第 1 回合）；
+    // 与既有自损口径一致，最低保留 1 HP（不直接致死）。到期发 11502「兴奋的秘泉消失」。
+    if ((u.exciteSpringRounds || 0) > 0) {
+      const springPct = Number(u.exciteSpringHpLossPct) || 20;
+      const hpBefore = Math.round(u.hp);
+      const loss = Math.max(1, Math.round((u.maxHp || 1) * springPct / 100));
+      u.hp = Math.max(1, u.hp - loss);
+      const realLoss = hpBefore - Math.round(u.hp);
+      if (realLoss > 0) {
+        effects.push({
+          trigger_count: 0, atk_servant_id: u.exciteSpringSrcId || u.id, src_servant_id: u.id,
+          tar_servant_ids: [u.id], src_type: 3, src_id: 10168, id: 11501, effect_phase: 7,
+          change_type: 200000, change_value: [-realLoss], remove_round: 0,
+        });
+      }
+      u.exciteSpringRounds--;
+      if (u.exciteSpringRounds <= 0) {
+        u.exciteSpringRounds = 0;
+        effects.push({
+          trigger_count: 0, atk_servant_id: u.exciteSpringSrcId || u.id, src_servant_id: u.id,
+          tar_servant_ids: [u.id], src_type: 3, src_id: 10168, id: 11502, effect_phase: 7,
+          change_type: 0, change_value: [0], remove_round: 0,
+        });
+      }
+    }
     // 绝对防御（10007）：1 回合保护，回合末解除（round 门控在消费侧另有跨波次兜底）
     if (u.absoluteDef) { u.absoluteDef = false; u.absoluteDefRound = 0; }
     // 全局推演（10259）：准备回合结束 → 全部能力等级 +2（延时类，批次H3）
@@ -12987,7 +13273,7 @@ function settleBattleStartTalents(units, battleState) {
 
 module.exports = {
   natureOf, stepOf, stepOfStar, phyleOf, natureRelate, naturePer, MAGIC_ARROW, ABSORB_TALENT_NATURE,
-  calcAttrs, skillCfg, buildSkillPool, defaultSkills, buildUsingPool, aiUsable, targetsOfEff, isFriendEff, aiChoose, allyChoose, bestAttackChoice, choiceForSkill, estDamageOf, aiChooseDeep, autoChoose, normalizeWeatherState, validateBattleState,
+  calcAttrs, skillCfg, buildSkillPool, defaultSkills, buildUsingPool, aiUsable, targetsOfEff, resolveTargetPos, isFriendEff, aiChoose, allyChoose, bestAttackChoice, choiceForSkill, estDamageOf, aiChooseDeep, autoChoose, normalizeWeatherState, validateBattleState,
   settleSkill, sortActors, applySkillPriorities, SKILL_PRIO_TABLE, skillChanceMul, NATURE_WEEK, feelCritBonus, feelHitBonus,
   attrLvMul, hitDodgeLvMul, effectiveSpeed, initUnitBattleState,
   applySkillEffects, checkUnitCanAct, settleRoundEndTicks, settleRoundStartTalents, settleBattleStartTalents,

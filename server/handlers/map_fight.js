@@ -2219,19 +2219,24 @@ m_fight_skill_select_tos(conn, obj) {
         }
       }
       if (sk) {
-        // 手动目标格 → 反解坐标找该格存活敌人（FightModule.onSureSelTar 的 brief_pos）
+        const cfg = FC.skillCfg(manual.skillId);
+        const friendEff = !!(cfg && FC.isFriendEff(cfg.effType));
+        // 手动目标格 → 反解坐标（FightModule.onSureSelTar 的 brief_pos）。
+        // ⚠️ 2026-11-08 修复：旧实现**只在 aliveEnemies() 里找**，任何单体辅助/治疗技
+        //    选己方目标必然落空 → 回落"血量比例最低队友"→ 玩家看到"选了 A 却加到 B 身上"。
+        //    targetPos 是客户端点选单位所在格，与技能阵营无关；按技能目标阵营选池。
         let main = null;
         if (manual.targetPos) {
-          const tx = Math.floor(manual.targetPos / 1000) - 500, ty = (manual.targetPos % 1000) - 500;
-          main = aliveEnemies().find(e => e.pos[0] === tx && e.pos[1] === ty)
-            || aliveEnemies().find(e => Math.abs(e.pos[0]) === Math.abs(tx) && e.pos[1] === ty) || null;
+          main = FC.resolveTargetPos(friendEff ? sceneAllies() : aliveEnemies(), manual.targetPos);
         }
-        const cfg = FC.skillCfg(manual.skillId);
-        if (cfg && (cfg.healPct && !(cfg.power > 0) || FC.isFriendEff(cfg.effType)) && !main) { // 手动治疗/增益无目标 → 默认血量比例最低队友（复合攻击技如天之甘露仍默认打敌人）
+        // 自身类（effType 2001，如战吼/疾风的祝福/自我修复）：目标就是施术者本身。
+        // 旧实现在无 targetPos 时也回落最低血队友，会把自身增益加到别人身上。
+        if (cfg && Number(cfg.effType) === 2001) main = actor;
+        if (!main && cfg && (cfg.healPct && !(cfg.power > 0) || friendEff)) { // 手动治疗/增益无有效目标 → 血量比例最低队友（复合攻击技如天之甘露仍默认打敌人）
           let ratio = 2;
           sceneAllies().forEach(f => { const r = f.hp / f.maxHp; if (r < ratio) { ratio = r; main = f; } });
         }
-        if (!main) main = (cfg && FC.isFriendEff(cfg.effType)) ? actor : aliveEnemies()[0];
+        if (!main) main = friendEff ? actor : aliveEnemies()[0];
         choice = { skillId: manual.skillId, main };
       }
     }
