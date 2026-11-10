@@ -433,6 +433,11 @@ __psModFactory('util', {});
                             headers = HeadersToJs(req.Headers), // 引擎相关，必须在工作线程构建
                             body = req.Body,
                         };
+                        // Node IncomingMessage.socket / .connection 垫片：save_admin 的
+                        // localhost-only 校验读 req.socket.remoteAddress（2026-11-08：此前缺失导致 /saveadm 恒 403）
+                        var sockInfo = new PsHttpSocketInfo(req.RemoteAddress, req.RemotePort, req.RemoteIsIpv6);
+                        reqObj.socket = sockInfo;
+                        reqObj.connection = sockInfo;
                         server.InvokeRequest(JsValue.FromObject(_engine, reqObj), JsValue.FromObject(_engine, res));
                     }
                     catch (Exception e)

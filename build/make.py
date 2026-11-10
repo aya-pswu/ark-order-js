@@ -26,6 +26,15 @@ import os
 import subprocess
 import sys
 
+# Windows 中文控制台（cp936/GBK）无法编码 '⓪' 等符号：print 会直接抛
+# UnicodeEncodeError，构建入口在打印步骤清单时就崩，还没开始编译。
+# 保留控制台原编码，只把不可编码字符替换成 '?'（不影响任何构建行为）。
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors='replace')
+    except Exception:
+        pass
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)                 # 工作区根 H:\ARK NEW
 PY = sys.executable

@@ -63,12 +63,41 @@ namespace PsLocalServer.Shims
         }
     }
 
+    /// <summary>
+    /// HTTP 请求对象的 socket 垫片（Node IncomingMessage.socket 的最小形态）。
+    /// 只补 server 代码实际读取的字段：remoteAddress（/saveadm 的 localhost-only 校验）、
+    /// remotePort / remoteFamily（排查日志用）、encrypted（http=false，https 本服没有）。
+    /// ⚠️ 2026-11-08：此前 PsHttpRequest 完全没暴露 socket，save_admin.js 的
+    ///   `req.socket.remoteAddress` 恒 undefined ⇒ /saveadm/* 一律 403「仅允许本机调用」，
+    ///   存档管理器 APK 在 Jint 线上完全不可用。现在按真实对端地址填充。
+    /// </summary>
+    public class PsHttpSocketInfo
+    {
+        private readonly string _remoteAddress;
+        private readonly int _remotePort;
+        private readonly bool _ipv6;
+        public PsHttpSocketInfo(string remoteAddress, int remotePort, bool ipv6)
+        {
+            _remoteAddress = string.IsNullOrEmpty(remoteAddress) ? "" : remoteAddress;
+            _remotePort = remotePort;
+            _ipv6 = ipv6;
+        }
+        public string remoteAddress { get { return _remoteAddress; } }
+        public int remotePort { get { return _remotePort; } }
+        public string remoteFamily { get { return _ipv6 ? "IPv6" : "IPv4"; } }
+        public bool encrypted { get { return false; } }
+    }
+
     public class PsHttpRequest
     {
         public string method;
         public string url;
         public object headers;      // JS plain object（string→string）
         public string body;
+        // Node IncomingMessage.socket 的最小垫片（save_admin.js 读 remoteAddress 做回环校验）。
+        // 同时挂一份到 connection（Node 旧别名），避免老代码/第三方脚本只认 connection。
+        public object socket;
+        public object connection;
     }
 
     public class PsHttpResponse
@@ -432,6 +461,10 @@ namespace PsLocalServer.Shims
         public string Url;
         public Dictionary<string, string> Headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         public string Body;
+        // 对端地址（/saveadm localhost-only 校验用）。IPv4-mapped IPv6 归一成 IPv4 字符串。
+        public string RemoteAddress = "";
+        public int RemotePort;
+        public bool RemoteIsIpv6;
 
         public static HttpReader Read(Socket sock)
         {
@@ -453,6 +486,18 @@ namespace PsLocalServer.Shims
             var first = lines[0].Split(' ');
             if (first.Length < 2) return null;
             var r = new HttpReader { Method = first[0], Url = first[1] };
+            try
+            {
+                var ep = sock.RemoteEndPoint as IPEndPoint;
+                if (ep != null)
+                {
+                    r.RemoteAddress = NormalizeAddress(ep.Address);
+                    r.RemotePort = ep.Port;
+                    r.RemoteIsIpv6 = ep.Address.AddressFamily == AddressFamily.InterNetworkV6
+                        && r.RemoteAddress.IndexOf(':') >= 0;
+                }
+            }
+            catch { /* 取不到对端地址就留空：/saveadm 会按非本机拒绝（保守） */ }
             for (int i = 1; i < lines.Length; i++)
             {
                 var line = lines[i];
@@ -482,6 +527,28 @@ namespace PsLocalServer.Shims
             for (int i = 0; i + 3 < arr.Length; i++)
                 if (arr[i] == 13 && arr[i + 1] == 10 && arr[i + 2] == 13 && arr[i + 3] == 10) return i;
             return -1;
+        }
+
+        /// <summary>
+        /// 地址归一：net40/游戏自带 mscorlib 没有 IsIPv4MappedToIPv6/MapToIPv4（.NET 4.5+ API），
+        /// 这里手工识别 ::ffff:a.b.c.d 并转成 IPv4 字符串（/saveadm 的白名单是 127.0.0.1）。
+        /// </summary>
+        static string NormalizeAddress(IPAddress addr)
+        {
+            if (addr == null) return "";
+            try
+            {
+                if (addr.AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    var b = addr.GetAddressBytes();
+                    bool mapped = b.Length == 16;
+                    for (int i = 0; mapped && i < 10; i++) if (b[i] != 0) mapped = false;
+                    if (mapped && b[10] == 0xFF && b[11] == 0xFF)
+                        return new IPAddress(new byte[] { b[12], b[13], b[14], b[15] }).ToString();
+                }
+            }
+            catch { }
+            return addr.ToString();
         }
     }
 }
