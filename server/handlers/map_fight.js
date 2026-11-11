@@ -2087,6 +2087,7 @@ m_fight_skill_select_tos(conn, obj) {
     const ch = FC.aiChoose(e, units);
     if (ch && ch.main) st.selMap[e.id] = ch.main.id;
   });
+  units.forEach(u => { if (u && u.eternalReleaseAtRound && Number(st.round) >= Number(u.eternalReleaseAtRound)) u.eternalReleased = true; });
   FC.applySkillPriorities(units, st, selMap); // 批次E：官方技能优先度进排序（chosenSkillPrio/Nature 此前无人写）
   const actors = FC.sortActors(units, st, selMap); // 速度降序（考虑 speed_lv 与麻痹；玩家选技供乱流风系优先度）；行动中阵亡者跳过
   actors.forEach(a => { if (a && a.skillLockRound && a.skillLockRound < st.round) { a.skillLock = null; a.skillLockRound = 0; } });
@@ -2161,10 +2162,53 @@ m_fight_skill_select_tos(conn, obj) {
       src_type: 1, src_id: 21840, id: 218401, effect_phase: 0,
       change_type: 200000, change_value: [0], remove_round: 0,
     }));
+  // 青龙（23270 苍之疾走）：第 2 回合以独立行动补播入场技能（首包 round_start=1 不播 fight_list）
+  if (Number(st.round) >= 2) {
+    units.filter(u => u && u.hp > 0 && u.qinglongPending).forEach(u => {
+      u.qinglongPending = false;
+      const hasBaihu = units.some(b => b && b.hp > 0 && b.side === u.side && b.talent === 23300);
+      const pick = hasBaihu ? u.skills[u.skills.length - 1] : u.skills[Math.floor(Math.random() * u.skills.length)];
+      const qcfg = FC.skillCfg(pick && (pick.id || pick));
+      if (!qcfg) return;
+      const friend = FC.isFriendEff(qcfg.effType);
+      const pool = units.filter(x => x && x.hp > 0 && x.side === (friend ? u.side : (u.side === 0 ? 1 : 0)));
+      if (!pool.length) return;
+      const main = pool[Math.floor(Math.random() * pool.length)];
+      let qTargets = FC.targetsOfEff(qcfg.effType, u.side, units, main, u, qcfg.id);
+      if (!qTargets.length) qTargets = friend ? [u] : [main];
+      const qres = FC.settleSkill(u, qcfg, qTargets, units, null, actIndex, st) || [];
+      const qeff = FC.applySkillEffects(u, qcfg, qTargets, units, actIndex, st) || [];
+      const qtal = FC.checkTalentsAfterSkill(u, qcfg, qTargets, qres, units, actIndex, st) || [];
+      fightList.push({
+        atk_id: bidOfUnit(u), skill_id: qcfg.id, index: actIndex,
+        power_point: ((u.skills || []).find(x => Number(x.id) === Number(qcfg.id)) || {}).pp || 0,
+        effect_list: qres.map(e => ({
+          type: 0, target: bidOfUnit(units.find(x => x.id === e.target) || { bid: e.target }),
+          hurt: e.hurt, final_hp: e.final_hp,
+          shield_hurt: Number(e.shield_hurt) || 0, final_shield: Number(e.final_shield) || 0,
+          element_shield_hurt: 0, final_element_shield: 0, extra: e.extra,
+        })),
+        result: 0,
+      });
+      if (qres.wakeEffects && qres.wakeEffects.length) roundEffects.push(...FC.flattenEffects(qres.wakeEffects));
+      if (qeff.length) roundEffects.push(...qeff);
+      if (qtal.length) roundEffects.push(...qtal);
+      actIndex++;
+      log(`[fight] 青龙天赋补播：${u.id} 释放 ${qcfg.id}（第${st.round}回合）`);
+    });
+  }
+
   for (let ai = 0; ai < actors.length; ai++) {
     const actor = actors[ai];
     if (actor.hp <= 0) continue;
     if (aliveEnemies().length === 0) break; // 敌全灭，剩余行动不结算（客户端播完转场）
+    // 10432 羁绊连环：成功后自身跳过下次行动
+    if (actor.skipNextAction) {
+      actor.skipNextAction = false;
+      fightList.push({ atk_id: bidOfUnit(actor), skill_id: 10081, index: actIndex, power_point: 99, effect_list: [], result: 1 });
+      actIndex++;
+      continue;
+    }
 
     // 行动前异常状态判定（睡眠/冻结/麻痹/混乱/灵魂画手 20% 失手）
     const actCheck = FC.checkUnitCanAct(actor, units, actIndex);
@@ -2219,19 +2263,24 @@ m_fight_skill_select_tos(conn, obj) {
         }
       }
       if (sk) {
-        // 手动目标格 → 反解坐标找该格存活敌人（FightModule.onSureSelTar 的 brief_pos）
+        const cfg = FC.skillCfg(manual.skillId);
+        const friendEff = !!(cfg && FC.isFriendEff(cfg.effType));
+        // 手动目标格 → 反解坐标（FightModule.onSureSelTar 的 brief_pos）。
+        // ⚠️ 2026-11-08 修复：旧实现**只在 aliveEnemies() 里找**，任何单体辅助/治疗技
+        //    选己方目标必然落空 → 回落"血量比例最低队友"→ 玩家看到"选了 A 却加到 B 身上"。
+        //    targetPos 是客户端点选单位所在格，与技能阵营无关；按技能目标阵营选池。
         let main = null;
         if (manual.targetPos) {
-          const tx = Math.floor(manual.targetPos / 1000) - 500, ty = (manual.targetPos % 1000) - 500;
-          main = aliveEnemies().find(e => e.pos[0] === tx && e.pos[1] === ty)
-            || aliveEnemies().find(e => Math.abs(e.pos[0]) === Math.abs(tx) && e.pos[1] === ty) || null;
+          main = FC.resolveTargetPos(friendEff ? sceneAllies() : aliveEnemies(), manual.targetPos);
         }
-        const cfg = FC.skillCfg(manual.skillId);
-        if (cfg && (cfg.healPct && !(cfg.power > 0) || FC.isFriendEff(cfg.effType)) && !main) { // 手动治疗/增益无目标 → 默认血量比例最低队友（复合攻击技如天之甘露仍默认打敌人）
+        // 自身类（effType 2001，如战吼/疾风的祝福/自我修复）：目标就是施术者本身。
+        // 旧实现在无 targetPos 时也回落最低血队友，会把自身增益加到别人身上。
+        if (cfg && Number(cfg.effType) === 2001) main = actor;
+        if (!main && cfg && (cfg.healPct && !(cfg.power > 0) || friendEff)) { // 手动治疗/增益无有效目标 → 血量比例最低队友（复合攻击技如天之甘露仍默认打敌人）
           let ratio = 2;
           sceneAllies().forEach(f => { const r = f.hp / f.maxHp; if (r < ratio) { ratio = r; main = f; } });
         }
-        if (!main) main = (cfg && FC.isFriendEff(cfg.effType)) ? actor : aliveEnemies()[0];
+        if (!main) main = friendEff ? actor : aliveEnemies()[0];
         choice = { skillId: manual.skillId, main };
       }
     }
@@ -2275,6 +2324,29 @@ m_fight_skill_select_tos(conn, obj) {
         }
       }
     }
+    // 10323 永恒解脱：解脱状态只能使用辅助技能
+    if (choice && actor.eternalReleased) {
+      const c0 = FC.skillCfg(choice.skillId);
+      if (c0 && (c0.type === 1 || c0.type === 2) && Number(c0.power) > 0) {
+        const sup = (actor.skills || []).find(s => s.pp > 0 && (() => {
+          const x = FC.skillCfg(s.id);
+          return x && !((x.type === 1 || x.type === 2) && Number(x.power) > 0);
+        })());
+        if (sup) {
+          const sc = FC.skillCfg(sup.id);
+          let supMain = choice.main;
+          if (FC.isFriendEff(sc.effType)) {
+            let ratio = 2; supMain = actor;
+            sceneAllies().forEach(f => { const r = f.hp / f.maxHp; if (r < ratio) { ratio = r; supMain = f; } });
+          }
+          log(`[fight] 解脱状态：${actor.id} 强制改用辅助技 ${sup.id}`);
+          choice = { skillId: sup.id, main: supMain };
+        } else {
+          choice = null;
+        }
+      }
+    }
+    if (!choice) continue;
     const cfg = FC.skillCfg(choice.skillId);
     if (!cfg) continue;
     // 10372 反核弹外壳：连续两回合使用 → 50% 失败（不结算、不产生行动）
@@ -2394,6 +2466,28 @@ m_fight_skill_select_tos(conn, obj) {
       result: 0, // SKILL_RESULT_SUC
     });
     actIndex++;
+
+    // 10432 羁绊连环：目标为青龙/朱雀/玄武 → 以其身份插入一条独立行动（有技能动画/伤害数字）
+    if (cfg.id === 10432) {
+      const bc = FC.bondChainCast(actor, targets, units, actIndex, st);
+      if (bc) {
+        fightList.push({
+          atk_id: bidOfUnit(units.find(u => u.id === bc.castBy) || { bid: bc.castBy }),
+          skill_id: bc.skillId, index: actIndex, power_point: bc.pp,
+          effect_list: bc.results.map(e => ({
+            type: 0, target: bidOfUnit(units.find(u => u.id === e.target) || { bid: e.target }),
+            hurt: e.hurt, final_hp: e.final_hp,
+            shield_hurt: Number(e.shield_hurt) || 0, final_shield: Number(e.final_shield) || 0,
+            element_shield_hurt: 0, final_element_shield: 0, extra: e.extra,
+          })),
+          result: 0,
+        });
+        if (bc.effects.length) roundEffects.push(...bc.effects);
+        actIndex++;
+        actor.skipNextAction = true;
+        log(`[fight] 10432 羁绊连环：${bc.castBy} 释放最后技能 ${bc.skillId}`);
+      }
+    }
 
     // P3 专属改写·追加施放（一百二十四/二十七泛化）：唤醒中专属行为表驱动——
     //   onKill（暴风雪/兔子退散：击败任一敌方 → 再放一次；后者追加 +70% 伤害）

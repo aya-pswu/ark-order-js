@@ -2392,6 +2392,11 @@ const SKILL_EFFECT_RULES = {
     // 目标（effType 2002 己方单体）获得：skillTargetLocked（目标锁，压过霍德尔/嘲讽/挑拨）
     // + nextAttackForceCrit（下次攻击必暴）+ nextAttackCritDmgUp（爆伤+35%），下次攻击技施放时消费
     "nextAttackCritLock": { "critDmgUp": 0.35 } },
+  "10168": { "id": 10168, "name": "兴奋的秘泉", "effType": 2002, "type": 3,
+    // 「目标速度和伤害翻倍，回合结束时损失最大生命的20%，持续3回合」——
+    // 3 回合（施放回合算第 1 回合）；速度在 effectiveSpeed、伤害在 settleSkill 乘区；
+    // 回合末在 settleRoundEndTicks 扣血并递减，到期发 11502「兴奋的秘泉消失」。
+    "exciteSpring": { "rounds": 3, "hpLossPct": 20, "dmgMul": 2, "speedMul": 2 } },
   "10251": { "id": 10251, "name": "欲望激发", "effType": 2002, "type": 3,
     // 「使目标誓灵较高一项攻击能力上升2级」——statChanges 扩展 prop:'higherAtk'（按目标 attrs 动态解析）
     "statChanges": [{ "target": "target", "prop": "higherAtk", "delta": 2 }] },
@@ -2479,7 +2484,77 @@ const SKILL_EFFECT_RULES = {
   "10319": { "id": 10319, "name": "崩坏琴声", "effType": 1058, "type": 1,
     // 「使用后若该技能击倒敌方，则该技能使用次数增加一次（使用次数不能超过上限）」——
     // 击倒后 pp+1（封顶 cfg.pp）
-    "ppRefundOnKill": true }
+    "ppRefundOnKill": true },
+  // —— 2026-11-09 P0 辅助技批次（未实现清单前 8 个；效果口径见各条注释）——
+  "10186": { "id": 10186, "name": "飞升灵药", "effType": 2002, "type": 3,
+    // 「使目标进入飞升状态，飞升中的誓灵必定被暴击，提升能力等级时额外提升1级」
+    // 3 回合；被攻击必暴（settleSkill 暴击段 isForceCrit）；gainStat 正向提升额外 +1
+    "ascend": { "rounds": 3 } },
+  "10245": { "id": 10245, "name": "圣光救赎", "effType": 2002, "type": 3,
+    // 「回复目标25%HP，同时消除所有负面能力等级，每消除一级，增加5%回复量」
+    "holyRedemption": { "healPct": 25, "perClearPct": 5 } },
+  "10312": { "id": 10312, "name": "光坂的护佑", "effType": 2011, "type": 3,
+    // 「为己方全体添加10%护盾；若为clannad阵营誓灵，护盾量变为15%」
+    "teamShieldPct": 10, "teamShieldPctClannad": 15 },
+  "10314": { "id": 10314, "name": "熊之外套", "effType": 2002, "type": 3,
+    // 「为目标添加自身等级*6的护盾值；如果对象为clannad阵营誓灵，则系数变为8」
+    "targetShieldLevelMul": { "base": 6, "clannad": 8 } },
+  "10353": { "id": 10353, "name": "纯洁之心", "effType": 2002, "type": 3,
+    // 「3回合内免疫异常状态且每回合结束时随机提升1级能力等级」
+    "pureHeart": { "rounds": 3 } },
+  "10375": { "id": 10375, "name": "圣甲虫护壳", "effType": 2011, "type": 3,
+    // 「消耗自身30%最大生命 使己方3回合内受到伤害降低25%，且免疫异常状态一次，
+    //   若已有减伤效果则提升随机防御和攻击1级」
+    "scarabShell": { "hpCostPct": 30, "rounds": 3, "dmgDownPct": 25, "abnormalImmuneCharges": 1, "bonusIfMit": true } },
+  "10391": { "id": 10391, "name": "奉献誓约", "effType": 2001, "type": 3,
+    // 「失去当前30%生命，防御等级提升1级，吸引3次单体攻击，次数消耗完时己方全体较高攻击提升1级」
+    "devotionPact": { "hpCostPct": 30, "defUp": 1, "tauntHits": 3 } },
+  "10426": { "id": 10426, "name": "灵归", "effType": 2002, "type": 3,
+    // 「回复目标25%生命值，己方其他誓灵获得一半的回复效果」
+    "lifeReturn": { "healPct": 25, "othersPct": 12.5 } },
+  // —— 2026-11-10 P1 辅助技批次（13 个）——
+  "10253": { "id": 10253, "name": "王座的守护", "effType": 2002, "type": 3,
+    // 「本回合受到伤害减少25%，每受到一次攻击，较高一项攻击提升1级」
+    "kingsGuard": { "dmgDownPct": 25, "rounds": 1 } },
+  "10263": { "id": 10263, "name": "血坏", "effType": 2001, "type": 3,
+    // 「物攻提升至最大；血坏状态回合末损失最大HP×回合数×10%（最大30%，至少1HP）」
+    "bloodRuin": { "rounds": 3, "perTurnPct": 10, "maxPct": 30 } },
+  "10270": { "id": 10270, "name": "虚伪创生", "effType": 2001, "type": 3,
+    "statChanges": [
+      { "target": "self", "prop": 102, "delta": 1 },
+      { "target": "self", "prop": 103, "delta": 1 },
+      { "target": "self", "prop": 104, "delta": 1 }
+    ] },
+  "10285": { "id": 10285, "name": "ORa！", "effType": 2001, "type": 3,
+    // 「本回合获得仇恨吸引效果，随机提升1项防御等级1级」
+    "selfTaunt": { "rounds": 1 }, "randomDefUp": 1 },
+  "10289": { "id": 10289, "name": "光之妖刃", "effType": 2002, "type": 3,
+    // 「将自身所有能力等级同步给队友」（替换目标能力等级）
+    "statLevelCopy": true },
+  "10305": { "id": 10305, "name": "善根萌长", "effType": 2002, "type": 3,
+    // 「使友方负面能力等级转为相应的正向能力等级」
+    "invertNegativeTarget": true },
+  "10320": { "id": 10320, "name": "注意集中", "effType": 2002, "type": 3,
+    // 「目标三回合内能力等级不会降低且不会进入异常状态」
+    "statDownImmunityRounds": 3, "noAbnormalRounds": 3 },
+  "10321": { "id": 10321, "name": "后见之明", "effType": 2002, "type": 3,
+    // 「优先度-1；若本回合该誓灵受到过攻击，则物攻、魔攻和速度+2」
+    "foresight": { "atkUp": 2 } },
+  "10323": { "id": 10323, "name": "永恒解脱", "effType": 2001, "type": 3,
+    // 「开启后自身伤害+300%，4回合后进入解脱状态：只能使用辅助技能，被魔攻技能攻击必定被击倒」
+    "eternalRelease": { "rounds": 4, "dmgMul": 4 } },
+  "10399": { "id": 10399, "name": "瑶草", "effType": 2002, "type": 3,
+    // 「本回合内受到的直接技能伤害会反馈至攻击者」
+    "reflectDirect": { "rounds": 1 } },
+  "10414": { "id": 10414, "name": "无上宽恕", "effType": 2001, "type": 3,
+    // 「清除自身所有能力等级；5回合内造成伤害和暴击率提升 n×10%（n=消除级数）」
+    "forgive": { "rounds": 5, "perClearPct": 10 } },
+  "10431": { "id": 10431, "name": "玄佑", "effType": 2001, "type": 3,
+    // 「对自身造成60威力（按自身物攻计算）伤害，触发3次天赋；物防魔防各+1」
+    "xuanYou": { "power": 60, "defUp": 1, "talentHits": 3 } },
+  "10432": { "id": 10432, "name": "羁绊连环", "effType": 2002, "type": 3,
+    // 「目标为青龙/朱雀/玄武时，立即释放其最后释放的技能（单体目标随机）；成功后自身跳过下次行动」
+    "bondChain": true }
 }
 
 function getSkillRule(skillId) {

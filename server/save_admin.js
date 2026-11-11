@@ -52,17 +52,31 @@ function checkKey(u, req) {
   return String(k) === ADMIN_KEY;
 }
 
-function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let size = 0; const chunks = [];
-    req.on('data', c => {
-      size += c.length;
-      if (size > MAX_BODY) { reject(new Error('body 过大')); req.destroy(); return; }
-      chunks.push(c);
-    });
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    req.on('error', reject);
+// 读请求体：**回调式，零 Promise/async**。
+//   · node：Node 流接口 req.on('data'|'end'|'error')；
+//   · Jint 垫片：请求体已由 C# 按 Content-Length 完整读进 req.body，垫片没有流接口。
+// ⚠️ 为什么不能用 async/await（2026-11-08 实测）：Babel 会把 async 转成 regenerator+Promise，
+//   而 Jint 2.11 的 Promise 只是 Polyfill 占位、regenerator 辅助器在 Jint 上抛
+//   "Object has no method 'next'" → /saveadm/import、/saveadm/edit 永远失败。
+//   本文件（以及整条 /saveadm 链路）必须保持纯回调；改回 async 前先在真机上验。
+function readBody(req, cb) {
+  let done = false;
+  const finish = (err, text) => { if (done) return; done = true; cb(err, text); };
+  if (typeof req.on !== 'function') {
+    // Jint 垫片分支：body 已完整读入，直接同步回调
+    const b = req.body == null ? '' : String(req.body);
+    if (b.length > MAX_BODY) return finish(new Error('body 过大'));
+    return finish(null, b);
+  }
+  let size = 0;
+  const chunks = [];
+  req.on('data', c => {
+    size += c.length;
+    if (size > MAX_BODY) { finish(new Error('body 过大')); try { req.destroy(); } catch (e) {} return; }
+    chunks.push(c);
   });
+  req.on('end', () => finish(null, Buffer.concat(chunks).toString('utf8')));
+  req.on('error', e => finish(e));
 }
 
 // ---- 存档摘要 / 文件枚举 ----
@@ -179,7 +193,7 @@ function reloadCurrentState() {
 
 // ---- 端点 ----
 
-async function handle(req, res, p, u, ctx, send) {
+function handle(req, res, p, u, ctx, send) {
   const log = ctx.log;
   // ⚠️ 一律用本文件的 sendJson，**不要用 http_router 传进来的 send**：
   // 那个只写 Content-Type（⇒ Transfer-Encoding: chunked），而 Android HttpURLConnection
@@ -199,8 +213,8 @@ async function handle(req, res, p, u, ctx, send) {
   try {
     if (p === '/saveadm/status') return handleStatus(req, res, ctx);
     if (p === '/saveadm/export') return handleExport(req, res, ctx);
-    if (p === '/saveadm/import') return await handleImport(req, res, ctx);
-    if (p === '/saveadm/edit') return await handleEdit(req, res, ctx);
+    if (p === '/saveadm/import') return handleImport(req, res, ctx);
+    if (p === '/saveadm/edit') return handleEdit(req, res, ctx);
     return sendJson(res, 404, { ret: 0, msg: '未知 saveadm 端点', data: {} });
   } catch (e) {
     log('[saveadm] 失败: ' + (e && e.message));
@@ -275,96 +289,118 @@ function autoBackup(names) {
   return { dir: fs.existsSync(dir) ? dir : null, count: n };
 }
 
-async function handleImport(req, res, ctx) {
-  let bundle;
-  try { bundle = JSON.parse(await readBody(req)); } catch (e) { return sendJson(res, 200, { ret: 0, msg: 'bundle 不是合法 JSON: ' + e.message, data: {} }); }
-  if (!bundle || typeof bundle !== 'object' || !bundle.saves || typeof bundle.saves !== 'object') {
-    return sendJson(res, 200, { ret: 0, msg: 'bundle 结构不对（缺 saves）', data: {} });
-  }
-  const state = require('./state');
-  if (!fs.existsSync(SAVE_DIR)) fs.mkdirSync(SAVE_DIR, { recursive: true });
+// 纯回调（零 async/Promise，Jint 兼容：见 readBody 头注释）
+function handleImport(req, res, ctx) {
+  readBody(req, (readErr, raw) => {
+    let bundle;
+    try {
+      if (readErr) throw readErr;
+      bundle = JSON.parse(raw);
+    } catch (e) { return sendJson(res, 200, { ret: 0, msg: 'bundle 不是合法 JSON: ' + e.message, data: {} }); }
+    try {
+      if (!bundle || typeof bundle !== 'object' || !bundle.saves || typeof bundle.saves !== 'object') {
+        return sendJson(res, 200, { ret: 0, msg: 'bundle 结构不对（缺 saves）', data: {} });
+      }
+      const state = require('./state');
+      if (!fs.existsSync(SAVE_DIR)) fs.mkdirSync(SAVE_DIR, { recursive: true });
 
-  const names = Object.keys(bundle.saves).filter(n => NAME_RE.test(n));
-  const skipped = Object.keys(bundle.saves).filter(n => !NAME_RE.test(n));
-  if (!names.length) return sendJson(res, 200, { ret: 0, msg: 'bundle 里没有合法账号名存档', data: {} });
-  const hasAccounts = !!(bundle.accounts && bundle.accounts.accounts && typeof bundle.accounts.accounts === 'object');
+      const names = Object.keys(bundle.saves).filter(n => NAME_RE.test(n));
+      const skipped = Object.keys(bundle.saves).filter(n => !NAME_RE.test(n));
+      if (!names.length) return sendJson(res, 200, { ret: 0, msg: 'bundle 里没有合法账号名存档', data: {} });
+      const hasAccounts = !!(bundle.accounts && bundle.accounts.accounts && typeof bundle.accounts.accounts === 'object');
 
-  // 写前统一备份：将被覆盖的存档 +（若有）accounts.json 原样收进 _auto_backup_<ts>/
-  const bk = autoBackup(hasAccounts ? names.concat(['__accounts__']) : names);
+      // 写前统一备份：将被覆盖的存档 +（若有）accounts.json 原样收进 _auto_backup_<ts>/
+      const bk = autoBackup(hasAccounts ? names.concat(['__accounts__']) : names);
 
-  // ① 合并账号库：bundle 内账号覆盖同名条目，设备上其余账号保留；lastAccount 不动（避免偷换默认登录档）
-  let accountsMerged = 0;
-  if (hasAccounts) {
-    let db = null;
-    try { db = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, 'utf8')); } catch (e) { db = { version: 1, lastAccount: '', accounts: {} }; }
-    if (!db.accounts || typeof db.accounts !== 'object') db.accounts = {};
-    for (const k of Object.keys(bundle.accounts.accounts)) {
-      db.accounts[k] = bundle.accounts.accounts[k];
-      accountsMerged++;
+      // ① 合并账号库：bundle 内账号覆盖同名条目，设备上其余账号保留；lastAccount 不动（避免偷换默认登录档）
+      let accountsMerged = 0;
+      if (hasAccounts) {
+        let db = null;
+        try { db = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, 'utf8')); } catch (e) { db = { version: 1, lastAccount: '', accounts: {} }; }
+        if (!db.accounts || typeof db.accounts !== 'object') db.accounts = {};
+        for (const k of Object.keys(bundle.accounts.accounts)) {
+          db.accounts[k] = bundle.accounts.accounts[k];
+          accountsMerged++;
+        }
+        fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(db, null, 2));
+      }
+
+      // ② 合并存档：同名覆盖（已备份），设备上其余档保留
+      const reloaded = [];
+      for (const name of names) {
+        const saveObj = bundle.saves[name];
+        if (!saveObj || typeof saveObj !== 'object' || Array.isArray(saveObj)) { skipped.push(name); continue; }
+        const fp = path.join(SAVE_DIR, name + '.json');
+        fs.writeFileSync(fp, JSON.stringify(saveObj));
+        // 命中当前加载账号：写文件 + 同步写当前 stateFile（测试隔离下两者可能不同路径）+ 重载内存
+        if (keyOf(name) === keyOf(state.currentAccountName())) {
+          const sf = state.getStateFile();
+          if (path.resolve(sf) !== path.resolve(fp)) { try { fs.writeFileSync(sf, JSON.stringify(saveObj)); } catch (e) { /* 测试树下只读时忽略 */ } }
+          reloadCurrentState();
+          reloaded.push(name);
+        }
+        ctx.log(`[saveadm] import 写入 saves/${name}.json`);
+      }
+      return sendJson(res, 200, {
+        ret: 1, msg: `导入完成：${names.length} 份存档、${accountsMerged} 个账号条目`,
+        data: { imported: names, skipped, accountsMerged, reload: reloaded, backupDir: bk.dir || '' },
+      });
+    } catch (e) {
+      ctx.log('[saveadm] import 失败: ' + (e && e.message));
+      return sendJson(res, 200, { ret: 0, msg: '操作失败: ' + (e && e.message), data: {} });
     }
-    fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(db, null, 2));
-  }
-
-  // ② 合并存档：同名覆盖（已备份），设备上其余档保留
-  const reloaded = [];
-  for (const name of names) {
-    const saveObj = bundle.saves[name];
-    if (!saveObj || typeof saveObj !== 'object' || Array.isArray(saveObj)) { skipped.push(name); continue; }
-    const fp = path.join(SAVE_DIR, name + '.json');
-    fs.writeFileSync(fp, JSON.stringify(saveObj));
-    // 命中当前加载账号：写文件 + 同步写当前 stateFile（测试隔离下两者可能不同路径）+ 重载内存
-    if (keyOf(name) === keyOf(state.currentAccountName())) {
-      const sf = state.getStateFile();
-      if (path.resolve(sf) !== path.resolve(fp)) { try { fs.writeFileSync(sf, JSON.stringify(saveObj)); } catch (e) { /* 测试树下只读时忽略 */ } }
-      reloadCurrentState();
-      reloaded.push(name);
-    }
-    ctx.log(`[saveadm] import 写入 saves/${name}.json`);
-  }
-  return sendJson(res, 200, {
-    ret: 1, msg: `导入完成：${names.length} 份存档、${accountsMerged} 个账号条目`,
-    data: { imported: names, skipped, accountsMerged, reload: reloaded, backupDir: bk.dir || '' },
   });
 }
 
-async function handleEdit(req, res, ctx) {
-  let body;
-  try { body = JSON.parse(await readBody(req)); } catch (e) { return sendJson(res, 200, { ret: 0, msg: 'body 不是合法 JSON: ' + e.message, data: {} }); }
-  if (!body || typeof body !== 'object') return sendJson(res, 200, { ret: 0, msg: 'body 结构不对', data: {} });
+// 纯回调（零 async/Promise，Jint 兼容：见 readBody 头注释）
+function handleEdit(req, res, ctx) {
+  readBody(req, (readErr, raw) => {
+    let body;
+    try {
+      if (readErr) throw readErr;
+      body = JSON.parse(raw);
+    } catch (e) { return sendJson(res, 200, { ret: 0, msg: 'body 不是合法 JSON: ' + e.message, data: {} }); }
+    try {
+      if (!body || typeof body !== 'object') return sendJson(res, 200, { ret: 0, msg: 'body 结构不对', data: {} });
 
-  const state = require('./state');
-  const ACC = require('./accounts');
-  const targetName = body.acc ? String(body.acc) : state.currentAccountName();
-  if (!targetName || !NAME_RE.test(targetName)) return sendJson(res, 200, { ret: 0, msg: '账号名不合法', data: {} });
+      const state = require('./state');
+      const ACC = require('./accounts');
+      const targetName = body.acc ? String(body.acc) : state.currentAccountName();
+      if (!targetName || !NAME_RE.test(targetName)) return sendJson(res, 200, { ret: 0, msg: '账号名不合法', data: {} });
 
-  const isCurrent = keyOf(targetName) === keyOf(state.currentAccountName());
-  let result;
-  if (isCurrent) {
-    // 内存态是唯一真相源（退出/落盘会覆盖文件），必须改内存 + saveState
-    result = applyEditFields(state.S, body);
-    if (result.changed) state.saveState({ force: true });
-    ctx.log(`[saveadm] edit 当前账号 ${targetName}${result.changed ? ' 已应用并落盘' : '（无变化）'}`);
-  } else {
-    const fp = path.join(SAVE_DIR, keyOf(targetName) + '.json');
-    if (!fs.existsSync(fp)) return sendJson(res, 200, { ret: 0, msg: `saves/${keyOf(targetName)}.json 不存在`, data: {} });
-    let obj;
-    try { obj = JSON.parse(fs.readFileSync(fp, 'utf8')); } catch (e) { return sendJson(res, 200, { ret: 0, msg: '存档 JSON 解析失败: ' + e.message, data: {} }); }
-    autoBackup([keyOf(targetName)]);
-    result = applyEditFields(obj, body);
-    if (result.changed) fs.writeFileSync(fp, JSON.stringify(obj));
-    ctx.log(`[saveadm] edit 文件档 ${targetName}${result.changed ? ' 已应用' : '（无变化）'}`);
-  }
-  if (!result.changed) return sendJson(res, 200, { ret: 1, msg: '没有可应用的改动（数值未变或字段不在编辑范围）', data: { changed: false } });
+      const isCurrent = keyOf(targetName) === keyOf(state.currentAccountName());
+      let result;
+      if (isCurrent) {
+        // 内存态是唯一真相源（退出/落盘会覆盖文件），必须改内存 + saveState
+        result = applyEditFields(state.S, body);
+        if (result.changed) state.saveState({ force: true });
+        ctx.log(`[saveadm] edit 当前账号 ${targetName}${result.changed ? ' 已应用并落盘' : '（无变化）'}`);
+      } else {
+        const fp = path.join(SAVE_DIR, keyOf(targetName) + '.json');
+        if (!fs.existsSync(fp)) return sendJson(res, 200, { ret: 0, msg: `saves/${keyOf(targetName)}.json 不存在`, data: {} });
+        let obj;
+        try { obj = JSON.parse(fs.readFileSync(fp, 'utf8')); } catch (e) { return sendJson(res, 200, { ret: 0, msg: '存档 JSON 解析失败: ' + e.message, data: {} }); }
+        autoBackup([keyOf(targetName)]);
+        result = applyEditFields(obj, body);
+        if (result.changed) fs.writeFileSync(fp, JSON.stringify(obj));
+        ctx.log(`[saveadm] edit 文件档 ${targetName}${result.changed ? ' 已应用' : '（无变化）'}`);
+      }
+      if (!result.changed) return sendJson(res, 200, { ret: 1, msg: '没有可应用的改动（数值未变或字段不在编辑范围）', data: { changed: false } });
 
-  // 返回编辑后的摘要（isCurrent 读内存，否则重读文件）
-  let sum;
-  if (isCurrent) {
-    const ra = state.S.roleAsset || {};
-    sum = { roleName: state.S.roleName || '', level: ra.level || 1, gold: ra.gold || 0, gold_given: ra.gold_given || 0, silver: ra.silver || 0, vit: (ra.scores || {})[5] || 0 };
-  } else {
-    sum = summarizeSaveFile(path.join(SAVE_DIR, keyOf(targetName) + '.json'));
-  }
-  return sendJson(res, 200, { ret: 1, msg: isCurrent ? '已应用（回游戏重新登录生效）' : '已写入存档文件（下次登录该账号生效）', data: { changed: true, acc: targetName, summary: sum } });
+      // 返回编辑后的摘要（isCurrent 读内存，否则重读文件）
+      let sum;
+      if (isCurrent) {
+        const ra = state.S.roleAsset || {};
+        sum = { roleName: state.S.roleName || '', level: ra.level || 1, gold: ra.gold || 0, gold_given: ra.gold_given || 0, silver: ra.silver || 0, vit: (ra.scores || {})[5] || 0 };
+      } else {
+        sum = summarizeSaveFile(path.join(SAVE_DIR, keyOf(targetName) + '.json'));
+      }
+      return sendJson(res, 200, { ret: 1, msg: isCurrent ? '已应用（回游戏重新登录生效）' : '已写入存档文件（下次登录该账号生效）', data: { changed: true, acc: targetName, summary: sum } });
+    } catch (e) {
+      ctx.log('[saveadm] edit 失败: ' + (e && e.message));
+      return sendJson(res, 200, { ret: 0, msg: '操作失败: ' + (e && e.message), data: {} });
+    }
+  });
 }
 
 module.exports = { handle, ADMIN_KEY, mainMapId };

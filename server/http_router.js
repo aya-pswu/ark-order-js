@@ -5,7 +5,7 @@ const path = require('path');
 const { URL } = require('url');
 const ACC = require('./accounts');
 const NET = require('./net_check');
-const RES_ROOT = path.resolve('H:\\NEW FILES\\files\\res');
+const RES_ROOT = path.resolve(process.env.FZZL_RES_ROOT || 'H:\\NEW FILES\\files\\res');
 
 function startHttpRouter(port, ctx, onReady, onListenError) {
   const server = http.createServer((req, res) => {
@@ -145,7 +145,7 @@ function startHttpRouter(port, ctx, onReady, onListenError) {
         isSecondZipDone: '2',
         upf: '',
         srcIp: ctx.hostIp,
-        resStatic: 'http://' + ctx.hostIp + '/res',
+        resStatic: 'http://' + ((req.headers && req.headers.host) || ctx.hostIp) + '/res',
         resStatic2: '',
         appResourceUrl: '',
         UpdateList: [],
