@@ -94,13 +94,16 @@ console.log('== 10253 王座的守护 ==');
   t2.kingsGuardRounds = 1;
   const atkLv0 = (t2.statLevels[101] || 0) + (t2.statLevels[102] || 0);
   FC.settleSkill(foe2, cfg(10016), [t2], [caster2, t2, foe2], null, 0, st());
+  ok('受击记录待回合末加攻', t2.kingsGuardHits === 1, t2.kingsGuardHits);
+  FC.settleRoundEndTicks([caster2, t2, foe2], st(1));
   const atkLv1 = (t2.statLevels[101] || 0) + (t2.statLevels[102] || 0);
-  ok('受击一次较高攻 +1', atkLv1 === atkLv0 + 1, { atkLv0, atkLv1 });
+  ok('回合末较高攻 +1', atkLv1 === atkLv0 + 1, { atkLv0, atkLv1 });
   // 较高攻已 +6 时补另一项
   const t3 = mk({ id: 7, hp: 5000, maxHp: 5000, attrs: { hp: 5000, phy_atk: 100, mag_atk: 90, phy_def: 50, mag_def: 50, speed: 100 } });
   t3.kingsGuardRounds = 1;
   t3.statLevels[101] = 6;
   FC.settleSkill(mk({ id: 13, side: 1 }), cfg(10016), [t3], [t3, mk({ id: 14, side: 1 })], null, 0, st());
+  FC.settleRoundEndTicks([t3], st(1));
   ok('较高攻顶满时补另一项攻击', (t3.statLevels[102] || 0) === 1, t3.statLevels);
 }
 

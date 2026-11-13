@@ -6142,10 +6142,8 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
 
     // 10253 王座的守护：本回合每受到一次攻击，较高一项攻击 +1
     if ((hurt > 0 || shieldHurt > 0) && (t.kingsGuardRounds || 0) > 0) {
-      const kgProp = (t.attrs && t.attrs.phy_atk >= t.attrs.mag_atk) ? 101 : 102;
-      const kgOther = kgProp === 101 ? 102 : 101;
-      let kgReal = gainStat(t, kgProp, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
-      if (kgReal === 0) kgReal = gainStat(t, kgOther, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
+      // 敌方行动中产生的属性事件客户端不显示；记录受击次数，回合末统一结算（与 10391 同口径）
+      t.kingsGuardHits = (Number(t.kingsGuardHits) || 0) + 1;
     }
     // 记录目标受击者历史（供夏色祭友情的力量判定）
     if (hurt > 0) {
@@ -9253,6 +9251,17 @@ function settleRoundEndTicks(units, battleState) {
     if ((u.teamDmgDownRounds || 0) > 0) { u.teamDmgDownRounds -= 1; if (u.teamDmgDownRounds <= 0) u.teamDmgDownPct = 0; }
     if ((u.ascendRounds || 0) > 0) u.ascendRounds--;
     if ((u.inDmgDownRounds || 0) > 0) { u.inDmgDownRounds -= 1; if (u.inDmgDownRounds <= 0) u.inDmgDownPct = 0; }
+    // 10253 王座的守护：受击加攻在回合末结算（客户端可见），每次受击较高攻 +1
+    if ((u.kingsGuardHits || 0) > 0) {
+      const hits = Number(u.kingsGuardHits) || 0;
+      u.kingsGuardHits = 0;
+      const kgProp = (u.attrs && u.attrs.phy_atk >= u.attrs.mag_atk) ? 101 : 102;
+      const kgOther = kgProp === 101 ? 102 : 101;
+      for (let i = 0; i < hits; i++) {
+        let kgReal = gainStat(u, kgProp, 1, { effects, srcId: 10253, srcType: 3, atkId: u.id, srcServantId: u.id, phase: 7 });
+        if (kgReal === 0) gainStat(u, kgOther, 1, { effects, srcId: 10253, srcType: 3, atkId: u.id, srcServantId: u.id, phase: 7 });
+      }
+    }
     if ((u.kingsGuardRounds || 0) > 0) u.kingsGuardRounds -= 1;
     if ((u.reflectDirectRounds || 0) > 0) u.reflectDirectRounds -= 1;
     if ((u.eternalReleaseRounds || 0) > 0) {
