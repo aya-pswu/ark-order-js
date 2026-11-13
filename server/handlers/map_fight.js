@@ -2346,7 +2346,10 @@ m_fight_skill_select_tos(conn, obj) {
         }
       }
     }
-    if (!choice) continue;
+    if (!choice) {
+      if (actor.eternalReleased) log(`[fight] 10323 解脱状态且无可用辅助技：${actor.id} 跳过行动`);
+      continue;
+    }
     const cfg = FC.skillCfg(choice.skillId);
     if (!cfg) continue;
     // 10372 反核弹外壳：连续两回合使用 → 50% 失败（不结算、不产生行动）
@@ -2466,6 +2469,26 @@ m_fight_skill_select_tos(conn, obj) {
       result: 0, // SKILL_RESULT_SUC
     });
     actIndex++;
+
+    // 10399 瑶草：把反伤作为瑶姬的一条独立行动下发（敌人技能动画仍聚焦原目标）
+    if (effects.reflectEvents && effects.reflectEvents.length) {
+      effects.reflectEvents.forEach(ev => {
+        const srcUnit = units.find(u => u && Number(u.id) === Number(ev.from));
+        const dstUnit = units.find(u => u && Number(u.id) === Number(ev.to));
+        if (!srcUnit || !dstUnit) return;
+        fightList.push({
+          atk_id: bidOfUnit(srcUnit), skill_id: 10399, index: actIndex, power_point: 0,
+          effect_list: [{
+            type: 0, target: bidOfUnit(dstUnit), hurt: ev.amount, final_hp: dstUnit.hp,
+            shield_hurt: 0, final_shield: Math.max(0, dstUnit.shield || 0),
+            element_shield_hurt: 0, final_element_shield: 0, extra: 0,
+          }],
+          result: 0,
+        });
+        actIndex++;
+        log(`[fight] 10399 瑶草反伤：${srcUnit.id} → ${dstUnit.id} ${ev.amount}`);
+      });
+    }
 
     // 10432 羁绊连环：目标为青龙/朱雀/玄武 → 以其身份插入一条独立行动（有技能动画/伤害数字）
     if (cfg.id === 10432) {

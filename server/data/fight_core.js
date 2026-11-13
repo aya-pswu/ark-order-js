@@ -5071,14 +5071,14 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     }
     // 10323 永恒解脱：解脱状态下被魔攻技能攻击必定被击倒（护盾吸收后按剩余生命强制归零）
     if (t.eternalReleased && Number(cfg.type) === 2 && hurt > 0) hurt = Math.max(hurt, t.hp);
-    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者（写进 results，客户端显示伤害数字）
+    // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者。
+    // 不在敌方行动里追加 result（否则客户端会把整段技能动画聚焦到攻击者），
+    // 由 map_fight 读取 reflectEvents 后生成一条独立行动（伤害数字/HP 同步）。
     if ((t.reflectDirectRounds || 0) > 0 && hurt > 0 && actor && actor.hp > 0) {
       const back = Math.max(1, Math.round(hurt));
       actor.hp = Math.max(0, actor.hp - back);
-      results.push({
-        target: actor.id, hurt: back, final_hp: actor.hp,
-        shield_hurt: 0, final_shield: Math.max(0, actor.shield || 0), extra: 0,
-      });
+      if (!results.reflectEvents) results.reflectEvents = [];
+      results.reflectEvents.push({ from: t.id, to: actor.id, amount: back, skillId: cfg.id });
     }
     // 2026-10-27：落账前快照。此行之后到落账为止的 t.hp 直改（暗夜主宰10336吸血/仇恨吸引
     // 回血/狼人20870回血/亥22100盾回/阿修罗22720回血/乌波萨斯拉21880回血/八咫乌21390与
@@ -6098,7 +6098,7 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
           const splash = Math.max(1, Math.floor(t.maxHp / atlasFoes.length));
           atlasFoes.forEach(f => {
             const beforeHp = f.hp;
-            f.hp = Math.max(1, f.hp - splash);
+            f.hp = Math.max(0, f.hp - splash); // 天赋伤害可致死（不再保底 1 HP）
             const real = beforeHp - f.hp;
             if (real > 0) results.push({
               target: f.id, hurt: real, final_hp: f.hp,
@@ -6143,7 +6143,9 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
     // 10253 王座的守护：本回合每受到一次攻击，较高一项攻击 +1
     if ((hurt > 0 || shieldHurt > 0) && (t.kingsGuardRounds || 0) > 0) {
       const kgProp = (t.attrs && t.attrs.phy_atk >= t.attrs.mag_atk) ? 101 : 102;
-      gainStat(t, kgProp, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
+      const kgOther = kgProp === 101 ? 102 : 101;
+      let kgReal = gainStat(t, kgProp, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
+      if (kgReal === 0) kgReal = gainStat(t, kgOther, 1, { effects: wakeEffects, srcId: 10253, srcType: 3, atkId: t.id, srcServantId: t.id, phase });
     }
     // 记录目标受击者历史（供夏色祭友情的力量判定）
     if (hurt > 0) {
@@ -8192,10 +8194,14 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
   }
   if (rule.eternalRelease) {
     // 10323 永恒解脱：4 回合内伤害 ×4；到期进入解脱状态（标志在回合末维护）
-    actor.eternalReleaseRounds = Math.max(actor.eternalReleaseRounds || 0, Number(rule.eternalRelease.rounds) || 4);
-    actor.eternalReleaseDmgMul = Number(rule.eternalRelease.dmgMul) || 4;
-    actor.eternalReleaseAtRound = (Number(battleState && battleState.round) || 1) + (Number(rule.eternalRelease.rounds) || 4);
-    actor.eternalReleased = false;
+    if (!actor.eternalReleased) {
+      actor.eternalReleaseRounds = Math.max(actor.eternalReleaseRounds || 0, Number(rule.eternalRelease.rounds) || 4);
+      actor.eternalReleaseDmgMul = Number(rule.eternalRelease.dmgMul) || 4;
+      actor.eternalReleaseAtRound = (Number(battleState && battleState.round) || 1) + (Number(rule.eternalRelease.rounds) || 4);
+      actor.eternalReleased = false;
+    } else {
+      actor.eternalReleaseRounds = 0; // 解脱后再次点 10323 不解除锁定
+    }
   }
   if (rule.reflectDirect) {
     // 10399 瑶草：本回合受到的直接技能伤害反馈给攻击者
@@ -13066,7 +13072,7 @@ function settleRoundStartTalents(units, round, actIndex, battleState) {
             src_type: 1, // FIGHT_EFF_FEATURE
             src_id: 21680,
             id: 20003, // 物防下降
-            effect_phase: 1, // TRIGGER_TIME_ROUND_START
+            effect_phase: 8, // TRIGGER_TIME_BEFORE_ALL_ATTACK：回合开始、行动结算前
             change_type: 100000,
             change_value: [encodeAttrVal(103, realDelta, newLv)],
             remove_round: 0,
