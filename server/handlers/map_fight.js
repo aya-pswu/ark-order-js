@@ -704,6 +704,54 @@ function mkEnemyUnit(e, idx, tile) {
 // 登场走**下一次** pushFightRound 的 enter_list（死亡发生在已推的回合包里，同包 born 会在
 // 回放动作前 replaceUnit 掉还没播死动画的活人）；stand_list 的 remove 延迟一包生效是客户端设计
 //（initOutServants 先存 remove 列表、下包才应用）。调用点：每回合开始（select_tos）+ 波转场（start_tos）。
+// 多队出击：当前队伍主力+替补全灭时，切到 use_team_ids 的下一队。
+// 返回 true 表示已切换（新队伍通过 pendingEnters 随本包进场；当回合不行动/不被指向）。
+function switchToNextTeam(st) {
+  if (!st) return false;
+  const ids = (st.teamIds || []).map(Number).filter(id => id > 0);
+  let idx = Number(st.teamIndex) || 0;
+  while (++idx < ids.length) {
+    const tid = ids[idx];
+    if (tid === Number(st.teamId)) continue;
+    const f = buildFormation(tid, S.formations[tid]);
+    const fieldIds = (f.field || []).filter(id => Number(id) > 0);
+    if (!fieldIds.length) continue;
+    const benchIds = (f.bench || []).filter(id => Number(id) > 0 && !fieldIds.includes(Number(id)));
+    st.pendingEnters = st.pendingEnters || [];
+    st.standRemovals = st.standRemovals || [];
+    const newAllies = [];
+    fieldIds.forEach((sid, i) => {
+      const b = S.servants.find(x => x.id === Number(sid));
+      if (!b) return;
+      const eff = effectOfSlot(f.lineup, f.positions[i]) || { dmg: 0, selfMit: 0, teamMit: 0, dodge: 0 };
+      const unit = mkAllyUnit(b, TILE_OF_POS[f.positions[i]] || [-2, 0], eff, tid);
+      unit.fieldPos = f.positions[i];
+      unit.slotEff = eff;
+      unit.enteringRound = st.round; // 本回合刚登场，不行动/不被指向
+      newAllies.push(unit);
+      st.pendingEnters.push(fightServantOf(b.id, b.type, unit.nature, briefPosOf(f.positions[i]), {
+        usingIds: usingSkillsOf(b), learnedIds: b.learned_skills, level: unit.level,
+        energyPoints: b.energy_points || null, overstep: b.overstep || 0,
+        coreBonus: allyEquipBonusOf(b, tid), lineupEff: eff, ally: true,
+        star: EV.normStar(b.star), skin: Number(b.skin_id) || 0,
+        attrsOverride: unit.attrs, statLevels: unit.statLevels, buffs: unit.buffs,
+        talent: unit.talent, relicId: unit.relicId, shield: unit.shield || 0,
+        element: unit.element, bid: bidOfAlly(unit, st),
+      }));
+    });
+    if (!newAllies.length) continue;
+    // 旧队伍阵亡者留在服务端统计里，但场上换成新队伍；client 通过 pendingEnters 生成新单位
+    st.allies = newAllies;
+    st.benchIds = benchIds;
+    st.teamId = tid;
+    st.teamIndex = idx;
+    if (S.mapState) S.mapState.lastId = tid;
+    log(`[fight] 队伍${ids[idx - 1] || '?'}全灭 → 切换备用队伍${tid}（${newAllies.length}人）`);
+    return true;
+  }
+  return false;
+}
+
 function substituteBench(st) {
   if (!st || !Array.isArray(st.benchIds) || !st.benchIds.length) return false;
   st.pendingEnters = st.pendingEnters || [];
@@ -847,6 +895,9 @@ function pushFightRound(conn, fightId, round, fightList, batchIdx, updates, roun
       S.fightState.enemies = enemies;
       if (batch === 1) {
         S.fightState.teamId = (S.mapState && S.mapState.lastId) || 1;
+        // 多队出击（CopySortiePanel maxTeam=2）：main 全灭时按 use_team_ids 顺序切下一队
+        S.fightState.teamIds = ((S.mapState && S.mapState.use_team_ids) || [S.fightState.teamId]).map(Number);
+        S.fightState.teamIndex = Math.max(0, S.fightState.teamIds.indexOf(Number(S.fightState.teamId)));
         S.fightState.weather = S.fightState.weather || { start_weather: 0, weather_end_round: 0 };
         S.fightState.benchIds = benchIdsSnap;
         S.fightState.pendingEnters = [];
@@ -2627,6 +2678,10 @@ m_fight_skill_select_tos(conn, obj) {
   // 场上无人 ⇒ 要么本来就没替补、要么替补池也耗尽了——两种都不该继续打。
   // 正常路径（顶替成功）aliveAllies() 已 >0，此判定空转。
   alliesAllDead = aliveAllies().length === 0 && !enemiesAllDead;
+  if (alliesAllDead && !enemiesAllDead && switchToNextTeam(st)) {
+    // 备用队伍已经顶上场（pendingEnters 随本包进场），本回合不判负
+    alliesAllDead = false;
+  }
   if (alliesAllDead && !enemiesAllDead) {
     // 战败：先补 m_fight_result_toc(result=LOSE 空奖励) 再 scene_result=LOSE——客户端战败面板
     //（CopyRewardPanel/RoleBuffView.checkActive）自己读 CopyMgr.getResult(fightId)，没收到结算包

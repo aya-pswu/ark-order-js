@@ -489,7 +489,7 @@ function CopyRewardPanel.updateExpInfo(slot0)
 	end
 end
 
-function CopyRewardPanel.updateRewardServant(slot0)
+function CopyRewardPanel._updateRewardServantImpl(slot0)
 	-- 本地服补丁（2026-11-13）：队伍全灭战败时 FormationMgr 可能已清空，原版会在
 	-- slot7.fight_field 处 attempt to index a nil value（CopyRewardPanel LuaError）。
 	if slot0.resultVO == nil then return end
@@ -576,6 +576,14 @@ function CopyRewardPanel.updateRewardServant(slot0)
 		AudioManager.playAudio(1006)
 	else
 		AudioManager.playAudio(1005)
+	end
+end
+
+-- 本地服补丁：战败结算数据/阵型缺失时兜底，绝不让面板动画循环抛 LuaError
+function CopyRewardPanel.updateRewardServant(slot0)
+	local ok, err = pcall(CopyRewardPanel._updateRewardServantImpl, slot0)
+	if not ok then
+		printLbz("CopyRewardPanel.updateRewardServant pcall:", err)
 	end
 end
 
