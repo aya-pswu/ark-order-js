@@ -8182,7 +8182,8 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
       if (!t || t.hp <= 0) return;
       t.inDmgDownRounds = Math.max(t.inDmgDownRounds || 0, rounds);
       t.inDmgDownPct = Math.max(Number(t.inDmgDownPct) || 0, Number(kg.dmgDownPct) || 25);
-      t.kingsGuardRounds = Math.max(t.kingsGuardRounds || 0, rounds);
+      // 受击加攻窗口多保留 1 回合：避免十香慢于敌人时本回合已无后续攻击、完全看不到效果
+      t.kingsGuardRounds = Math.max(t.kingsGuardRounds || 0, rounds + 1);
     });
   }
   if (rule.foresight) {
@@ -13049,38 +13050,6 @@ function settleRoundStartTalents(units, round, actIndex, battleState) {
       }
     }
 
-    // 夜刀神十香（21680 公主）：回合开始时敌方随机 1 名誓灵物防下降 1 级，回合结束时恢复
-    if (u.talent === 21680) {
-      const foes = (units || []).filter(x => x && x.hp > 0 && x.side !== u.side);
-      if (foes.length > 0) {
-        const rnd = Math.random;
-        const tar = foes[Math.floor(rnd() * foes.length)];
-        tar.statLevels = tar.statLevels || {};
-        const oldLv = tar.statLevels[103] || 0;
-        const newLv = Math.max(-6, oldLv - 1);
-        const realDelta = newLv - oldLv;
-        tar.statLevels[103] = newLv;
-        tar.phy_def_lv = newLv;
-        tar.tohkaDefLowered = true;
-        tar.tohkaTargeted = true;
-        if (realDelta !== 0) {
-          effects.push({
-            trigger_count: 0,
-            atk_servant_id: u.id,
-            src_servant_id: u.id,
-            tar_servant_ids: [tar.id],
-            src_type: 1, // FIGHT_EFF_FEATURE
-            src_id: 21680,
-            id: 20003, // 物防下降
-            effect_phase: 8, // TRIGGER_TIME_BEFORE_ALL_ATTACK：回合开始、行动结算前
-            change_type: 100000,
-            change_value: [encodeAttrVal(103, realDelta, newLv)],
-            remove_round: 0,
-          });
-        }
-      }
-    }
-
     // 范格斯（23190 鲑鱼捕手）：回合开始时夺取1级魔攻与随机一项能力（若自身魔攻为负则敌方全体）
     if (u.talent === 23190) {
       const mAtkLv = (u.statLevels && u.statLevels[102]) || 0;
@@ -13412,6 +13381,34 @@ function settleBattleStartTalents(units, battleState) {
   return flattenEffects(entranceEffects);
 }
 
+// 21680 十香：回合开始前的敌方随机物防 -1。
+// 为让玩家在“选技能前”看到 debuff，调用点改为：战斗开始 entry 包 + 每回合末 endTicks 之后
+// （endTicks 先恢复上一只的物防并清标记，再为下一回合挂新目标）。返回 effects。
+function applyTenkaOpeningDebuff(units, phase) {
+  const effects = [];
+  (units || []).forEach(u => {
+    if (!u || u.hp <= 0 || u.talent !== 21680) return;
+    const foes = (units || []).filter(x => x && x.hp > 0 && x.side !== u.side);
+    if (!foes.length) return;
+    const tar = foes[Math.floor(Math.random() * foes.length)];
+    tar.statLevels = tar.statLevels || {};
+    const oldLv = tar.statLevels[103] || 0;
+    const newLv = Math.max(-6, oldLv - 1);
+    const realDelta = newLv - oldLv;
+    tar.statLevels[103] = newLv;
+    tar.phy_def_lv = newLv;
+    tar.tohkaDefLowered = true;
+    tar.tohkaTargeted = true;
+    if (realDelta !== 0) effects.push({
+      trigger_count: 0, atk_servant_id: u.id, src_servant_id: u.id, tar_servant_ids: [tar.id],
+      src_type: 1, src_id: 21680, id: 20003,
+      effect_phase: phase != null ? phase : 7,
+      change_type: 100000, change_value: [encodeAttrVal(103, realDelta, newLv)], remove_round: 0,
+    });
+  });
+  return effects;
+}
+
 // 10432 羁绊连环：解析并执行「青龙/朱雀/玄武 立即释放最后技能」的额外行动。
 // map_fight 调用后把结果下发为独立 fight_list（有技能动画与伤害数字）；无合法目标返回 null。
 function bondChainCast(actor, targets, allUnits, actIndex, battleState) {
@@ -13456,5 +13453,5 @@ module.exports = {
   talentOf, talentInfoOf, talentRuleOf,
   BID_LEFT_BASE, BID_RIGHT_BASE, newBidAllocator, isWireBid,
   elementAwakeOf, elementExclusiveOf, elementExclusiveBehavior, applyExclusiveCastEffects, elementReplacesBase,
-  healReceivedMul, isSupportSkillCfg, aiUsableList, bondChainCast,
+  healReceivedMul, isSupportSkillCfg, aiUsableList, bondChainCast, applyTenkaOpeningDebuff,
 };

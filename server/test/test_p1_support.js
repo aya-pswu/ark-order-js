@@ -77,7 +77,7 @@ console.log('== 10253 王座的守护 ==');
   const caster = mk(), target = mk({ id: 2 });
   const foe = mk({ id: 11, side: 1 });
   FC.applySkillEffects(caster, cfg(10253), [target], [caster, target, foe], 0, st());
-  ok('获得 1 回合 25% 减伤与受击加攻标记', target.inDmgDownRounds === 1 && target.inDmgDownPct === 25 && target.kingsGuardRounds === 1, target);
+  ok('获得 25% 减伤与受击加攻标记（加攻窗口 2 回合）', target.inDmgDownRounds === 1 && target.inDmgDownPct === 25 && target.kingsGuardRounds === 2, target);
   const oldRnd = Math.random;
   function dmg(withGuard) {
     const atk = mk({ id: 5, side: 0 }), t = mk({ id: 15, side: 1, hp: 5000, maxHp: 5000, attrs: { hp: 5000, phy_atk: 100, mag_atk: 100, phy_def: 50, mag_def: 50, speed: 100 } });
@@ -202,6 +202,15 @@ console.log('== 22380 阿特拉斯死亡分摊可致死 ==');
   const res = FC.settleSkill(killer, cfg(10016), [atlas], [atlas, foe], null, 0, st());
   const hit = res.find(e => Number(e.target) === foe.id);
   ok('死亡分摊允许致死（60 HP 目标 final_hp=0）', !!hit && Number(hit.final_hp) === 0, hit);
+}
+
+console.log('== 21680 十香开局减防（选技前可见） ==');
+{
+  const tenka = mk({ id: 1, type: 2344004, talent: 21680 });
+  const foe = mk({ id: 11, side: 1 });
+  const eff = FC.applyTenkaOpeningDebuff([tenka, foe], 1);
+  ok('随机 1 名敌人物防 -1', foe.statLevels[103] === -1 && foe.tohkaDefLowered === true && foe.tohkaTargeted === true, foe.statLevels);
+  ok('返回减防 effect（entry/end 包下发）', eff.length === 1 && Number(eff[0].change_type) === 100000, eff);
 }
 
 console.log('== 21680 十香天赋：回复该次伤害 15% ==');
