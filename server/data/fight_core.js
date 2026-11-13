@@ -6100,9 +6100,20 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
             const beforeHp = f.hp;
             f.hp = Math.max(0, f.hp - splash); // 天赋伤害可致死（不再保底 1 HP）
             const real = beforeHp - f.hp;
-            if (real > 0) results.push({
-              target: f.id, hurt: real, final_hp: f.hp,
-              shield_hurt: 0, final_shield: Math.max(0, f.shield || 0), extra: 0,
+            if (real > 0) wakeEffects.push({
+              // 阿特拉斯死亡天赋必须归属阿特拉斯本人：223801 是带 act=20661 的官方演出条目。
+              // 若挂进 results，客户端会把这段分摊伤害算在“击杀他的敌人技能”动作上（玩家反馈）。
+              trigger_count: 0,
+              atk_servant_id: t.id,
+              src_servant_id: t.id,
+              tar_servant_ids: [f.id],
+              src_type: 1,
+              src_id: 22380,
+              id: 223801,
+              effect_phase: phase,
+              change_type: 200000,
+              change_value: [-real],
+              remove_round: 0,
             });
           });
         }
