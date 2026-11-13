@@ -6101,12 +6101,13 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
             f.hp = Math.max(0, f.hp - splash); // 天赋伤害可致死（不再保底 1 HP）
             const real = beforeHp - f.hp;
             if (real > 0) wakeEffects.push({
-              // 演出归属阿特拉斯本人（左侧头像）。effect_list 在 fight_list 之前处理，
-              // 此时客户端场景里阿特拉斯仍在；map_fight 的 wireMap 需覆盖已阵亡单位，
-              // 否则内部 id 不会换成客户端 bid，演出会被丢。
+              // 已知问题（暂回退）：阿特拉斯阵亡后客户端会立刻把他移出场景，若 src 用阿特拉斯，
+              // 223801（act=20661）演出会被 FeatureLoop 丢弃 → 玩家看不到分摊演出。
+              // 临时方案：挂到仍存活的受击敌方 f 上，保证演出/数字；副作用是天赋横幅头像显示为右侧敌方。
+              // 正确方向：死亡演出延后一包（阵亡单位保留在客户端场景）再下发 223801。
               trigger_count: 0,
-              atk_servant_id: t.id,
-              src_servant_id: t.id,
+              atk_servant_id: f.id,
+              src_servant_id: f.id,
               tar_servant_ids: [f.id],
               src_type: 1,
               src_id: 22380,

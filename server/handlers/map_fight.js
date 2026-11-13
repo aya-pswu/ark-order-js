@@ -906,8 +906,6 @@ function pushFightRound(conn, fightId, round, fightList, batchIdx, updates, roun
   const stEns = (S.fightState && S.fightState.enemies) || [];
   const wireMap = {};
   stAll.concat(stEns).forEach(u => { wireMap[u.id] = bidOfUnit(u); });
-  const roundUnits = (S.fightState && S.fightState.roundUnits) || [];
-  roundUnits.forEach(u => { if (u && wireMap[u.id] == null) wireMap[u.id] = bidOfUnit(u); });
   const toWire = n => wireMap[n] != null ? wireMap[n] : n;
   // 最后一道闸：属性类 effect 里 delta=0 的条目（能力等级已 ±6 上限 / 后土把降级吃掉 /
   // 重置技写死 0）客户端渲染时一定 printError("能力等级变化为0")，且不会改变任何数值。
@@ -2074,9 +2072,6 @@ m_fight_skill_select_tos(conn, obj) {
   // 败判定/结算仍走 st.allies 全量（替补在场即算存活）。
   const enteringIds = new Set((st.allies || []).filter(u => u && u.enteringRound === st.round).map(u => u.id));
   const units = st.allies.concat(st.enemies).filter(u => !(u && enteringIds.has(u.id)));
-  // 本回合单位快照（含随后被 substituteBench 移出的阵亡者）：wireMap 依赖它把
-  // 阿特拉斯死亡天赋 223801 等“死单位 effect”的内部 id 换成客户端 bid，否则演出被丢。
-  st.roundUnits = units;
   // MVP 统计（调研-结算详情页.md §4）：回合起点 HP 快照 + 本回合 results 留档。
   // settleRoundDiff 用差分兜底所有绕过 results 的 HP 突变（回合末 tick/受创反应/进场天赋）。
   if (!st.mvpStats) st.mvpStats = FS.newStats();
