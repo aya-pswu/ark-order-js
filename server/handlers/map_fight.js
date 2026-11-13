@@ -906,6 +906,9 @@ function pushFightRound(conn, fightId, round, fightList, batchIdx, updates, roun
   const stEns = (S.fightState && S.fightState.enemies) || [];
   const wireMap = {};
   stAll.concat(stEns).forEach(u => { wireMap[u.id] = bidOfUnit(u); });
+  // 阵亡单位可能已从 fightState 数组移出；effect_list 在 fight_list 之前处理，
+  // 客户端此刻还能找到该单位（如阿特拉斯死亡天赋 223801 演出），补全映射避免 id 未换包被丢。
+  (units || []).forEach(u => { if (u && wireMap[u.id] == null) wireMap[u.id] = bidOfUnit(u); });
   const toWire = n => wireMap[n] != null ? wireMap[n] : n;
   // 最后一道闸：属性类 effect 里 delta=0 的条目（能力等级已 ±6 上限 / 后土把降级吃掉 /
   // 重置技写死 0）客户端渲染时一定 printError("能力等级变化为0")，且不会改变任何数值。
