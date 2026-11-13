@@ -237,8 +237,12 @@ function exclusiveExecute(results, units, threshold) {
 // 受疗方禁疗乘区（醉人的咖啡 10384）：治疗效果降低 75%
 function healReceivedMul(t) {
   if (t && (t.healBlockRounds || 0) > 0) return 0;   // 10130 无间轮回：本回合完全禁疗
-  if (t && (t.healHalfRounds || 0) > 0) return 0.5;   // 10384 基础：治疗效果 -50%
-  return (t && (t.healBanRounds || 0) > 0) ? 0.25 : 1;
+  let m = 1;
+  if (t && (t.healHalfRounds || 0) > 0) m = 0.5;       // 10384 基础：治疗效果 -50%
+  else if (t && (t.healBanRounds || 0) > 0) m = 0.25;
+  // 10358 守护灵：本回合受到治疗 +20%
+  if (t && (t.healReceivedBoostRounds || 0) > 0) m *= 1 + (Number(t.healReceivedBoostPct) || 0) / 100;
+  return m;
 }
 
 // 攻方「回复量提升」乘区（联动圣器专属段，2026-10-25）：
@@ -4659,6 +4663,8 @@ function settleSkill(actor, cfg, targets, allUnits, rng, actIndex, battleState) 
       // 兴奋的秘泉（10168）：被祝福者造成的伤害翻倍（3回合；乘区与其它专属乘区同层）
       if ((actor.exciteSpringRounds || 0) > 0) exclusiveOutInMul *= (Number(actor.exciteSpringDmgMul) || 2.0);
       if (Number(actor.nextOutDmgUp) > 0) { exclusiveOutInMul *= 1 + Number(actor.nextOutDmgUp); actor.nextOutDmgUp = 0; }
+      // 10216 星之传承：2 回合内己方伤害提升
+      if ((actor.teamDmgUpRounds || 0) > 0) exclusiveOutInMul *= 1 + (Number(actor.teamDmgUpPct) || 0) / 100;
       if (actor.nextRoundDmgUpRound === (battleState && battleState.round) && Number(actor.nextRoundDmgUp) > 0) {
         exclusiveOutInMul *= 1 + Number(actor.nextRoundDmgUp);
       }
@@ -7808,6 +7814,16 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
     if (single) gainStat(actor, hi, -2, { effects, srcId: 10377, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
     else gainStat(actor, Math.random() < 0.5 ? 103 : 104, -1, { effects, srcId: 10377, srcType: 3, atkId: actor.id, srcServantId: actor.id, phase });
   }
+  // 记录“谁对谁用过辅助技”（10291 风之返恩的 5 回合条件）
+  if (battleState && Number(cfg.type) === 3 && isFriendEff(cfg.effType)) {
+    const rd = Number(battleState.round) || 1;
+    (targets || []).forEach(t => {
+      if (t && t.id !== actor.id) {
+        t.supportReceivedLog = t.supportReceivedLog || {};
+        t.supportReceivedLog[actor.id] = rd;
+      }
+    });
+  }
   if (!rule) return effects;
 
   // 1. 全体属性等级重置（如 10014 归还的极光）
@@ -8261,6 +8277,85 @@ function applySkillEffects(actor, cfg, targets, allUnits, actIndex, battleState)
       (allUnits || []).filter(u => u && u.hp > 0 && u.side === actor.side).forEach(ally => {
         ally.xuanwuNextBonus = (ally.xuanwuNextBonus || 0) + inc;
       });
+    }
+  }
+  // —— 2026-11-13 P1.5 群体辅助批次（6 个）——
+  if (rule.starLegacy) {
+    const sl = rule.starLegacy;
+    const hpPct = ((actor.hp || 0) / (actor.maxHp || 1)) * 100;
+    const pct = hpPct >= (Number(sl.threshold) || 40) ? Number(sl.highPct) : Number(sl.lowPct);
+    (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
+      a.teamDmgUpRounds = Math.max(a.teamDmgUpRounds || 0, Number(sl.rounds) || 2);
+      a.teamDmgUpPct = Math.max(Number(a.teamDmgUpPct) || 0, pct);
+    });
+  }
+  if (rule.freeBreath) {
+    const fb = rule.freeBreath;
+    const before = actor.hp;
+    actor.hp = Math.max(1, actor.hp - Math.max(1, Math.round((actor.maxHp || 1) * Number(fb.hpCostPct || 15) / 100)));
+    if (before > actor.hp) effects.push({
+      trigger_count: 0, atk_servant_id: actor.id, src_servant_id: actor.id, tar_servant_ids: [actor.id],
+      src_type: 3, src_id: cfg.id, id: 60120, effect_phase: phase,
+      change_type: 200000, change_value: [-(before - actor.hp)], remove_round: 0,
+    });
+    (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
+      const lo = Number(fb.minUp) || 1, hi = Number(fb.maxUp) || 2;
+      let delta = lo + Math.floor(Math.random() * (hi - lo + 1));
+      if (isHoloServant(a.type)) delta += Number(fb.holoExtra) || 1;
+      const prop = [101, 102, 103, 104, 105][Math.floor(Math.random() * 5)];
+      gainStat(a, prop, delta, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
+    });
+  }
+  if (rule.windGrace) {
+    const wg = rule.windGrace;
+    const rd = Number(battleState && battleState.round) || 1;
+    (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
+      const used = Number((actor.supportReceivedLog || {})[a.id]) || 0;
+      const pct = used > 0 && rd - used <= (Number(wg.window) || 5) ? Number(wg.boostedPct) : Number(wg.basePct);
+      a.nextOutDmgUp = Math.max(Number(a.nextOutDmgUp) || 0, pct / 100);
+    });
+  }
+  if (rule.treasureBanner) {
+    (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
+      [101, 102, 103, 104, 105].forEach(pr => {
+        const lv = (a.statLevels && a.statLevels[pr]) || 0;
+        if (lv < 0) gainStat(a, pr, -lv, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
+      });
+      gainStat(a, Math.random() < 0.5 ? 103 : 104, 1, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
+    });
+  }
+  if (rule.guardianSpirit) {
+    const gs = rule.guardianSpirit;
+    (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side).forEach(a => {
+      a.teamDmgDownRounds = Math.max(a.teamDmgDownRounds || 0, Number(gs.rounds) || 1);
+      a.teamDmgDownPct = Math.max(Number(a.teamDmgDownPct) || 0, Number(gs.dmgDownPct) || 35);
+      a.healReceivedBoostRounds = Math.max(a.healReceivedBoostRounds || 0, Number(gs.rounds) || 1);
+      a.healReceivedBoostPct = Math.max(Number(a.healReceivedBoostPct) || 0, Number(gs.healUpPct) || 20);
+    });
+  }
+  if (rule.lifeBloom) {
+    const lb = rule.lifeBloom;
+    const allies = (allUnits || []).filter(a => a && a.hp > 0 && a.side === actor.side);
+    allies.forEach(a => {
+      exclusiveAddShield(actor, a, Math.max(1, Math.round((a.maxHp || 1) * (Number(lb.shieldPct) || 10) / 100)), { effects, phase }, cfg.id);
+    });
+    let seeds = 0;
+    allies.forEach(a => {
+      const n = Number(a.lifeSeeds) || 0;
+      if (n > 0) {
+        seeds += n;
+        a.lifeSeeds = 0;
+        effects.push({
+          trigger_count: 0, atk_servant_id: actor.id, src_servant_id: a.id, tar_servant_ids: [a.id],
+          src_type: 1, src_id: 60120, id: 60120, effect_phase: phase,
+          change_type: 300020, change_value: [22770], remove_round: 0,
+        });
+      }
+    });
+    for (let i = 0; i < seeds; i++) {
+      const a = allies[Math.floor(Math.random() * allies.length)];
+      const prop = [101, 102, 103, 104, 105][Math.floor(Math.random() * 5)];
+      gainStat(a, prop, 1, { effects, srcId: cfg.id, srcType: 3, atkId: actor.id, srcServantId: a.id, phase });
     }
   }
   if (rule.skillLock) {
@@ -9262,6 +9357,8 @@ function settleRoundEndTicks(units, battleState) {
       }
     }
     if ((u.teamDmgDownRounds || 0) > 0) { u.teamDmgDownRounds -= 1; if (u.teamDmgDownRounds <= 0) u.teamDmgDownPct = 0; }
+    if ((u.teamDmgUpRounds || 0) > 0) { u.teamDmgUpRounds -= 1; if (u.teamDmgUpRounds <= 0) u.teamDmgUpPct = 0; }
+    if ((u.healReceivedBoostRounds || 0) > 0) { u.healReceivedBoostRounds -= 1; if (u.healReceivedBoostRounds <= 0) u.healReceivedBoostPct = 0; }
     if ((u.ascendRounds || 0) > 0) u.ascendRounds--;
     if ((u.inDmgDownRounds || 0) > 0) { u.inDmgDownRounds -= 1; if (u.inDmgDownRounds <= 0) u.inDmgDownPct = 0; }
     // 10253 王座的守护：受击加攻在回合末结算（客户端可见），每次受击较高攻 +1
