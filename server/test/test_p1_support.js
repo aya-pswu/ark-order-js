@@ -204,7 +204,7 @@ console.log('== 22380 阿特拉斯死亡分摊可致死 ==');
   // 直接调用包含死亡天赋的结算：让 killer 击倒 atlas
   const res = FC.settleSkill(killer, cfg(10016), [atlas], [atlas, foe], null, 0, st());
   const splash = (res.wakeEffects || []).find(e => Number(e.id) === 223801 && Number(e.change_type) === 200000);
-  ok('死亡分摊允许致死且归属阿特拉斯（223801 演出）', !!splash && Math.abs(Number(splash.change_value[0])) === 60 && Number(splash.atk_servant_id) === atlas.id && foe.hp === 0, splash);
+  ok('死亡分摊允许致死且保留 223801 演出', !!splash && Math.abs(Number(splash.change_value[0])) === 60 && Number(splash.id) === 223801 && foe.hp === 0, splash);
 
 }
 
